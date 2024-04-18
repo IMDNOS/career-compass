@@ -10,8 +10,8 @@ const config : MysqlConnectionOptions={
   synchronize: true,
   logging: true,
   entities: [
-     __dirname + '/**/*.entity{.ts,.js}'
-  ],
+     __dirname + '/**/*.entity{.ts,.js}',
+],
 }
 
 export default config;

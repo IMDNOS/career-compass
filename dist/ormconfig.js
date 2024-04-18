@@ -9,7 +9,7 @@ const config = {
     synchronize: true,
     logging: true,
     entities: [
-        __dirname + '/**/*.entity{.ts,.js}'
+        __dirname + '/**/*.entity{.ts,.js}',
     ],
 };
 exports.default = config;

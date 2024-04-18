@@ -10,14 +10,21 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const employees_module_1 = require("./employees/employees.module");
+const typeorm_1 = require("@nestjs/typeorm");
+const ormconfig_1 = require("../ormconfig");
+const core_1 = require("@nestjs/core");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [employees_module_1.EmployeesModule, typeorm_1.TypeOrmModule.forRoot(ormconfig_1.default)],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, {
+                provide: core_1.APP_PIPE,
+                useClass: common_1.ValidationPipe,
+            },],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
