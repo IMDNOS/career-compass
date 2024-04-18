@@ -1142,7 +1142,7 @@ test\\_%|schema||&apos;&apos;||UPDATE|G</Grants>
     </collation>
     <schema id="324" parent="1" name="career_compass">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-04-18.08:29:18</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-04-18.12:23:30</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="325" parent="1" name="information_schema">
@@ -1183,7 +1183,7 @@ test\\_%|schema||&apos;&apos;||UPDATE|G</Grants>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
     <column id="337" parent="336" name="id">
-      <AutoIncrement>10</AutoIncrement>
+      <AutoIncrement>1</AutoIncrement>
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1203,37 +1203,42 @@ test\\_%|schema||&apos;&apos;||UPDATE|G</Grants>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="341" parent="336" name="resume">
+    <column id="341" parent="336" name="hashedRT">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="342" parent="336" name="gender">
-      <DasType>enum(&apos;male&apos;, &apos;female&apos;)|0e</DasType>
+    <column id="342" parent="336" name="image">
+      <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="343" parent="336" name="hashedRT">
+    <column id="343" parent="336" name="resume">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <index id="344" parent="336" name="PRIMARY">
+    <column id="344" parent="336" name="gender">
+      <DasType>enum(&apos;male&apos;, &apos;female&apos;)|0e</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <index id="345" parent="336" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="345" parent="336" name="IDX_817d1d427138772d47eca04885">
+    <index id="346" parent="336" name="IDX_817d1d427138772d47eca04885">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="346" parent="336" name="PRIMARY">
+    <key id="347" parent="336" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="347" parent="336" name="IDX_817d1d427138772d47eca04885">
+    <key id="348" parent="336" name="IDX_817d1d427138772d47eca04885">
       <UnderlyingIndexName>IDX_817d1d427138772d47eca04885</UnderlyingIndexName>
     </key>
   </database-model>

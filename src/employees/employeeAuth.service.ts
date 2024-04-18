@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
-export class EmployeesService {
+export class EmployeeAuthService {
 
   constructor(@InjectRepository(Employee) private employeeRepository: Repository<Employee>,
               private jwtService: JwtService) {
@@ -19,7 +19,6 @@ export class EmployeesService {
 
   async register(createEmployeeDto: CreateEmployeeDto) {
     const hashedPassword = await this.hashData(createEmployeeDto.password);
-    // return this.employeeRepository.save(createEmployeeDto);
     const employee = this.employeeRepository.create({
       name: createEmployeeDto.name,
       email: createEmployeeDto.email,
@@ -54,12 +53,13 @@ export class EmployeesService {
   }
 
   async logout(employee_id: number) {
-    return await this.employeeRepository.update(
+     await this.employeeRepository.update(
       {
         id: employee_id,
       },
       { hashedRT: null },
     );
+     return {'message':'refresh token deleted successfully'}
   }
 
 

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { EmployeesService } from './employees.service';
-import { EmployeesController } from './employees.controller';
+import { EmployeeAuthService } from './employeeAuth.service';
+import { EmployeeAuthController } from './employeeAuth.controller';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Employee } from "./entities/employee.entity";
 import { JwtModule } from '@nestjs/jwt';
@@ -14,7 +14,7 @@ import { RtStrategy } from './strategies/rt-strategy';
   imports:[ TypeOrmModule.forFeature([Employee]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
-  controllers: [EmployeesController ,],
-  providers: [EmployeesService, AtStrategy, RtStrategy],
+  controllers: [EmployeeAuthController ,],
+  providers: [EmployeeAuthService, AtStrategy, RtStrategy],
 })
-export class EmployeesModule {}
+export class EmployeeAuthModule {}

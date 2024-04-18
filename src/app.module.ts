@@ -1,13 +1,13 @@
 import { Module, ValidationPipe } from "@nestjs/common";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EmployeesModule } from './employees/employees.module';
+import { EmployeeAuthModule } from './employees/employeeAuth.module';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import config from "../ormconfig";
 import { APP_PIPE } from "@nestjs/core";
 
 @Module({
-  imports: [EmployeesModule, TypeOrmModule.forRoot(config)],
+  imports: [EmployeeAuthModule, TypeOrmModule.forRoot(config)],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_PIPE,

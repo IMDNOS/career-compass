@@ -8,6 +8,7 @@ export declare class Employee {
     email: string;
     hashed_password: string;
     hashedRT: string | null;
+    image: string;
     resume: string;
     gender: Gender;
 }

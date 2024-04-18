@@ -42,6 +42,10 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
+], Employee.prototype, "image", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
 ], Employee.prototype, "resume", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "enum", enum: Gender, }),

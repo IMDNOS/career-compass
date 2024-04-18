@@ -23,6 +23,9 @@ export class Employee {
   hashedRT:string | null;
 
   @Column()
+  image:string;
+
+  @Column()
   resume:string;
 
   @Column({ type: "enum", enum: Gender, })
@@ -34,7 +37,6 @@ export class Employee {
 
   // @ManyToOne(() => SubCategory, subCategory => subCategory.employees)
   // subCategory: SubCategory;
-
 
 
 }
