@@ -16,6 +16,8 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const at_strategy_1 = require("./strategies/at-strategy");
 const rt_strategy_1 = require("./strategies/rt-strategy");
+const employees_controller_1 = require("./employees.controller");
+const employees_service_1 = require("./employees.service");
 let EmployeeAuthModule = class EmployeeAuthModule {
 };
 exports.EmployeeAuthModule = EmployeeAuthModule;
@@ -24,8 +26,8 @@ exports.EmployeeAuthModule = EmployeeAuthModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([employee_entity_1.Employee]),
             jwt_1.JwtModule.register({}),
             config_1.ConfigModule.forRoot({ isGlobal: true })],
-        controllers: [employeeAuth_controller_1.EmployeeAuthController,],
-        providers: [employeeAuth_service_1.EmployeeAuthService, at_strategy_1.AtStrategy, rt_strategy_1.RtStrategy],
+        controllers: [employeeAuth_controller_1.EmployeeAuthController, employees_controller_1.EmployeesController,],
+        providers: [employeeAuth_service_1.EmployeeAuthService, at_strategy_1.AtStrategy, rt_strategy_1.RtStrategy, employees_service_1.EmployeesService],
     })
 ], EmployeeAuthModule);
 //# sourceMappingURL=employeeAuth.module.js.map

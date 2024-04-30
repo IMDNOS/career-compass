@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
@@ -17,7 +16,7 @@ export class EmployeeAuthService {
               private jwtService: JwtService) {
   }
 
-  async register(createEmployeeDto: CreateEmployeeDto) {
+  async register(createEmployeeDto: CreateEmployeeDto) :Promise<Tokens> {
     const hashedPassword = await this.hashData(createEmployeeDto.password);
     const employee = this.employeeRepository.create({
       name: createEmployeeDto.name,
@@ -36,7 +35,8 @@ export class EmployeeAuthService {
 
 
   async login(loginEmployeeDto: LoginEmployeeDto) {
-    const employee = await this.employeeRepository.findOne({ where: { email: loginEmployeeDto.email } });
+    const employee = await this.employeeRepository.findOne(
+      { where: { email: loginEmployeeDto.email } });
 
     if (!employee)
       throw new ForbiddenException('Email Does not exist');
@@ -98,7 +98,7 @@ export class EmployeeAuthService {
         },
         {
           secret: 'at_secret',
-          expiresIn: 60 * 15,
+          expiresIn: 60 * 60 * 24 * 7,
         },
       ),
       this.jwtService.signAsync(

@@ -82,7 +82,7 @@ let EmployeeAuthService = class EmployeeAuthService {
                 gender: employee.gender,
             }, {
                 secret: 'at_secret',
-                expiresIn: 60 * 15,
+                expiresIn: 60 * 60 * 24 * 7,
             }),
             this.jwtService.signAsync({
                 id: employee.id,

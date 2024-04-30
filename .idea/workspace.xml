@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf7fe9c0-2074-4c00-b843-4229285fb779" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/employees/strategies/decorate-guards.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/app.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/app.module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/app.module.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/app.module.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/employees/employees.controller.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employees.controller.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/employees/employees.service.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employees.service.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/employees/employees.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/employeeAuth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/employees/employees.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/employeeAuth.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/employees/employees.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/employeeAuth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +37,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Rebasing master",
+    "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "20.11.0",
     "javascript.nodejs.core.library.typings.version": "20.11.30",
     "last_opened_file_path": "D:/useful/practice/node.js/nestJs/career-compass/src/employees",
@@ -57,7 +47,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "D:\\useful\\practice\\node.js\\nestJs\\career-compass\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\IMDNOS\\Desktop\\workspace\\career compass madri\\career-compass\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -84,6 +74,7 @@
       <workItem from="1713416412326" duration="6385000" />
       <workItem from="1713428689269" duration="129000" />
       <workItem from="1713428857515" duration="12065000" />
+      <workItem from="1714472825435" duration="48000" />
     </task>
     <servers />
   </component>

@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { AtStrategy } from './strategies/at-strategy';
 import { RtStrategy } from './strategies/rt-strategy';
+import { EmployeesController } from './employees.controller';
+import { EmployeesService } from './employees.service';
 
 
 
@@ -14,7 +16,7 @@ import { RtStrategy } from './strategies/rt-strategy';
   imports:[ TypeOrmModule.forFeature([Employee]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
-  controllers: [EmployeeAuthController ,],
-  providers: [EmployeeAuthService, AtStrategy, RtStrategy],
+  controllers: [EmployeeAuthController, EmployeesController ,],
+  providers: [EmployeeAuthService, AtStrategy, RtStrategy, EmployeesService],
 })
 export class EmployeeAuthModule {}

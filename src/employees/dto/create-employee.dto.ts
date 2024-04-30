@@ -6,8 +6,11 @@ export class CreateEmployeeDto {
   name: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
+  @IsNotEmpty()
+  phone: string;
   @IsNotEmpty()
   password: string;
 

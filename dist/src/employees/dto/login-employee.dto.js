@@ -15,6 +15,7 @@ class LoginEmployeeDto {
 }
 exports.LoginEmployeeDto = LoginEmployeeDto;
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], LoginEmployeeDto.prototype, "email", void 0);

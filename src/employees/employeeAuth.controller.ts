@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { EmployeeAuthService } from './employeeAuth.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AtGuard } from './strategies/decorate-guards';
+import { Tokens } from './types/tokens.type';
 
 
 @Controller('employeeAuth')
@@ -14,7 +14,7 @@ export class EmployeeAuthController {
   }
 
   @Post('register')
-  register(@Body() createEmployeeDto: CreateEmployeeDto) {
+  register(@Body() createEmployeeDto: CreateEmployeeDto): Promise<Tokens> {
     return this.employeesService.register(createEmployeeDto);
   }
 

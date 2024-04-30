@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Employee = exports.Gender = void 0;
 const typeorm_1 = require("typeorm");
+const category_entity_1 = require("../../categories/entities/category.entity");
+const sub_category_entity_1 = require("../../sub-categories/entities/sub-category.entity");
 var Gender;
 (function (Gender) {
     Gender["Male"] = "male";
@@ -32,6 +34,10 @@ __decorate([
     __metadata("design:type", String)
 ], Employee.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ unique: true }),
+    __metadata("design:type", String)
+], Employee.prototype, "phone", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Employee.prototype, "hashed_password", void 0);
@@ -48,9 +54,23 @@ __decorate([
     __metadata("design:type", String)
 ], Employee.prototype, "resume", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "enum", enum: Gender, }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: Gender }),
     __metadata("design:type", String)
 ], Employee.prototype, "gender", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => category_entity_1.Category, category => category.employees),
+    (0, typeorm_1.JoinTable)({ name: 'employee_category_id' }),
+    __metadata("design:type", category_entity_1.Category)
+], Employee.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'sub_category_id' }),
+    __metadata("design:type", Number)
+], Employee.prototype, "subCategoryId", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => sub_category_entity_1.SubCategory, subCategory => subCategory.employees),
+    (0, typeorm_1.JoinColumn)({ name: 'sub_category_id' }),
+    __metadata("design:type", sub_category_entity_1.SubCategory)
+], Employee.prototype, "subCategory", void 0);
 exports.Employee = Employee = __decorate([
     (0, typeorm_1.Entity)()
 ], Employee);

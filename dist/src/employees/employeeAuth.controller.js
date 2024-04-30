@@ -44,7 +44,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_employee_dto_1.CreateEmployeeDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], EmployeeAuthController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('login'),
