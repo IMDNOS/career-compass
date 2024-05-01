@@ -6,6 +6,34 @@
   <component name="ChangeListManager">
     <list default="true" id="cf7fe9c0-2074-4c00-b843-4229285fb779" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.controller.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.controller.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.module.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/companyAuth.service.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.service.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/companyAuth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/entities/company.entity.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/entities/company.entity.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/types/tokens.type.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/types/tokens.type.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/types/tokens.type.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/types/tokens.type.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,31 +61,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "javascript.nodejs.core.library.configured.version": "20.11.0",
-    "javascript.nodejs.core.library.typings.version": "20.11.30",
-    "last_opened_file_path": "D:/useful/practice/node.js/nestJs/career-compass/src/employees",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Users\\IMDNOS\\Desktop\\workspace\\career compass madri\\career-compass\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;imad&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.11.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.11.30&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/useful/practice/node.js/nestJs/career-compass/src/company/strategies&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\useful\\practice\\node.js\\nestJs\\career-compass\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company\strategies" />
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company" />
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company\dto" />
       <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\employees" />
     </key>
   </component>
@@ -75,6 +106,8 @@
       <workItem from="1713428689269" duration="129000" />
       <workItem from="1713428857515" duration="12065000" />
       <workItem from="1714472825435" duration="48000" />
+      <workItem from="1714504502796" duration="6817000" />
+      <workItem from="1714544268325" duration="8670000" />
     </task>
     <servers />
   </component>

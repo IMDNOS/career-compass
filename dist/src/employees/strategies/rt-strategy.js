@@ -14,11 +14,11 @@ const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-let RtStrategy = class RtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt-refresh') {
+let RtStrategy = class RtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'employee-jwt-refresh') {
     constructor(config) {
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: 'rt_secret',
+            secretOrKey: 'employee_rt_secret',
             passReqToCallback: true,
         });
     }

@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RtGuard = exports.AtGuard = void 0;
+exports.EmployeeRtGuard = exports.EmployeeAtGuard = void 0;
 const passport_1 = require("@nestjs/passport");
-class AtGuard extends (0, passport_1.AuthGuard)('jwt') {
+class EmployeeAtGuard extends (0, passport_1.AuthGuard)('employee-jwt') {
     constructor() {
         super();
     }
 }
-exports.AtGuard = AtGuard;
-class RtGuard extends (0, passport_1.AuthGuard)('jwt-refresh') {
+exports.EmployeeAtGuard = EmployeeAtGuard;
+class EmployeeRtGuard extends (0, passport_1.AuthGuard)('employee-jwt-refresh') {
     constructor() {
         super();
     }
 }
-exports.RtGuard = RtGuard;
+exports.EmployeeRtGuard = EmployeeRtGuard;
 //# sourceMappingURL=decorate-guards.js.map

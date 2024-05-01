@@ -10,13 +10,22 @@ exports.CompanyModule = void 0;
 const common_1 = require("@nestjs/common");
 const company_service_1 = require("./company.service");
 const company_controller_1 = require("./company.controller");
+const companyAuth_service_1 = require("./companyAuth.service");
+const companyAuth_controller_1 = require("./companyAuth.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const jwt_1 = require("@nestjs/jwt");
+const company_entity_1 = require("./entities/company.entity");
+const at_strategy_1 = require("./strategies/at-strategy");
+const rt_strategy_1 = require("./strategies/rt-strategy");
 let CompanyModule = class CompanyModule {
 };
 exports.CompanyModule = CompanyModule;
 exports.CompanyModule = CompanyModule = __decorate([
     (0, common_1.Module)({
-        controllers: [company_controller_1.CompanyController],
-        providers: [company_service_1.CompanyService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([company_entity_1.Company]),
+            jwt_1.JwtModule.register({})],
+        controllers: [company_controller_1.CompanyController, companyAuth_controller_1.CompanyAuthController],
+        providers: [company_service_1.CompanyService, companyAuth_service_1.CompanyAuthService, at_strategy_1.AtStrategy, rt_strategy_1.RtStrategy],
     })
 ], CompanyModule);
 //# sourceMappingURL=company.module.js.map

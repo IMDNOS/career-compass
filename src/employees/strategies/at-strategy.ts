@@ -11,11 +11,11 @@ type JwtPayload={
 }
 
 @Injectable()
-export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class AtStrategy extends PassportStrategy(Strategy, 'employee-jwt') {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'at_secret',
+      secretOrKey: 'employee_at_secret',
     });
   }
 
