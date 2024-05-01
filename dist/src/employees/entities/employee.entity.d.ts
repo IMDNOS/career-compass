@@ -14,6 +14,7 @@ export declare class Employee {
     image: string;
     resume: string;
     gender: Gender;
+    categoryId: number;
     category: Category;
     subCategoryId: number;
     subCategory: SubCategory;

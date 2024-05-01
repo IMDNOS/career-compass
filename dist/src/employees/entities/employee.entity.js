@@ -58,12 +58,16 @@ __decorate([
     __metadata("design:type", String)
 ], Employee.prototype, "gender", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ name: 'category_id', nullable: true }),
+    __metadata("design:type", Number)
+], Employee.prototype, "categoryId", void 0);
+__decorate([
     (0, typeorm_1.ManyToMany)(() => category_entity_1.Category, category => category.employees),
     (0, typeorm_1.JoinTable)({ name: 'employee_category_id' }),
     __metadata("design:type", category_entity_1.Category)
 ], Employee.prototype, "category", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'sub_category_id' }),
+    (0, typeorm_1.Column)({ name: 'sub_category_id', nullable: true }),
     __metadata("design:type", Number)
 ], Employee.prototype, "subCategoryId", void 0);
 __decorate([

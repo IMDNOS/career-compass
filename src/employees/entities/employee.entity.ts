@@ -38,16 +38,17 @@ export class Employee {
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
 
+  @Column({ name: 'category_id' ,nullable:true})
+  categoryId: number;
 
   @ManyToMany(() => Category, category => category.employees)
   @JoinTable({ name: 'employee_category_id' })
   category: Category;
 
-  @Column({ name: 'sub_category_id' })
+  @Column({ name: 'sub_category_id' ,nullable:true})
   subCategoryId: number;
 
   @ManyToOne(() => SubCategory, subCategory => subCategory.employees)
   @JoinColumn({ name: 'sub_category_id' })
   subCategory: SubCategory;
 }
-
