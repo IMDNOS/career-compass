@@ -1,9 +1,9 @@
-declare const AtGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
-export declare class AtGuard extends AtGuard_base {
+declare const EmployeeAtGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
+export declare class EmployeeAtGuard extends EmployeeAtGuard_base {
     constructor();
 }
-declare const RtGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
-export declare class RtGuard extends RtGuard_base {
+declare const EmployeeRtGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
+export declare class EmployeeRtGuard extends EmployeeRtGuard_base {
     constructor();
 }
 export {};

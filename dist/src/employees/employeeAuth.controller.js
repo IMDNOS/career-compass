@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const employeeAuth_service_1 = require("./employeeAuth.service");
 const create_employee_dto_1 = require("./dto/create-employee.dto");
 const login_employee_dto_1 = require("./dto/login-employee.dto");
-const passport_1 = require("@nestjs/passport");
 const decorate_guards_1 = require("./strategies/decorate-guards");
 let EmployeeAuthController = class EmployeeAuthController {
     constructor(employeesService) {
@@ -54,7 +53,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], EmployeeAuthController.prototype, "login", null);
 __decorate([
-    (0, common_1.UseGuards)(decorate_guards_1.AtGuard),
+    (0, common_1.UseGuards)(decorate_guards_1.EmployeeAtGuard),
     (0, common_1.Post)('logout'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -62,7 +61,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EmployeeAuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt-refresh')),
+    (0, common_1.UseGuards)(decorate_guards_1.EmployeeRtGuard),
     (0, common_1.Post)('refresh'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),

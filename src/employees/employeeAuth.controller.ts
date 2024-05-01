@@ -4,7 +4,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { AtGuard } from './strategies/decorate-guards';
+import { EmployeeAtGuard, EmployeeRtGuard } from './strategies/decorate-guards';
 import { Tokens } from './types/tokens.type';
 
 
@@ -23,14 +23,14 @@ export class EmployeeAuthController {
     return this.employeesService.login(loginEmployeeDto);
   }
 
-  @UseGuards(AtGuard)
+  @UseGuards(EmployeeAtGuard)
   @Post('logout')
   async logout(@Req() req: Request) {
     const employee = req.user;
     return this.employeesService.logout(employee['id']);
   }
 
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @UseGuards(EmployeeRtGuard)
   @Post('refresh')
   refreshTokens(@Req() req: Request) {
     const employee = req.user;

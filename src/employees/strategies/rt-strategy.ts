@@ -5,11 +5,11 @@ import {  Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class RtStrategy extends PassportStrategy(Strategy, 'employee-jwt-refresh') {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'rt_secret',
+      secretOrKey: 'employee_rt_secret',
       passReqToCallback: true,
     });
   }

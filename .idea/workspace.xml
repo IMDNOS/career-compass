@@ -5,7 +5,68 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf7fe9c0-2074-4c00-b843-4229285fb779" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/794e3652-a6fe-45b5-9a71-44b04926d561.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.controller.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.service.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.service.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/companyAuth.service.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/dto/login-company.dto.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/at-strategy.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/decorate-guards.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/strategies/rt-strategy.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/types/tokens.type.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/types/tokens.type.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/src/company/types/tokens.type.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/companyAuth.controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/companyAuth.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/dto/login-company.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/strategies/at-strategy.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/strategies/decorate-guards.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/strategies/rt-strategy.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/company/types/tokens.type.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.controller.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.controller.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.module.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/company.module.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/company.module.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/dto/create-company.dto.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/entities/company.entity.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/entities/company.entity.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/company/entities/company.entity.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.controller.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/employeeAuth.service.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/at-strategy.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/decorate-guards.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/employees/strategies/rt-strategy.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/dist/tsconfig.build.tsbuildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/company/company.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/company/company.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/company/company.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/company/company.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/company/dto/create-company.dto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/company/dto/create-company.dto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/company/entities/company.entity.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/company/entities/company.entity.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/employees/employeeAuth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/employeeAuth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/employees/employeeAuth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/employeeAuth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/employees/strategies/at-strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/strategies/at-strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/employees/strategies/decorate-guards.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/strategies/decorate-guards.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/employees/strategies/rt-strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/employees/strategies/rt-strategy.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,17 +98,17 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "Merging master",
     "javascript.nodejs.core.library.configured.version": "20.11.0",
     "javascript.nodejs.core.library.typings.version": "20.11.30",
-    "last_opened_file_path": "D:/useful/practice/node.js/nestJs/career-compass/src/employees",
+    "last_opened_file_path": "D:/useful/practice/node.js/nestJs/career-compass/src/company/strategies",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Users\\IMDNOS\\Desktop\\workspace\\career compass madri\\career-compass\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "D:\\useful\\practice\\node.js\\nestJs\\career-compass\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -58,6 +119,9 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company\strategies" />
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company" />
+      <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\company\dto" />
       <recent name="D:\useful\practice\node.js\nestJs\career-compass\src\employees" />
     </key>
   </component>
@@ -75,6 +139,8 @@
       <workItem from="1713428689269" duration="129000" />
       <workItem from="1713428857515" duration="12065000" />
       <workItem from="1714472825435" duration="48000" />
+      <workItem from="1714504502796" duration="6817000" />
+      <workItem from="1714544268325" duration="8670000" />
     </task>
     <servers />
   </component>
