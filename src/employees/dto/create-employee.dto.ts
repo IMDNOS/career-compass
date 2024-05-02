@@ -11,13 +11,9 @@ export class CreateEmployeeDto {
 
   @IsNotEmpty()
   phone: string;
+
   @IsNotEmpty()
   password: string;
-
-  hashRT: string | null;
-
-  // @IsNotEmpty()
-  resume: string;
 
   @IsEnum(Gender)
   gender: Gender;

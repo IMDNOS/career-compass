@@ -1,7 +1,7 @@
 
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Employee } from '../../employees/entities/employee.entity';
-import { Job } from '../../job/entities/job.entity';
+import { SubCategory } from '../../sub-categories/entities/sub-category.entity';
 
 
 @Entity()
@@ -9,13 +9,10 @@ export class Category {
    @PrimaryGeneratedColumn()
    id: number;
 
-   @Column({ unique: true })
+   @Column()
    name: string;
 
-   @ManyToMany(() => Employee, employee => employee.category)
-   employees: Employee[];
-
-   @OneToMany(() => Job, job => job.category)
-   jobs: Job[];
+   @OneToMany(() => SubCategory, subcategory => subcategory.category)
+   subCategories: SubCategory[];
 }
 

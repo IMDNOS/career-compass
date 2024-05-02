@@ -1,80 +1,19 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { LoginSuperAdminDto } from './dto/login-super-admin.dto';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 
 
 @Injectable()
 export class SuperAdminService {
-  constructor(@InjectRepository(Employee) private employeeRepository: Repository<Employee>,
-              private jwtService: JwtService){}
-
-  async login(loginsuperadmindto: LoginSuperAdminDto) {
-    const superAdmin = await this.employeeRepository.findOne(
-      { where: { email: loginsuperadmindto.email } });
-
-    if (!superAdmin)
-      throw new ForbiddenException('Email Does not exist');
-
-    const passwordMatches = await bcrypt.compare(loginsuperadmindto.password, superAdmin.hashed_password);
-
-    if (passwordMatches) {
-      const tokens = await this.getTokens(superAdmin);
-      await this.updateAccessToken(superAdmin.id, tokens.access_token);
-      return tokens;
-    }
-
-    throw new ForbiddenException('Wrong Password');
-  }
-
-
-  private async getTokens(superAdmin: Employee) {
-    const [at] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          id: superAdmin.id,
-          name: superAdmin.name,
-          email: superAdmin.email,
-        },
-        {
-          secret: 'super-admin',
-          expiresIn: 60 * 60 * 24 * 7,
-        },
-      ),
-    ]);
-    return {
-      access_token: at,
-    };
-  }
-
-  private async hashData(data: string) {
-    return bcrypt.hash(data, 10);
-  }
-  private async updateAccessToken(id: number, at: string) {
-    const hash = await this.hashData(at);
-
-    const newData = {
-      hashed_password: hash,
-    };
-
-    await this.employeeRepository.update({ id: id }, newData);
-  }
-
-
-  ///////////////////////////////////////////////////////////////////////////
-  // create(createSuperAdminDto: LoginSuperAdminDto) {
-  //   return 'This action adds a new superAdmin';
-  // }
-
+  constructor(@InjectRepository(Employee) private employeeRepository: Repository<Employee>){}
 
   async findAll() {
     return await this.employeeRepository.find({
       relations:{
         category:true,
-        subCategory:true
+        subcategory:true
       },
       select: ["id", "name", "email", "image", "resume", "gender" ]
     });
@@ -88,7 +27,7 @@ export class SuperAdminService {
       },
       relations:{
         category:true,
-        subCategory:true
+        subcategory:true
       },
       select: ["id", "name", "email", "image", "resume", "gender"]
     });
@@ -98,22 +37,25 @@ export class SuperAdminService {
     return user;
   }
 
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    const user = await this.employeeRepository.findOne({
+      where:{id}
+    })
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+     Object.assign(user, updateEmployeeDto);
 
+    return this.employeeRepository.save(user);
 
+  }
 
-
-
-
-
-
-
-  // update(id: number, updateSuperAdminDto: UpdateSuperAdminDto) {
-  //   return `This action updates a #${id} superAdmin`;
-  // }
-  //
-  // remove(id: number) {
-  //   return `This action removes a #${id} superAdmin`;
-  // }
-
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return this.employeeRepository.remove(user);
+  }
 
 }

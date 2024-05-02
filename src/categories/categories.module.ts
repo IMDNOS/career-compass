@@ -8,7 +8,6 @@ import { Category } from './entities/category.entity';
 
 @Module({
   imports:[ TypeOrmModule.forFeature([Category]),
-    JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
   controllers: [CategoriesController],
   providers: [CategoriesService],

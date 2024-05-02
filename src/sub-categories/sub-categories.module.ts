@@ -5,10 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { SubCategory } from './entities/sub-category.entity';
+import { CategoriesModule } from '../categories/categories.module';
+import { Category } from '../categories/entities/category.entity';
 @Module({
-  imports:[ TypeOrmModule.forFeature([SubCategory]),
-    JwtModule.register({}),
-    ConfigModule.forRoot({ isGlobal: true })],
+  imports:[ TypeOrmModule.forFeature([SubCategory,Category])],
   controllers: [SubCategoriesController],
   providers: [SubCategoriesService],
 })
