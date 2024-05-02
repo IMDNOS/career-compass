@@ -13,6 +13,7 @@ export class CategoriesService {
     @InjectRepository(Category) public categoryRepository: Repository<Category>,
     @InjectRepository(SubCategory) public subcategoryRepository: Repository<SubCategory>,
   ) {
+
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
@@ -66,7 +67,6 @@ export class CategoriesService {
     return { message: 'Category removed successfully' };
   }
 
-
   //get all subcategories of a category
 
   async getSubcategoriesOfCategory(categoryId: number) {
@@ -83,6 +83,5 @@ export class CategoriesService {
     }));
 
   }
-
 
 }
