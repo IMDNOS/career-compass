@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateCategoryDto {
+export class CreateJobTypeDto {
   @IsNotEmpty()
-  name: string;
+  name:string
 }

@@ -1,8 +1,5 @@
-
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Employee } from '../../employees/entities/employee.entity';
-import { Job } from '../../job/entities/job.entity';
-
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity()
 export class SubCategory {
@@ -12,10 +9,7 @@ export class SubCategory {
   @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => Employee, employee => employee.subCategory)
-  employees: Employee[];
-
-  @OneToMany(() => Job, job => job.subCategory)
-  jobs: Job[];
+  @ManyToOne(() => Category, category => category.subCategories)
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
 }
-

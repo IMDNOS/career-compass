@@ -22,6 +22,7 @@ export class EmployeeAuthService {
       name: createEmployeeDto.name,
       email: createEmployeeDto.email,
       hashed_password: hashedPassword,
+      phone:createEmployeeDto.phone,
       gender: createEmployeeDto.gender,
     });
 

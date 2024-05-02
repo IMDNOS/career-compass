@@ -5,12 +5,11 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 type JwtPayload={
   id: string,
-  name: string,
   email: string,
 }
 
 @Injectable()
-export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class AtStrategySuperAdmin extends PassportStrategy(Strategy, 'super-admin-jwt') {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
