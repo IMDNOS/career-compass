@@ -1,12 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { LoginSuperAdminDto } from './dto/login-super-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Employee } from '../employees/entities/employee.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
-import { Tokens } from '../employees/types/tokens.type';
 import { SuperAdmin } from './entities/super-admin.entity';
 
 

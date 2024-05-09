@@ -1,5 +1,4 @@
 import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { UpdateSuperAdminDto } from './dto/update-super-admin.dto';
 import { SuperAdminService } from './super-admin.service';
 import { AtGuardSuperAdmin } from './strategies/decorate-guards';
 import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';

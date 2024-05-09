@@ -19,12 +19,12 @@ export class SubCategoriesService {
     const id_category = createSubCategoryDto.categoryId;
 
      const category = await this.categoryRepository.findOne({ where: { id: +id_category } });
-    if (!category) {
-      return {
-        statusCode: 400,
-        message: 'Bad Request: No such category found',
-      };
-    }
+        if (!category) {
+          return {
+            statusCode: 400,
+            message: 'Bad Request: No such category found',
+          };
+        }
 
     const subcategory = this.subCategoryRepository.create({
       name: createSubCategoryDto.name,
@@ -35,9 +35,6 @@ export class SubCategoriesService {
   }
 
 
-  // async findAll() {
-  //   return await this.subCategoryRepository.find();
-  // }
   async findAll() {
     return await this.subCategoryRepository.find({ relations: ['category'] });
   }

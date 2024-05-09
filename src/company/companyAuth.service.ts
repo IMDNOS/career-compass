@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
 import { LoginCompanyDto } from './dto/login-company.dto';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,7 +23,7 @@ export class CompanyAuthService {
       location: createCompanyDto.location,
       description: createCompanyDto.description,
     });
-    await this.companyRepository.save(company);
+      await this.companyRepository.save(company);
 
     const tokens = await this.getTokens(company);
     await this.updateRefreshToken(company.id, tokens.refresh_token);
