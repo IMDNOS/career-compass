@@ -1,5 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+export enum State {
+  Aleppo = 'Aleppo',
+  Damascus = 'Damascus',
+  Homs = 'Homs',
+  Hama = 'Hama',
+  Latakia = 'Latakia',
+  Tartous = 'Tartous',
+  DeirEzzor = 'Deir Ezzor',
+  Raqqa = 'Raqqa',
+  Idlib = 'Idlib',
+  Daraa = 'Daraa',
+  AlHasakah = 'Al-Hasakah',
+  Suwayda = 'Suwayda',
+  AlQuneitra = 'AlQuneitra '
+}
+
+
 @Entity({name:'company'})
 export class Company {
 
@@ -20,6 +37,13 @@ export class Company {
 
   @Column()
   location: string;
+
+  // @Column({ type: 'enum', enum: State })
+  // state: State;
+  //
+  // @Column()
+  // city:string
+
 
   @Column()
   description: string;
