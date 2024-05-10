@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types/tokens.type';
 import { JwtService } from '@nestjs/jwt';
+import { PeekEmployeeDto } from './dto/peek-employee.dto';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 
 @Injectable()
@@ -16,13 +18,24 @@ export class EmployeeAuthService {
               private jwtService: JwtService) {
   }
 
-  async register(createEmployeeDto: CreateEmployeeDto) :Promise<Tokens> {
+
+  async peek(peekEmployeeDto: PeekEmployeeDto) {
+    const employee = await this.employeeRepository.findOne({ where: { email: peekEmployeeDto.email } });
+
+    if (!employee) {
+      return { message: 'Email is available' };
+    } else {
+      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async register(createEmployeeDto: CreateEmployeeDto): Promise<Tokens> {
     const hashedPassword = await this.hashData(createEmployeeDto.password);
     const employee = this.employeeRepository.create({
       name: createEmployeeDto.name,
       email: createEmployeeDto.email,
       hashed_password: hashedPassword,
-      phone:createEmployeeDto.phone,
+      phone: createEmployeeDto.phone,
       gender: createEmployeeDto.gender,
     });
 
@@ -54,13 +67,13 @@ export class EmployeeAuthService {
   }
 
   async logout(employee_id: number) {
-     await this.employeeRepository.update(
+    await this.employeeRepository.update(
       {
         id: employee_id,
       },
       { hashedRT: null },
     );
-     return {'message':'refresh token deleted successfully'}
+    return { 'message': 'refresh token deleted successfully' };
   }
 
 

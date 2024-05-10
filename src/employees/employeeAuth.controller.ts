@@ -6,12 +6,19 @@ import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { EmployeeAtGuard, EmployeeRtGuard } from './strategies/decorate-guards';
 import { Tokens } from './types/tokens.type';
+import { PeekEmployeeDto } from './dto/peek-employee.dto';
 
 
 @Controller('employeeAuth')
 export class EmployeeAuthController {
   constructor(private readonly employeesService: EmployeeAuthService) {
   }
+
+  @Post('peek')
+  peek(@Body() peekEmployeeDto:PeekEmployeeDto){
+    return this.employeesService.peek(peekEmployeeDto)
+  }
+
 
   @Post('register')
   register(@Body() createEmployeeDto: CreateEmployeeDto): Promise<Tokens> {
