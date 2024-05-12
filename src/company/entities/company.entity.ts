@@ -32,7 +32,7 @@ export class Company {
   @Column()
   hashed_password: string;
 
-  @Column()
+  @Column({nullable:true})
   hashedRT: string;
 
   @Column()
@@ -48,7 +48,7 @@ export class Company {
   @Column()
   description: string;
 
-  @Column()
+  @Column({nullable:true})
   logo: string;
 
   @Column({default:false})
