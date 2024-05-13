@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { EmployeeAuthService } from './employeeAuth.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { Request } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import { EmployeeAtGuard, EmployeeRtGuard } from './strategies/decorate-guards';
 import { Tokens } from './types/tokens.type';
 import { PeekEmployeeDto } from './dto/peek-employee.dto';

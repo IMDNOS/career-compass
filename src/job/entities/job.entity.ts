@@ -47,7 +47,6 @@ export class Job {
 
 
   // many to many with subcategory
-
   @ManyToMany(() => SubCategory)
   @JoinTable({name:'job_subcategories'})
   subCategories: SubCategory[];

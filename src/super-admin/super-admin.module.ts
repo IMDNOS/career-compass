@@ -3,7 +3,6 @@ import { SuperAdminAuthService } from './super-adminAuth.service';
 import { SuperAdminAuthController } from './super-adminAuth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Employee } from '../employees/entities/employee.entity';
-import { ConfigModule } from '@nestjs/config';
 import { AtStrategySuperAdmin } from './strategies/at-strategy-superAdmin';
 import { JwtModule } from '@nestjs/jwt';
 import { SuperAdminController } from './super-admin.controller';

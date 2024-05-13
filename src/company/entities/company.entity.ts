@@ -28,22 +28,21 @@ export class Company {
 
   @Column({unique:true})
   email: string;
+  @Column({unique:true})
+  phone: number;
 
   @Column()
   hashed_password: string;
 
-  @Column()
-  hashedRT: string;
+  @Column({nullable:true})
+  hashedRT: string | null;
+
+
+  @Column({ type: 'enum', enum: State })
+  state: State;
 
   @Column()
-  location: string;
-
-  // @Column({ type: 'enum', enum: State })
-  // state: State;
-  //
-  // @Column()
-  // city:string
-
+  address:string
 
   @Column()
   description: string;

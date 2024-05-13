@@ -4,7 +4,6 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { CompanyAtGuard } from '../company/strategies/decorate-guards';
 import { Request } from 'express';
-import { Company } from '../company/entities/company.entity';
 
 @Controller('job')
 export class JobController {
@@ -14,21 +13,24 @@ export class JobController {
   @Post()
   create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
     const user = request.user;
-    const companyId=user['id']
-
-return this.jobService.create(createJobDto,companyId)
-
-
+    const companyId=user['id'];
+    return this.jobService.create(createJobDto,companyId)
   }
 
+  @UseGuards(CompanyAtGuard)
   @Get()
-  findAll() {
-    return this.jobService.findAll();
+  findAll(@Req() request: Request) {
+    const user = request.user;
+    const companyId=user['id']
+    return this.jobService.findAll(companyId);
   }
 
+  @UseGuards(CompanyAtGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.jobService.findOne(+id);
+  findOne(@Param('id') id: string ,@Req() request: Request) {
+    const user = request.user;
+    const companyId=user['id']
+    return this.jobService.findOne(+id,companyId);
   }
 
   @Patch(':id')

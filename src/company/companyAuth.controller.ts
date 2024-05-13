@@ -4,11 +4,17 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { LoginCompanyDto } from './dto/login-company.dto';
 import { Request } from 'express';
 import { CompanyAtGuard, CompanyRtGuard } from './strategies/decorate-guards';
+import { PeekCompanyDto } from './dto/peek-company.dto';
 
 
 @Controller('companyAuth')
 export class CompanyAuthController {
   constructor(private readonly companyAuthService: CompanyAuthService) {
+  }
+
+  @Post('peek')
+  peek(@Body() peekCompanyDto:PeekCompanyDto){
+    return this.companyAuthService.peek(peekCompanyDto)
   }
 
   @Post('register')
