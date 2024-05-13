@@ -47,7 +47,7 @@ export class Company {
   @Column()
   description: string;
 
-  @Column()
+  @Column({nullable:true})
   logo: string;
 
   @Column({default:false})
