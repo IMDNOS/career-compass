@@ -9,9 +9,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { Company } from './entities/company.entity';
 import { AtStrategy } from './strategies/at-strategy';
 import { RtStrategy } from './strategies/rt-strategy';
+import { Job } from '../job/entities/job.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Company]),
+  imports:[TypeOrmModule.forFeature([Company,Job]),
     JwtModule.register({})],
   controllers: [CompanyController,CompanyAuthController],
   providers: [CompanyService,CompanyAuthService,AtStrategy,RtStrategy],

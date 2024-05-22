@@ -9,37 +9,33 @@ import { Request } from 'express';
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
-  @UseGuards(CompanyAtGuard)
-  @Post()
-  create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
-    const user = request.user;
-    const companyId=user['id'];
-    return this.jobService.create(createJobDto,companyId)
-  }
-
-  @UseGuards(CompanyAtGuard)
-  @Get()
-  findAll(@Req() request: Request) {
-    const user = request.user;
-    const companyId=user['id']
-    return this.jobService.findAll(companyId);
-  }
-
-  @UseGuards(CompanyAtGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string ,@Req() request: Request) {
-    const user = request.user;
-    const companyId=user['id']
-    return this.jobService.findOne(+id,companyId);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobService.update(+id, updateJobDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobService.remove(+id);
-  }
+//   @UseGuards(CompanyAtGuard)
+//   @Post()
+//   create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
+//     const user = request.user;
+//     const companyId=user['id'];
+//     return this.jobService.create(createJobDto,companyId)
+//   }
+//
+//
+//   @Get()
+//   findAll() {
+//     return this.jobService.findAll();
+//   }
+//
+//
+//   @Get(':id')
+//   findOne(@Param('id') id: string ) {
+//     return this.jobService.findOne(+id);
+//   }
+//
+//   @Patch(':id')
+//   update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
+//     return this.jobService.update(+id, updateJobDto);
+//   }
+//
+//   @Delete(':id')
+//   remove(@Param('id') id: string) {
+//     return this.jobService.remove(+id);
+//   }
 }

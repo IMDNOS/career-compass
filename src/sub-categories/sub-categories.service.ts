@@ -1,24 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
 import { UpdateSubCategoryDto } from './dto/update-sub-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/sub-category.entity';
-import { Category } from 'src/categories/entities/category.entity';
+import { Static ,Type } from 'src/statics/entities/static.entity';
+
 
 @Injectable()
 export class SubCategoriesService {
 
   constructor(
     @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
-    @InjectRepository(Category) private categoryRepository: Repository<Category>,
+    @InjectRepository(Static) private staticRepository: Repository<Static>
   ) {
   }
 
   async create(createSubCategoryDto: CreateSubCategoryDto) {
     const id_category = createSubCategoryDto.categoryId;
 
-     const category = await this.categoryRepository.findOne({ where: { id: +id_category } });
+     const category = await this.staticRepository.findOne({  where: {
+      id: +id_category,
+      type: Type.Category, // Ensure that the parent is of type "Category"
+    }, });
         if (!category) {
           return {
             statusCode: 400,
@@ -52,7 +56,7 @@ export class SubCategoriesService {
       };
     }
 
-    const category = await this.categoryRepository.findOne({ where: { id: +updateSubCategoryDto.categoryId } });
+    const category = await this.staticRepository.findOne({ where: { id: +updateSubCategoryDto.categoryId } });
     if (!category) {
       return {
         statusCode: 400,

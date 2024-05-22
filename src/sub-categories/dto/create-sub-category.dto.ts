@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { Category } from '../../categories/entities/category.entity';
+import { Static } from '../../statics/entities/static.entity';
 
 export class CreateSubCategoryDto {
 
@@ -7,5 +7,5 @@ export class CreateSubCategoryDto {
   name:string
 
   @IsNotEmpty()
-  categoryId:Category
+  categoryId:Static
 }

@@ -1,9 +1,8 @@
 
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn ,JoinTable} from 'typeorm';
-import { Category } from '../../categories/entities/category.entity';
 import { SubCategory } from '../../sub-categories/entities/sub-category.entity';
-import { Level } from '../../levels/entities/level.entity';
-import { JobType } from '../../job-types/entities/job-type.entity';
+import { Static } from '../../statics/entities/static.entity';
+
 
 
 export enum Gender {
@@ -41,21 +40,15 @@ export class Employee {
   gender: Gender;
 
 
-  @ManyToMany(() => Category)
-  @JoinTable({name:'employee_category'})
-  category: Category[];
+  @ManyToMany(() => Static)
+  @JoinTable({name:'employee_statics'})
+  static: Static[];
 
   @ManyToMany(() => SubCategory)
   @JoinTable({name:'employee_subcategory'})
   subcategory: SubCategory[];
 
-  @ManyToMany(() => Level)
-  @JoinTable({name:'employee_level'})
-  level: Level[];
 
-  @ManyToMany(() => JobType)
-  @JoinTable({name:'employee_jobtype'})
-  jobtype: JobType[];
 
 
 }

@@ -9,12 +9,12 @@ export class EmployeesController {
 
   constructor(private readonly employeesService: EmployeesService) {}
 
-  @UseGuards(EmployeeAtGuard)
-  @Post('update')
-  update(@Body() updateEmployeeDto: UpdateEmployeeDto, @Req() req: Request) {
-    const id = req.user['id'];
-
-
-    return this.employeesService.update(updateEmployeeDto, id);
-  }
+//   @UseGuards(EmployeeAtGuard)
+//   @Post('update')
+//   update(@Body() updateEmployeeDto: UpdateEmployeeDto, @Req() req: Request) {
+//     const id = req.user['id'];
+//
+//
+//     return this.employeesService.update(updateEmployeeDto, id);
+//   }
 }
