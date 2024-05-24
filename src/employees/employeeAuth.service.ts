@@ -7,8 +7,9 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types/tokens.type';
 import { JwtService } from '@nestjs/jwt';
-import { PeekEmployeeDto } from './dto/peek-employee.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ActivateEmployeeDto } from './dto/activate-employee.dto';
+import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
 
 
 @Injectable()
@@ -19,18 +20,17 @@ export class EmployeeAuthService {
   }
 
 
-  async peek(peekEmployeeDto: PeekEmployeeDto) {
-    const employee = await this.employeeRepository.findOne({ where: { email: peekEmployeeDto.email } });
+  async register(createEmployeeDto: CreateEmployeeDto) {
 
-    if (!employee) {
-      return { message: 'Email is available' };
-    } else {
+    const employeeCheck = await this.employeeRepository.findOne({ where: { email: createEmployeeDto.email } });
+
+    if (employeeCheck) {
       throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
     }
-  }
 
-  async register(createEmployeeDto: CreateEmployeeDto): Promise<Tokens> {
     const hashedPassword = await this.hashData(createEmployeeDto.password);
+
+
     const employee = this.employeeRepository.create({
       name: createEmployeeDto.name,
       email: createEmployeeDto.email,
@@ -41,10 +41,49 @@ export class EmployeeAuthService {
 
     await this.employeeRepository.save(employee);
 
-    const tokens = await this.getTokens(employee);
-    await this.updateRefreshToken(employee.id, tokens.refresh_token);
+    return this.requestActivationCode({ email: createEmployeeDto.email });
+  }
 
-    return tokens;
+  async requestActivationCode(requestActivationCodeDto: RequestActivationCodeDto) {
+    const employee = await this.employeeRepository.findOne({ where: { email: requestActivationCodeDto.email } });
+
+    if (employee) {
+      if (!employee.active) {
+        const newCode = this.generateRandomCode();
+        const newHash = this.hashData(newCode);
+
+        employee.hashedCode = await newHash;
+
+        await this.employeeRepository.update(employee.id, employee);
+
+        return newCode;
+      } else {
+        await this.getTokens(employee);
+      }
+    } else {
+      throw new HttpException('Email does not exists', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async activateAccount(activateEmployeeDto: ActivateEmployeeDto) {
+    const employee = await this.employeeRepository.findOne(
+      { where: { email: activateEmployeeDto.email } });
+
+    if (!employee)
+      throw new ForbiddenException('Email Does not exist');
+
+    const codeMatches = await bcrypt.compare(activateEmployeeDto.activationCode, employee.hashedCode);
+    employee.active = true;
+    await this.employeeRepository.update(employee.id, employee);
+
+    if (codeMatches) {
+      const tokens = await this.getTokens(employee);
+      await this.updateRefreshToken(employee.id, tokens.refresh_token);
+      return tokens;
+    }
+
+    throw new ForbiddenException('Wrong Code');
+
   }
 
 
@@ -102,6 +141,10 @@ export class EmployeeAuthService {
   }
 
   private async getTokens(employee: Employee): Promise<Tokens> {
+
+    if (!employee.active)
+      throw new HttpException('account is not activated', HttpStatus.UNAUTHORIZED);
+
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -146,5 +189,8 @@ export class EmployeeAuthService {
     await this.employeeRepository.update({ id: user_id }, newData);
   }
 
+  private generateRandomCode(): string {
+    return (Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000).toString();
+  }
 
 }

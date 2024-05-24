@@ -9,7 +9,7 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   email: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   phone: string;
 
   @IsNotEmpty()

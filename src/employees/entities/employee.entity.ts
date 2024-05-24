@@ -1,8 +1,6 @@
-
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn ,JoinTable} from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, JoinTable } from 'typeorm';
 import { SubCategory } from '../../sub-categories/entities/sub-category.entity';
 import { Static } from '../../statics/entities/static.entity';
-
 
 
 export enum Gender {
@@ -30,6 +28,12 @@ export class Employee {
   @Column()
   hashedRT: string | null;
 
+  @Column({ default: false })
+  active: boolean;
+
+  @Column()
+  hashedCode:string | null;
+
   @Column()
   image: string;
 
@@ -41,14 +45,12 @@ export class Employee {
 
 
   @ManyToMany(() => Static)
-  @JoinTable({name:'employee_statics'})
+  @JoinTable({ name: 'employee_statics' })
   static: Static[];
 
   @ManyToMany(() => SubCategory)
-  @JoinTable({name:'employee_subcategory'})
+  @JoinTable({ name: 'employee_subcategory' })
   subcategory: SubCategory[];
-
-
 
 
 }
