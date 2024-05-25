@@ -18,11 +18,11 @@ export class CreateEmployeeDto {
   @IsEnum(Gender)
   gender: Gender;
 
-  categoryId: number[] | null ;
-
-  subcategoryId: number[] | null ;
-
-  levelId: number[] | null ;
-
-  jobtypeId: number[] | null ;
+  // categoryId: number[] | null ;
+  //
+  // subcategoryId: number[] | null ;
+  //
+  // levelId: number[] | null ;
+  //
+  // jobtypeId: number[] | null ;
 }

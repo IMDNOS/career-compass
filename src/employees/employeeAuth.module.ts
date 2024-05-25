@@ -9,11 +9,13 @@ import { AtStrategy } from './strategies/at-strategy';
 import { RtStrategy } from './strategies/rt-strategy';
 import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
+import { Static } from '../statics/entities/static.entity';
+import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 
 
 
 @Module({
-  imports:[ TypeOrmModule.forFeature([Employee]),
+  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
   controllers: [EmployeeAuthController, EmployeesController ,],

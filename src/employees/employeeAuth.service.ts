@@ -37,6 +37,7 @@ export class EmployeeAuthService {
       hashed_password: hashedPassword,
       phone: createEmployeeDto.phone,
       gender: createEmployeeDto.gender,
+      // help me with the static
     });
 
     await this.employeeRepository.save(employee);
@@ -58,7 +59,7 @@ export class EmployeeAuthService {
 
         return newCode;
       } else {
-        await this.getTokens(employee);
+        return await this.getTokens(employee);
       }
     } else {
       throw new HttpException('Email does not exists', HttpStatus.BAD_REQUEST);
