@@ -37,7 +37,8 @@ export class EmployeeAuthService {
       hashed_password: hashedPassword,
       phone: createEmployeeDto.phone,
       gender: createEmployeeDto.gender,
-      // help me with the static
+      home_address: createEmployeeDto.home_address,
+      birthday_date: createEmployeeDto.birthday_date,
     });
 
     await this.employeeRepository.save(employee);

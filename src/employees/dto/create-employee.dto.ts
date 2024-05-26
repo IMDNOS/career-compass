@@ -1,5 +1,6 @@
-import { IsEmail, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsEnum, IsDate } from 'class-validator';
 import { Gender } from "../entities/employee.entity";
+import { Type } from 'class-transformer';
 
 export class CreateEmployeeDto {
   @IsNotEmpty()
@@ -18,6 +19,13 @@ export class CreateEmployeeDto {
   @IsEnum(Gender)
   gender: Gender;
 
+  @IsNotEmpty()
+  home_address: string;
+
+  @IsDate()
+  @Type(() => Date)
+  birthday_date: Date;
+
   // categoryId: number[] | null ;
   //
   // subcategoryId: number[] | null ;
@@ -25,4 +33,5 @@ export class CreateEmployeeDto {
   // levelId: number[] | null ;
   //
   // jobtypeId: number[] | null ;
+
 }

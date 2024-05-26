@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeAtGuard } from './strategies/decorate-guards';
 import { EmployeesService } from './employees.service';
-import { Body, Controller, Post, UseGuards, Req, Get, Put } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Req, Get, Put, Param } from '@nestjs/common';
 import { StaticDto, StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
 
 
@@ -10,6 +10,14 @@ import { StaticDto, StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
 export class EmployeesController {
 
   constructor(private readonly employeesService: EmployeesService) {
+  }
+
+
+  @UseGuards(EmployeeAtGuard)
+  @Get('get_info')
+  getInfo(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.getInfo(id);
   }
 
 
@@ -29,9 +37,10 @@ export class EmployeesController {
     const id = req.user['id'];
     return this.employeesService.setStatics(id, staticsDto);
   }
+
   @UseGuards(EmployeeAtGuard)
   @Get('get_statics')
-  getStatics( @Req() req: Request) {
+  getStatics(@Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.getStatics(id);
   }
@@ -46,7 +55,7 @@ export class EmployeesController {
 
   @UseGuards(EmployeeAtGuard)
   @Get('get_subcategories')
-  getSubcategories( @Req() req: Request) {
+  getSubcategories(@Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.getSubcategories(id);
   }

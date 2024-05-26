@@ -5,7 +5,7 @@ import { CreateEmployeeDto } from './create-employee.dto';
 
 
 export class StaticDto {
-  @IsNotEmpty()
+  // @IsNotEmpty()
   id: number;
 
   @IsNotEmpty()

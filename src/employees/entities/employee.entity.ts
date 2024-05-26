@@ -23,6 +23,12 @@ export class Employee {
   phone: string;
 
   @Column()
+  home_address:string
+
+  @Column({ type: 'date' })
+  birthday_date: Date;
+
+  @Column()
   hashed_password: string;
 
   @Column()

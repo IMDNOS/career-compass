@@ -2,9 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { StaticDto, StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
+import { StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
 import { Static } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 
@@ -19,6 +18,11 @@ export class EmployeesService {
     private readonly subCategoryRepository: Repository<SubCategory>,
   ) {
   }
+
+  async getInfo(employee_id:number){
+   return await this.employeeRepository.findOne({where:{id:employee_id}})
+  }
+
 
   async update(updateEmployeeDto: UpdateEmployeeDto, employeeId: number) {
     if (!updateEmployeeDto || Object.keys(updateEmployeeDto).length === 0) {
@@ -89,4 +93,9 @@ export class EmployeesService {
 
     return employee.subcategory;
   }
+
+  // async getAll(){
+  //   const employees = this.employeeRepository.
+  // }
+
 }
