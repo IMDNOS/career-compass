@@ -45,13 +45,13 @@ export class StaticsController {
      return this.staticsService.getSubcategoriesOfCategory(+id);
    }
 
-  //
-  // @UseGuards(AtGuardSuperAdmin)
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateStaticDto: UpdateStaticDto) {
-  //   return this.staticsService.update(+id, updateStaticDto);
-  // }
-  //
+
+  @UseGuards(AtGuardSuperAdmin)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateStaticDto: UpdateStaticDto) {
+    return this.staticsService.update(+id, updateStaticDto);
+  }
+
   @UseGuards(AtGuardSuperAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {

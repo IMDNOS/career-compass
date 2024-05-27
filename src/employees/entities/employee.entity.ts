@@ -31,19 +31,19 @@ export class Employee {
   @Column()
   hashed_password: string;
 
-  @Column()
+  @Column({nullable:true})
   hashedRT: string | null;
 
   @Column({ default: false })
   active: boolean;
 
-  @Column()
+  @Column({nullable:true})
   hashedCode:string | null;
 
-  @Column()
+  @Column({nullable:true})
   image: string;
 
-  @Column()
+  @Column({nullable:true})
   resume: string;
 
   @Column({ type: 'enum', enum: Gender })
