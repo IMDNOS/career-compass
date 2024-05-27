@@ -7,23 +7,14 @@ import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { Tokens } from './types/tokens.type';
 import { JwtService } from '@nestjs/jwt';
-import { PeekCompanyDto } from './dto/peek-company.dto';
+import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
+import { ActivateCompanyDto } from './dto/activate-company.dto';
+
 
 @Injectable()
 export class CompanyAuthService {
   constructor(@InjectRepository(Company) private companyRepository: Repository<Company>,
-              private jwtService: JwtService) {
-  }
-
-  async peek(peekCompanyDto: PeekCompanyDto) {
-    const company = await this.companyRepository.findOne({ where: { email: peekCompanyDto.email } });
-
-    if (!company) {
-      return { message: 'Email is available' };
-    } else {
-      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
-    }
-  }
+              private jwtService: JwtService) {}
 
 
   async register(createCompanyDto: CreateCompanyDto) {
@@ -33,18 +24,56 @@ export class CompanyAuthService {
       email: createCompanyDto.email,
       phone:createCompanyDto.phone,
       hashed_password: hashedPassword,
-      state: createCompanyDto.state,
       address:createCompanyDto.address,
       description: createCompanyDto.description
     });
       await this.companyRepository.save(company);
 
-    const tokens = await this.getTokens(company);
-    await this.updateRefreshToken(company.id, tokens.refresh_token);
-
-    return tokens;
+    return this.requestActivationCode({ email: createCompanyDto.email });
   }
 
+
+  async requestActivationCode(requestActivationCodeDto: RequestActivationCodeDto) {
+    const company = await this.companyRepository.findOne({ where: { email: requestActivationCodeDto.email } });
+
+    if (company) {
+      if (!company.active) {
+        const newCode = this.generateRandomCode();
+        const newHash = this.hashData(newCode);
+
+        company.hashedCode = await newHash;
+
+        await this.companyRepository.update(company.id, company);
+
+        return newCode;
+      } else {
+        return await this.getTokens(company);
+      }
+    } else {
+      throw new HttpException('Email does not exists', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async activateAccount(activateCompanyDto: ActivateCompanyDto) {
+    const company = await this.companyRepository.findOne(
+      { where: { email: activateCompanyDto.email } });
+
+    if (!company)
+      throw new ForbiddenException('Email Does not exist');
+
+    const codeMatches = await bcrypt.compare(activateCompanyDto.activationCode, company.hashedCode);
+    company.active = true;
+    await this.companyRepository.update(company.id, company);
+
+    if (codeMatches) {
+      const tokens = await this.getTokens(company);
+      await this.updateRefreshToken(company.id, tokens.refresh_token);
+      return tokens;
+    }
+
+    throw new ForbiddenException('Wrong Code');
+
+  }
 
   async login(loginCompanyDto: LoginCompanyDto) {
     const company = await this.companyRepository.findOne(
@@ -98,6 +127,10 @@ export class CompanyAuthService {
   }
 
   private async getTokens(company: Company): Promise<Tokens> {
+    if (!company.active)
+      throw new HttpException('account is not activated', HttpStatus.UNAUTHORIZED);
+
+
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -139,5 +172,8 @@ export class CompanyAuthService {
     await this.companyRepository.update({ id: user_id }, newData);
   }
 
+  private generateRandomCode(): string {
+    return (Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000).toString();
+  }
 
 }

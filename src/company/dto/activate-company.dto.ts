@@ -1,7 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-
-export class ActivateEmployeeDto {
+export class ActivateCompanyDto {
 
   @IsEmail()
   @IsNotEmpty()
