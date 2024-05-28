@@ -11,9 +11,8 @@ export class CompanyService {
 //   constructor(
 //     @InjectRepository(Company) private companyRepository: Repository<Company>,
 //     @InjectRepository(Job) private jobRepository: Repository<Job>     ) {}
-//   create(createCompanyDto: CreateCompanyDto) {
-//     return 'This action adds a new company';
-//   }
+
+
 //
 //   async findAll(companyID: number): Promise<Job[]> {
 //     return await this.jobRepository.find({

@@ -8,9 +8,6 @@ export enum Gender {
   Female = 'female'
 }
 
-
-
-
 @Entity()
 export class Job {
 
@@ -22,7 +19,6 @@ export class Job {
 
   @ManyToOne(() => Company)
   company: Company;
-
 
   @Column()
   description: string;
@@ -39,21 +35,15 @@ export class Job {
   @Column({ type: 'enum', enum: Gender  ,nullable:true})
   wanted_gender: Gender;
 
-
   @ManyToOne(() => Static)
   category: Static;
-
-
 
   @ManyToMany(() => SubCategory)
   @JoinTable({name:'job_subcategories'})
   subCategories: SubCategory[];
 
-
-
   @ManyToOne(() => Static)
   jobType: Static;
-
 
   @ManyToOne(() => Static)
   level: Static;

@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
-import { State } from '../entities/company.entity';
+// import { State } from '../entities/company.entity';
 
 export class CreateCompanyDto {
   @IsNotEmpty()
@@ -11,15 +11,15 @@ export class CreateCompanyDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  phone: number;
+  @IsString()
+  phone: string;
 
   @IsNotEmpty()
   @IsString()
   password: string;
 
-  @IsEnum(State)
-  state: State;
+  // @IsEnum(State)
+  // state: State;
 
   @IsString()
   address: string;

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class PeekCompanyDto{
+export class RequestActivationCodeDto {
   @IsNotEmpty()
   @IsEmail()
   email:string

@@ -1,20 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStaticDto } from './dto/create-static.dto';
 import { UpdateStaticDto } from './dto/update-static.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Static , Type} from './entities/static.entity';
-import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 
 @Injectable()
 export class StaticsService {
 
-  constructor(@InjectRepository(Static) private staticRepository: Repository<Static>,
-  @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>) {
-  }
+  constructor(@InjectRepository(Static) private staticRepository: Repository<Static>) {}
   
   async create(createStaticDto: CreateStaticDto) {
-    return await this.staticRepository.save(createStaticDto);
+    try {
+      return await this.staticRepository.save(createStaticDto);
+    }
+    catch {
+      throw new HttpException('Duplicate static name',HttpStatus.BAD_REQUEST)
+    }
   }
   
   // async findAllLevels() {
@@ -30,7 +32,7 @@ export class StaticsService {
   // }
   
 
-  async findAllStatics(): Promise<{ levels: Static[], jobTypes: Static[], categories: Static[] }> {
+  async findAllStatics() {
     const levels = await this.staticRepository.find({ where: { type: Type.Level } });
     const jobTypes = await this.staticRepository.find({ where: { type: Type.Job_type } });
     const categories = await this.staticRepository.find({ where: { type: Type.Category } });
@@ -39,23 +41,34 @@ export class StaticsService {
   }
 
   async findOne(id: number) {
-    return await this.staticRepository.findOne({
-      where:{id:id}
+    const Static = await this.staticRepository.findOne({where:{id:id}});
+
+    if (!Static) {
+      throw new HttpException(`Static with id ${id} not found`,HttpStatus.NOT_FOUND)
     }
-    );
+    return Static;
   }
-  //
-  // update(id: number, updateStaticDto: UpdateStaticDto) {
-  //   return `This action updates a #${id} static`;
-  // }
-  //
+
+  async update(id: number, updateStaticDto: UpdateStaticDto) {
+    const Static = await this.findOne(id);
+
+    Static.name=updateStaticDto.name;
+    Static.type=updateStaticDto.type;
+
+    try {
+       await this.staticRepository.save(Static);
+       return Static;
+    }
+    catch {
+      throw new HttpException('Duplicate subcategory name',HttpStatus.BAD_REQUEST)
+    }
+
+  }
+
    async remove(id: number) {
     const Static = await this.staticRepository.findOne({where:{id:id}});
     if (!Static) {
-      return {
-        statusCode: 404,
-        message: `Static with id ${id} not found`,
-      };
+      throw new HttpException(`Static with id ${id} not found`,HttpStatus.NOT_FOUND)
     }
 
     await this.staticRepository.remove(Static);
@@ -71,7 +84,7 @@ export class StaticsService {
     const category = await this.staticRepository.findOne({ where: { id: categoryId }, relations: ['subCategories'] });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new HttpException(`Category with id ${categoryId} not found`,HttpStatus.NOT_FOUND)
     }
 
     return category.subCategories.map(subcategory => ({
@@ -79,7 +92,6 @@ export class StaticsService {
       name: subcategory.name,
       categoryId: category.id,
     }));
-
   }
 
 }

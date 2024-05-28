@@ -8,27 +8,28 @@ import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 export class SuperAdminController {
   constructor(private readonly superAdminService: SuperAdminService) {}
 
-  // @Get()
-  // findAll() {
-  //   return this.superAdminService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.superAdminService.findAll();
+  }
 
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.superAdminService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.superAdminService.findOne(+id);
+  }
 
 // @UseGuards(AtGuardSuperAdmin)
 //   @Patch(':id')
 //   update(@Param('id') id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
 //     return this.superAdminService.update(+id, updateEmployeeDto);
 //   }
-//   @UseGuards(AtGuardSuperAdmin)
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.superAdminService.remove(+id);
-//   }
+  //
+  @UseGuards(AtGuardSuperAdmin)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.superAdminService.remove(+id);
+  }
 
 
 }

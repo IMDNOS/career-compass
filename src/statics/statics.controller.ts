@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { StaticsService } from './statics.service';
 import { CreateStaticDto } from './dto/create-static.dto';
 import { AtGuardSuperAdmin } from '../super-admin/strategies/decorate-guards';
+import { UpdateStaticDto } from './dto/update-static.dto';
 
 @Controller('statics')
 export class StaticsController {
@@ -44,13 +45,13 @@ export class StaticsController {
      return this.staticsService.getSubcategoriesOfCategory(+id);
    }
 
-  //
-  // @UseGuards(AtGuardSuperAdmin)
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateStaticDto: UpdateStaticDto) {
-  //   return this.staticsService.update(+id, updateStaticDto);
-  // }
-  //
+
+  @UseGuards(AtGuardSuperAdmin)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateStaticDto: UpdateStaticDto) {
+    return this.staticsService.update(+id, updateStaticDto);
+  }
+
   @UseGuards(AtGuardSuperAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
