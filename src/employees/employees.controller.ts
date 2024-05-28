@@ -32,8 +32,7 @@ export class EmployeesController {
 
   @UseGuards(EmployeeAtGuard)
   @Post('set_statics')
-  setStatics(@Body() staticsDto: StaticsDto, @Req() req: Request) {
-
+  setStatics(@Body() staticsDto: { name: string }[], @Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.setStatics(id, staticsDto);
   }
@@ -47,7 +46,7 @@ export class EmployeesController {
 
   @UseGuards(EmployeeAtGuard)
   @Post('set_subcategories')
-  setSubcategories(@Body() subcategoriesDto: SubcategoriesDto, @Req() req: Request) {
+  setSubcategories(@Body() subcategoriesDto: { name: string }[], @Req() req: Request) {
 
     const id = req.user['id'];
     return this.employeesService.setSubcategories(id, subcategoriesDto);

@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { Repository } from 'typeorm';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
-import { Static } from '../statics/entities/static.entity';
+import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 
 @Injectable()
@@ -20,7 +19,8 @@ export class EmployeesService {
   }
 
   async getInfo(employee_id:number){
-   return await this.employeeRepository.findOne({where:{id:employee_id}})
+   return await this.employeeRepository.findOne({where:{id:employee_id},
+   select:['name','email','phone','home_address','birthday_date','image','resume','gender']})
   }
 
 
@@ -34,68 +34,67 @@ export class EmployeesService {
     if (!employee) {
       return { message: 'Employee not found' };
     }
-
     updateEmployeeDto.email = employee.email;
-
     await this.employeeRepository.update(employee, updateEmployeeDto);
 
     employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
     });
-
     return employee;
   }
 
-  async setStatics(employeeId: number, staticsDto: StaticsDto) {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+  async setStatics(employeeId: number, staticsDto: { name: string }[]) {
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
     employee.static = [];
 
-    for (const staticDto of staticsDto.items) {
+    for (const staticDto of staticsDto) {
       const staticEntity = await this.staticRepository.findOne({ where: { name: staticDto.name } });
       if (staticEntity) {
         employee.static.push(staticEntity);
       }
     }
-
-
-    return await this.employeeRepository.save(employee);
+     await this.employeeRepository.save(employee);
+    return employee.static;
   }
+
+
 
   async getStatics(employeeId: number) {
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
 
+    if (!employee) {
+      throw new Error(`Employee with id ${employeeId} not found`);
+    }
 
-    return employee.static;
+    const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
+    const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
+    const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
 
+    return { levels, jobTypes, categories };
   }
 
 
-  async setSubcategories(employeeId: number, subcategoriesDto: SubcategoriesDto) {
+  async setSubcategories(employeeId: number, subcategoriesDto: { name: string }[]) {
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
     employee.subcategory = [];
 
-
-    for (const staticDto of subcategoriesDto.items) {
-      const subcategoryEntity = await this.subCategoryRepository.findOne({ where: { name: staticDto.name } });
+    for (const subCategoriesDto of subcategoriesDto) {
+      const subcategoryEntity = await this.subCategoryRepository.findOne({ where: { name: subCategoriesDto.name } });
       if (subcategoryEntity) {
         employee.subcategory.push(subcategoryEntity);
       }
     }
-
-    return this.employeeRepository.save(employee);
+     await this.employeeRepository.save(employee);
+    return employee.subcategory ;
   }
 
-  async getSubcategories(employeeId: number) {
+  async getSubcategories(employeeId: number){
     const employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
-      relations: ['subcategory'],
+      relations: ['subcategory']
     });
 
     return employee.subcategory;
   }
-
-  // async getAll(){
-  //   const employees = this.employeeRepository.
-  // }
 
 }

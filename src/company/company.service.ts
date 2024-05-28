@@ -13,14 +13,14 @@ export class CompanyService {
 //     @InjectRepository(Job) private jobRepository: Repository<Job>     ) {}
 
 
-//
-//   async findAll(companyID: number): Promise<Job[]> {
-//     return await this.jobRepository.find({
-//       where: { company: { id: companyID } }, // Filter by company ID,
-//       relations: ['category', 'subCategories', 'level', 'jobType'],
-//       select: ["id", "title", "company","description", "salary", "work_hours", "experience_years","wanted_gender"]
-//     });
-//   }
+
+  // async findAll(companyID: number): Promise<Job[]> {
+  //   return await this.jobRepository.find({
+  //     where: { company: { id: companyID } }, // Filter by company ID,
+  //     relations: ['category', 'subCategories', 'level', 'jobType'],
+  //     select: ["id", "title", "company","description", "salary", "work_hours", "experience_years","wanted_gender"]
+  //   });
+  // }
 //
 //   async findOne(id: number,companyID: number): Promise<Job[]> {
 //     return await this.jobRepository.find({
