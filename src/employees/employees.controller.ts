@@ -2,8 +2,8 @@ import { Request } from 'express';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeAtGuard } from './strategies/decorate-guards';
 import { EmployeesService } from './employees.service';
-import { Body, Controller, Post, UseGuards, Req, Get, Put, Param } from '@nestjs/common';
-import { StaticDto, StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
+import { Body, Controller, Post, UseGuards, Req, Get, Put } from '@nestjs/common';
+import { StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
 
 
 @Controller('employees')

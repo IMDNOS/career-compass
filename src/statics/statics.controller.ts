@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StaticsService } from './statics.service';
 import { CreateStaticDto } from './dto/create-static.dto';
-import { UpdateStaticDto } from './dto/update-static.dto';
 import { AtGuardSuperAdmin } from '../super-admin/strategies/decorate-guards';
 
 @Controller('statics')

@@ -1,10 +1,11 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+// import { IsEmail, IsNotEmpty } from 'class-validator';
+import { CreateSuperAdminDto } from './create-super-admin.dto';
 
-export class LoginSuperAdminDto {
+export class LoginSuperAdminDto extends CreateSuperAdminDto{
 
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-  @IsNotEmpty()
-  password: string;
+  // @IsNotEmpty()
+  // @IsEmail()
+  // email: string;
+  // @IsNotEmpty()
+  // password: string;
 }
