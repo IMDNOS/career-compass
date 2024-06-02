@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { Repository } from 'typeorm';
@@ -95,6 +95,47 @@ export class EmployeesService {
     });
 
     return employee.subcategory;
+  }
+
+
+  async saveImage(file: Express.Multer.File, employeeId: number) {
+    if (!file) {
+      throw new BadRequestException('File not provided');
+    }
+
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    employee.image = `${file.filename}`;
+
+    await this.employeeRepository.save(employee);
+
+    return { ...employee };
+
+  }
+
+  async saveFile(file: Express.Multer.File, employeeId: number) {
+    if (!file) {
+      throw new BadRequestException('File not provided');
+    }
+
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    employee.resume = `${file.filename}`;
+
+    await this.employeeRepository.save(employee);
+
+    return { ...employee };
+
   }
 
 }

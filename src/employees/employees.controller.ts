@@ -2,8 +2,21 @@ import { Request } from 'express';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeAtGuard } from './strategies/decorate-guards';
 import { EmployeesService } from './employees.service';
-import { Body, Controller, Post, UseGuards, Req, Get, Put } from '@nestjs/common';
-import { StaticsDto, SubcategoriesDto } from './dto/add-statics.dto';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Req,
+  Get,
+  Put,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { diskStorage } from 'multer';
+import { extname} from 'path';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('employees')
@@ -52,12 +65,45 @@ export class EmployeesController {
     return this.employeesService.setSubcategories(id, subcategoriesDto);
   }
 
-  @UseGuards(EmployeeAtGuard)
+
   @Get('get_subcategories')
   getSubcategories(@Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.getSubcategories(id);
   }
+
+  @UseGuards(EmployeeAtGuard)
+  @Post('upload-image')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploadsImages',
+      filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }))
+  uploadImage(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.saveImage(file, id);
+  }
+
+  @UseGuards(EmployeeAtGuard)
+  @Post('upload-file')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploadsFiles',
+      filename: (req, file, cb) => {
+        const randomName = Array(34).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }))
+  uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.saveFile(file, id);
+  }
+
 
 
 }
