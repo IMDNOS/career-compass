@@ -75,10 +75,12 @@ export class EmployeeAuthService {
       throw new ForbiddenException('Email Does not exist');
 
     const codeMatches = await bcrypt.compare(activateEmployeeDto.activationCode, employee.hashedCode);
-    employee.active = true;
-    await this.employeeRepository.update(employee.id, employee);
+
 
     if (codeMatches) {
+      employee.active = true;
+      await this.employeeRepository.update(employee.id, employee);
+
       const tokens = await this.getTokens(employee);
       await this.updateRefreshToken(employee.id, tokens.refresh_token);
       return tokens;
