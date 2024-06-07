@@ -11,10 +11,15 @@ import { CompanyModule } from './company/company.module';
 import { JobModule } from './job/job.module';
 import { StaticsModule } from './statics/statics.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { Static } from './statics/entities/static.entity';
+import { SubCategory } from './sub-categories/entities/sub-category.entity';
+import { SuperAdmin } from './super-admin/entities/super-admin.entity';
 
 
 @Module({
   imports: [ TypeOrmModule.forRoot(config),
+    TypeOrmModule.forFeature([Static,SubCategory,SuperAdmin])
+    ,
     ServeStaticModule.forRoot({
       rootPath: './uploadsImages',
       serveRoot:'/uploadsImages',
