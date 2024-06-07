@@ -39,6 +39,7 @@ export class EmployeeAuthService {
       gender: createEmployeeDto.gender,
       home_address: createEmployeeDto.home_address,
       birthday_date: createEmployeeDto.birthday_date,
+      description: createEmployeeDto.description,
     });
 
     await this.employeeRepository.save(employee);

@@ -15,6 +15,7 @@ export declare class Employee {
     hashedRT: string | null;
     active: boolean;
     hashedCode: string | null;
+    description: string | null;
     image: string;
     resume: string;
     gender: Gender;

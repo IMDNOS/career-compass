@@ -39,6 +39,7 @@ let EmployeeAuthService = class EmployeeAuthService {
             gender: createEmployeeDto.gender,
             home_address: createEmployeeDto.home_address,
             birthday_date: createEmployeeDto.birthday_date,
+            description: createEmployeeDto.description,
         });
         await this.employeeRepository.save(employee);
         return this.requestActivationCode({ email: createEmployeeDto.email });
@@ -66,9 +67,9 @@ let EmployeeAuthService = class EmployeeAuthService {
         if (!employee)
             throw new common_1.ForbiddenException('Email Does not exist');
         const codeMatches = await bcrypt.compare(activateEmployeeDto.activationCode, employee.hashedCode);
-        employee.active = true;
-        await this.employeeRepository.update(employee.id, employee);
         if (codeMatches) {
+            employee.active = true;
+            await this.employeeRepository.update(employee.id, employee);
             const tokens = await this.getTokens(employee);
             await this.updateRefreshToken(employee.id, tokens.refresh_token);
             return tokens;
