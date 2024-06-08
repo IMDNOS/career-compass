@@ -33,6 +33,11 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)
+], CreateJobDto.prototype, "categoryIds", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayNotEmpty)(),
+    __metadata("design:type", Array)
 ], CreateJobDto.prototype, "subCategoryIds", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),

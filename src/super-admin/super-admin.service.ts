@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { In, Repository } from 'typeorm';
-import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
+// import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 import { Static, Type } from 'src/statics/entities/static.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 

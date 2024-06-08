@@ -14,8 +14,7 @@ export declare class Job {
     work_hours: number;
     experience_years: number;
     wanted_gender: Gender;
-    category: Static;
+    active: boolean;
+    static: Static[];
     subCategories: SubCategory[];
-    jobType: Static;
-    level: Static;
 }

@@ -5,6 +5,7 @@ export declare class CreateJobDto {
     company: Company;
     typeId: number;
     levelId: number;
+    categoryIds: number[];
     subCategoryIds: number[];
     description: string | null;
     salary: number | null;

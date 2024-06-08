@@ -14,12 +14,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const job_entity_1 = require("./entities/job.entity");
 const company_entity_1 = require("../company/entities/company.entity");
 const sub_category_entity_1 = require("../sub-categories/entities/sub-category.entity");
+const static_entity_1 = require("../statics/entities/static.entity");
 let JobModule = class JobModule {
 };
 exports.JobModule = JobModule;
 exports.JobModule = JobModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([job_entity_1.Job, company_entity_1.Company, sub_category_entity_1.SubCategory])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([job_entity_1.Job, company_entity_1.Company, sub_category_entity_1.SubCategory, static_entity_1.Static])],
         controllers: [job_controller_1.JobController],
         providers: [job_service_1.JobService],
     })

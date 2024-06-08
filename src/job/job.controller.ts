@@ -9,13 +9,13 @@ import { Request } from 'express';
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
-//   @UseGuards(CompanyAtGuard)
-//   @Post()
-//   create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
-//     const user = request.user;
-//     const companyId=user['id'];
-//     return this.jobService.create(createJobDto,companyId)
-//   }
+  @UseGuards(CompanyAtGuard)
+  @Post()
+  create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
+    const user = request.user;
+    const companyId=user['id'];
+    return this.jobService.create(createJobDto,companyId)
+  }
 //
 //
 //   @Get()

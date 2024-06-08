@@ -55,22 +55,19 @@ __decorate([
     __metadata("design:type", String)
 ], Job.prototype, "wanted_gender", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => static_entity_1.Static),
-    __metadata("design:type", static_entity_1.Static)
-], Job.prototype, "category", void 0);
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Job.prototype, "active", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => static_entity_1.Static),
+    (0, typeorm_1.JoinTable)({ name: 'job_statics' }),
+    __metadata("design:type", Array)
+], Job.prototype, "static", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => sub_category_entity_1.SubCategory),
     (0, typeorm_1.JoinTable)({ name: 'job_subcategories' }),
     __metadata("design:type", Array)
 ], Job.prototype, "subCategories", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => static_entity_1.Static),
-    __metadata("design:type", static_entity_1.Static)
-], Job.prototype, "jobType", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => static_entity_1.Static),
-    __metadata("design:type", static_entity_1.Static)
-], Job.prototype, "level", void 0);
 exports.Job = Job = __decorate([
     (0, typeorm_1.Entity)()
 ], Job);

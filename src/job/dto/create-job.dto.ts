@@ -23,6 +23,10 @@ export class CreateJobDto {
 
   @IsArray()
   @ArrayNotEmpty()
+  categoryIds: number[];
+
+  @IsArray()
+  @ArrayNotEmpty()
   subCategoryIds: number[];
 
   @IsString()
@@ -44,4 +48,6 @@ export class CreateJobDto {
   @IsEnum(Gender)
   @IsOptional()
   wanted_gender: Gender | null;
+
+
 }

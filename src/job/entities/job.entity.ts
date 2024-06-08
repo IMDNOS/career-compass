@@ -35,17 +35,16 @@ export class Job {
   @Column({ type: 'enum', enum: Gender  ,nullable:true})
   wanted_gender: Gender;
 
-  @ManyToOne(() => Static)
-  category: Static;
+  @Column({default:false})
+  active: boolean;
+
+  @ManyToMany(() => Static)
+  @JoinTable({name:'job_statics'})
+  static : Static[];
 
   @ManyToMany(() => SubCategory)
   @JoinTable({name:'job_subcategories'})
   subCategories: SubCategory[];
 
-  @ManyToOne(() => Static)
-  jobType: Static;
-
-  @ManyToOne(() => Static)
-  level: Static;
 
 }

@@ -41,9 +41,6 @@ export class Company {
   @Column({nullable:true})
   hashedCode:string | null;
 
-  // @Column({ type: 'enum', enum: State })
-  // state: State;
-
   @Column()
   address:string
 
@@ -55,6 +52,7 @@ export class Company {
 
   @Column({default:false})
   premium: boolean;
+
   @Column({default:false})
   active: boolean;
 }
