@@ -1,4 +1,4 @@
-import { Gender } from "../entities/employee.entity";
+import { Gender } from '../entities/employee.entity';
 export declare class CreateEmployeeDto {
     name: string;
     email: string;
@@ -6,5 +6,6 @@ export declare class CreateEmployeeDto {
     password: string;
     gender: Gender;
     home_address: string;
+    description: string;
     birthday_date: Date;
 }

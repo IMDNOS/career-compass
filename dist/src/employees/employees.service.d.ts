@@ -36,6 +36,7 @@ export declare class EmployeesService {
         hashedRT: string;
         active: boolean;
         hashedCode: string;
+        description: string;
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;
@@ -53,6 +54,7 @@ export declare class EmployeesService {
         hashedRT: string;
         active: boolean;
         hashedCode: string;
+        description: string;
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;

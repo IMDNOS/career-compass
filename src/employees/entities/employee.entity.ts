@@ -41,6 +41,9 @@ export class Employee {
   hashedCode:string | null;
 
   @Column({nullable:true})
+  description:string | null;
+
+  @Column({nullable:true})
   image: string;
 
   @Column({nullable:true})

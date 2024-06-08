@@ -20,12 +20,16 @@ const company_module_1 = require("./company/company.module");
 const job_module_1 = require("./job/job.module");
 const statics_module_1 = require("./statics/statics.module");
 const serve_static_1 = require("@nestjs/serve-static");
+const static_entity_1 = require("./statics/entities/static.entity");
+const sub_category_entity_1 = require("./sub-categories/entities/sub-category.entity");
+const super_admin_entity_1 = require("./super-admin/entities/super-admin.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forRoot(ormconfig_1.default),
+            typeorm_1.TypeOrmModule.forFeature([static_entity_1.Static, sub_category_entity_1.SubCategory, super_admin_entity_1.SuperAdmin]),
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: './uploadsImages',
                 serveRoot: '/uploadsImages',

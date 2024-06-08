@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsEnum, IsDate } from 'class-validator';
-import { Gender } from "../entities/employee.entity";
+import { Gender } from '../entities/employee.entity';
 import { Type } from 'class-transformer';
 
 export class CreateEmployeeDto {
@@ -21,6 +21,8 @@ export class CreateEmployeeDto {
 
   @IsNotEmpty()
   home_address: string;
+
+  description: string;
 
   @IsDate()
   @Type(() => Date)
