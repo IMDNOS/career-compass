@@ -11,5 +11,6 @@ export declare class CreateJobDto {
     salary: number | null;
     work_hours: number | null;
     experience_years: number | null;
+    number_of_employees: number;
     wanted_gender: Gender | null;
 }

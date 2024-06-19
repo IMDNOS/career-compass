@@ -29,6 +29,9 @@ export class Job {
   @Column({nullable:true})
   work_hours: number;
 
+  @Column({nullable:true})
+  number_of_employees: number;
+
   @Column({ nullable: true, default: null })
   experience_years: number;
 

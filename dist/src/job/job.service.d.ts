@@ -10,6 +10,8 @@ export declare class JobService {
     private staticRepository;
     private subCategoryRepository;
     constructor(jobRepository: Repository<Job>, companyRepository: Repository<Company>, staticRepository: Repository<Static>, subCategoryRepository: Repository<SubCategory>);
-    getUniqueStaticEntities(categories1: Static[], subCategories: SubCategory[]): Static[];
     create(createJobDto: CreateJobDto, companyId: number): Promise<Job>;
+    findAll(): Promise<Job[]>;
+    findOne(id: number): Promise<Job[]>;
+    getUniqueStaticEntities(categories1: Static[], subCategories: SubCategory[]): Static[];
 }

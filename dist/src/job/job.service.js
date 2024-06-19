@@ -27,26 +27,13 @@ let JobService = class JobService {
         this.staticRepository = staticRepository;
         this.subCategoryRepository = subCategoryRepository;
     }
-    getUniqueStaticEntities(categories1, subCategories) {
-        const uniqueStaticMap = new Map();
-        categories1.forEach(category => uniqueStaticMap.set(category.id, category));
-        subCategories.forEach(subCategory => {
-            if (subCategory.category) {
-                uniqueStaticMap.set(subCategory.category.id, subCategory.category);
-            }
-        });
-        return Array.from(uniqueStaticMap.values());
-    }
     async create(createJobDto, companyId) {
-        const company = await this.companyRepository.findOne({
-            where: { id: companyId },
-            select: ["id", "company_name", "email", "address", "description", "logo", "premium"],
-        });
-        if (!company) {
-            throw new common_1.NotFoundException(`Company with ID ${companyId} not found`);
-        }
+        const company = await this.companyRepository.findOne({ where: { id: companyId },
+            select: ["id", "company_name", "email", "address", "description", "logo", "premium"] });
         const jobType = await this.staticRepository.findOne({ where: { id: createJobDto.typeId } });
+        console.log(jobType);
         const level = await this.staticRepository.findOne({ where: { id: createJobDto.levelId } });
+        console.log(level);
         if (!jobType || !level) {
             throw new common_1.NotFoundException(`Job type or level not found`);
         }
@@ -57,7 +44,7 @@ let JobService = class JobService {
             where: { id: (0, typeorm_2.In)(createJobDto.subCategoryIds) },
             relations: { category: true },
         });
-        const uniqueStatics = this.getUniqueStaticEntities(categories1, subCategories);
+        const uniqueCategories = this.getUniqueStaticEntities(categories1, subCategories);
         const job = this.jobRepository.create({
             company: company,
             description: createJobDto.description,
@@ -66,11 +53,35 @@ let JobService = class JobService {
             subCategories: subCategories,
             title: createJobDto.title,
             wanted_gender: createJobDto.wanted_gender,
+            number_of_employees: createJobDto.number_of_employees,
             work_hours: createJobDto.work_hours,
-            static: [level, jobType, ...uniqueStatics],
+            static: [level, jobType, ...uniqueCategories],
         });
         await this.jobRepository.save(job);
         return job;
+    }
+    async findAll() {
+        return this.jobRepository.find({ where: { active: true },
+            relations: ['static', 'subCategories'],
+            select: ["id", "title", "company", "description", "salary", "work_hours", "experience_years", "number_of_employees", "wanted_gender"]
+        });
+    }
+    async findOne(id) {
+        return await this.jobRepository.find({
+            where: { id: id, active: true },
+            relations: ['static', 'subCategories'],
+            select: ["id", "title", "company", "description", "salary", "work_hours", "experience_years", "number_of_employees", "wanted_gender"]
+        });
+    }
+    getUniqueStaticEntities(categories1, subCategories) {
+        const uniqueStaticMap = new Map();
+        categories1.forEach(category => uniqueStaticMap.set(category.id, category));
+        subCategories.forEach(subCategory => {
+            if (subCategory.category) {
+                uniqueStaticMap.set(subCategory.category.id, subCategory.category);
+            }
+        });
+        return Array.from(uniqueStaticMap.values());
     }
 };
 exports.JobService = JobService;

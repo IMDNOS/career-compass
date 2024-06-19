@@ -18,16 +18,16 @@ export class JobController {
   }
 //
 //
-//   @Get()
-//   findAll() {
-//     return this.jobService.findAll();
-//   }
-//
-//
-//   @Get(':id')
-//   findOne(@Param('id') id: string ) {
-//     return this.jobService.findOne(+id);
-//   }
+  @Get()
+  findAll() {
+    return this.jobService.findAll();
+  }
+
+
+  @Get(':id')
+  findOne(@Param('id') id: string ) {
+    return this.jobService.findOne(+id);
+  }
 //
 //   @Patch(':id')
 //   update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {

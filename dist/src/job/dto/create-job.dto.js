@@ -16,6 +16,7 @@ class CreateJobDto {
 }
 exports.CreateJobDto = CreateJobDto;
 __decorate([
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateJobDto.prototype, "title", void 0);
@@ -59,6 +60,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], CreateJobDto.prototype, "experience_years", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateJobDto.prototype, "number_of_employees", void 0);
 __decorate([
     (0, class_validator_1.IsEnum)(job_entity_1.Gender),
     (0, class_validator_1.IsOptional)(),

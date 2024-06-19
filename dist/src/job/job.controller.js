@@ -26,6 +26,12 @@ let JobController = class JobController {
         const companyId = user['id'];
         return this.jobService.create(createJobDto, companyId);
     }
+    findAll() {
+        return this.jobService.findAll();
+    }
+    findOne(id) {
+        return this.jobService.findOne(+id);
+    }
 };
 exports.JobController = JobController;
 __decorate([
@@ -37,6 +43,19 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_job_dto_1.CreateJobDto]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], JobController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], JobController.prototype, "findOne", null);
 exports.JobController = JobController = __decorate([
     (0, common_1.Controller)('job'),
     __metadata("design:paramtypes", [job_service_1.JobService])

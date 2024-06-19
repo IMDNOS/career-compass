@@ -47,6 +47,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Job.prototype, "work_hours", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Number)
+], Job.prototype, "number_of_employees", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: true, default: null }),
     __metadata("design:type", Number)
 ], Job.prototype, "experience_years", void 0);

@@ -5,9 +5,9 @@ import { Company } from '../../company/entities/company.entity';
 
 export class CreateJobDto {
 
+  @IsString()
   @IsNotEmpty()
   title: string;
-
 
   company: Company;
 
@@ -44,6 +44,10 @@ export class CreateJobDto {
   @IsNumber()
   @IsOptional()
   experience_years: number | null;
+
+  @IsNumber()
+  @IsOptional()
+  number_of_employees: number;
 
   @IsEnum(Gender)
   @IsOptional()

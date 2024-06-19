@@ -12,6 +12,7 @@ export declare class Job {
     description: string;
     salary: number;
     work_hours: number;
+    number_of_employees: number;
     experience_years: number;
     wanted_gender: Gender;
     active: boolean;
