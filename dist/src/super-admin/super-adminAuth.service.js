@@ -24,18 +24,6 @@ let SuperAdminAuthService = class SuperAdminAuthService {
         this.superAdminRepository = superAdminRepository;
         this.jwtService = jwtService;
     }
-    async register(createSuperAdminDto) {
-        const superAdminCheck = await this.superAdminRepository.findOne({ where: { email: createSuperAdminDto.email } });
-        if (superAdminCheck) {
-            throw new common_1.HttpException('user already exists', common_1.HttpStatus.BAD_REQUEST);
-        }
-        const hashedPassword = await this.hashData(createSuperAdminDto.password);
-        const superAdmin = this.superAdminRepository.create({
-            email: createSuperAdminDto.email,
-            hashed_password: hashedPassword,
-        });
-        return await this.superAdminRepository.save(superAdmin);
-    }
     async login(loginSuperAdminDto) {
         const superAdmin = await this.superAdminRepository.findOne({ where: { email: loginSuperAdminDto.email } });
         if (!superAdmin)
@@ -47,25 +35,19 @@ let SuperAdminAuthService = class SuperAdminAuthService {
         }
         throw new common_1.ForbiddenException('Wrong Password');
     }
-    async activate(activateSuperAdmin) {
-        const superAdmin = await this.superAdminRepository.findOne({ where: { email: activateSuperAdmin.email } });
-        if (!superAdmin)
-            throw new common_1.HttpException('email does not exist', common_1.HttpStatus.BAD_REQUEST);
-        superAdmin.active = true;
-        await this.superAdminRepository.save(superAdmin);
-        return 'activated successfully';
-    }
-    async makeManager(makeManagerDto) {
-        const superAdmin = await this.superAdminRepository.findOne({ where: { email: makeManagerDto.email } });
-        if (!superAdmin)
-            throw new common_1.HttpException('email does not exist', common_1.HttpStatus.BAD_REQUEST);
-        superAdmin.manager = true;
-        await this.superAdminRepository.save(superAdmin);
-        return 'manager authorities granted successfully';
+    async createAdmin(createSuperAdminDto) {
+        const superAdminCheck = await this.superAdminRepository.findOne({ where: { email: createSuperAdminDto.email } });
+        if (superAdminCheck) {
+            throw new common_1.HttpException('user already exists', common_1.HttpStatus.BAD_REQUEST);
+        }
+        const hashedPassword = await this.hashData(createSuperAdminDto.password);
+        const admin = this.superAdminRepository.create({
+            email: createSuperAdminDto.email,
+            hashed_password: hashedPassword,
+        });
+        return await this.superAdminRepository.save(admin);
     }
     async getToken(superAdmin) {
-        if (!superAdmin.active)
-            throw new common_1.HttpException('account is not activated', common_1.HttpStatus.UNAUTHORIZED);
         const [at] = await Promise.all([
             this.jwtService.signAsync({
                 id: superAdmin.id,

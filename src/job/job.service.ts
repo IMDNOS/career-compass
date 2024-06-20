@@ -62,6 +62,7 @@ export class JobService {
 
 
 
+
   async findAll(): Promise<Job[]> {
 
     return this.jobRepository.find({ where:{active : true},

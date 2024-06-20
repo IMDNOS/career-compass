@@ -6,30 +6,12 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SuperAdmin } from './entities/super-admin.entity';
 import { CreateSuperAdminDto } from './dto/create-super-admin.dto';
-import { ActivateSuperAdmin, MakeManagerDto } from './dto/activate-super-admin';
 
 
 @Injectable()
 export class SuperAdminAuthService {
   constructor(@InjectRepository(SuperAdmin) private superAdminRepository: Repository<SuperAdmin>,
               private jwtService: JwtService) {
-  }
-
-  async register(createSuperAdminDto: CreateSuperAdminDto) {
-    const superAdminCheck = await this.superAdminRepository.findOne({ where: { email: createSuperAdminDto.email } });
-
-    if (superAdminCheck) {
-      throw new HttpException('user already exists', HttpStatus.BAD_REQUEST);
-    }
-
-    const hashedPassword = await this.hashData(createSuperAdminDto.password);
-
-    const superAdmin = this.superAdminRepository.create({
-      email: createSuperAdminDto.email,
-      hashed_password: hashedPassword,
-    });
-
-    return await this.superAdminRepository.save(superAdmin);
   }
 
 
@@ -49,41 +31,30 @@ export class SuperAdminAuthService {
     throw new ForbiddenException('Wrong Password');
   }
 
+  async createAdmin(createSuperAdminDto:CreateSuperAdminDto){
 
-  async activate(activateSuperAdmin: ActivateSuperAdmin) {
+    const superAdminCheck = await this.superAdminRepository.findOne({ where: { email: createSuperAdminDto.email } });
 
-    const superAdmin = await this.superAdminRepository.findOne(
-      { where: { email: activateSuperAdmin.email } });
+      if (superAdminCheck) {
+        throw new HttpException('user already exists', HttpStatus.BAD_REQUEST);
+      }
 
-    if (!superAdmin)
-      throw new HttpException('email does not exist', HttpStatus.BAD_REQUEST);
+      const hashedPassword = await this.hashData(createSuperAdminDto.password);
 
-    superAdmin.active = true;
+      const admin = this.superAdminRepository.create({
+        email: createSuperAdminDto.email,
+        hashed_password: hashedPassword,
+      });
 
-    await this.superAdminRepository.save(superAdmin);
+      return await this.superAdminRepository.save(admin);
 
-    return 'activated successfully';
   }
 
-  async makeManager(makeManagerDto: MakeManagerDto) {
 
-    const superAdmin = await this.superAdminRepository.findOne(
-      { where: { email: makeManagerDto.email } });
 
-    if (!superAdmin)
-      throw new HttpException('email does not exist', HttpStatus.BAD_REQUEST);
-
-    superAdmin.manager = true;
-
-    await this.superAdminRepository.save(superAdmin);
-
-    return 'manager authorities granted successfully';
-  }
 
 
   private async getToken(superAdmin: SuperAdmin) {
-    if (!superAdmin.active)
-      throw new HttpException('account is not activated', HttpStatus.UNAUTHORIZED);
 
     const [at] = await Promise.all([
       this.jwtService.signAsync(

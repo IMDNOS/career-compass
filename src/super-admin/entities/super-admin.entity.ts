@@ -12,8 +12,6 @@ export class SuperAdmin {
   @Column()
   hashed_password: string;
 
-  @Column({default:false})
-  active:boolean;
 
   @Column({default:false})
   manager:boolean
