@@ -23,7 +23,7 @@ export class Employee {
   phone: string;
 
   @Column()
-  home_address:string
+  home_address: string;
 
   @Column({ type: 'date' })
   birthday_date: Date;
@@ -31,22 +31,22 @@ export class Employee {
   @Column()
   hashed_password: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   hashedRT: string | null;
 
   @Column({ default: false })
   active: boolean;
 
-  @Column({nullable:true})
-  hashedCode:string | null;
+  @Column({ nullable: true })
+  hashedCode: string | null;
 
-  @Column({nullable:true})
-  description:string | null;
+  @Column({ nullable: true })
+  description: string | null;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   image: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   resume: string;
 
   @Column({ type: 'enum', enum: Gender })
@@ -59,7 +59,9 @@ export class Employee {
 
   @ManyToMany(() => SubCategory)
   @JoinTable({ name: 'employee_subcategory' })
-  subcategory: SubCategory[];
+  subcategory: SubCategory[]
+
+
 
 
 }

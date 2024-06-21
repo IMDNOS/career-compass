@@ -1,3 +1,4 @@
-import { CreateSuperAdminDto } from './create-super-admin.dto';
-export declare class LoginSuperAdminDto extends CreateSuperAdminDto {
+export declare class LoginSuperAdminDto {
+    email: string;
+    password: string;
 }

@@ -14,7 +14,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
-import { extname} from 'path';
+import { extname } from 'path';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -103,7 +103,6 @@ export class EmployeesController {
     const id = req.user['id'];
     return this.employeesService.saveFile(file, id);
   }
-
 
 
 }

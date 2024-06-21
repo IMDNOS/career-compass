@@ -10,6 +10,6 @@ export class SubCategory {
   name: string;
 
   @ManyToOne(() => Static)
-  @JoinColumn({ name: 'categoryId' })
-  category: Static;
+  @JoinColumn({ name: 'categoryId'})
+  category: Static
 }

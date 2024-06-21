@@ -42,8 +42,11 @@ export class SuperAdminAuthService {
       const hashedPassword = await this.hashData(createSuperAdminDto.password);
 
       const admin = this.superAdminRepository.create({
+        name: createSuperAdminDto.name,
         email: createSuperAdminDto.email,
         hashed_password: hashedPassword,
+        age:createSuperAdminDto.age,
+        location: createSuperAdminDto.location,
       });
 
       return await this.superAdminRepository.save(admin);
