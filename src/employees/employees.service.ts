@@ -165,7 +165,7 @@ export class EmployeesService {
 
     const staticsCondition = {
       static: {
-        // id:In(statics)
+        // id:In(statics)// Mona this is to change the search from name to id
         name: In(statics)
       }
     };
