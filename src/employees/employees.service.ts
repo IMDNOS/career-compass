@@ -1,10 +1,12 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
+import { Company } from '../company/entities/company.entity';
+import { Job } from '../job/entities/job.entity';
 
 @Injectable()
 export class EmployeesService {
@@ -15,12 +17,16 @@ export class EmployeesService {
     private readonly staticRepository: Repository<Static>,
     @InjectRepository(SubCategory)
     private readonly subCategoryRepository: Repository<SubCategory>,
+    @InjectRepository(Job)
+    private readonly jobRepository: Repository<Job>,
   ) {
   }
 
-  async getInfo(employee_id:number){
-   return await this.employeeRepository.findOne({where:{id:employee_id},
-   select:['name','email','phone','home_address','birthday_date','image','resume','gender']})
+  async getInfo(employee_id: number) {
+    return await this.employeeRepository.findOne({
+      where: { id: employee_id },
+      select: ['name', 'email', 'phone', 'home_address', 'birthday_date', 'image', 'resume', 'gender'],
+    });
   }
 
 
@@ -53,10 +59,9 @@ export class EmployeesService {
         employee.static.push(staticEntity);
       }
     }
-     await this.employeeRepository.save(employee);
+    await this.employeeRepository.save(employee);
     return employee.static;
   }
-
 
 
   async getStatics(employeeId: number) {
@@ -84,14 +89,14 @@ export class EmployeesService {
         employee.subcategory.push(subcategoryEntity);
       }
     }
-     await this.employeeRepository.save(employee);
-    return employee.subcategory ;
+    await this.employeeRepository.save(employee);
+    return employee.subcategory;
   }
 
-  async getSubcategories(employeeId: number){
+  async getSubcategories(employeeId: number) {
     const employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
-      relations: ['subcategory']
+      relations: ['subcategory'],
     });
 
     return employee.subcategory;
@@ -137,5 +142,64 @@ export class EmployeesService {
     return { ...employee };
 
   }
+
+  async jobs(fields?: any) {
+
+    fields.active=true
+
+    const statics = [];
+
+    if (fields && fields.category) {
+      statics.push(fields.category);
+      delete fields['category'];
+    }
+    if (fields && fields.level) {
+      statics.push(fields.level);
+      delete fields['level'];
+    }
+    if (fields && fields.type) {
+      statics.push(fields.type);
+      delete fields['type'];
+    }
+
+
+    const staticsCondition = {
+      static: {
+        // id:In(statics)
+        name: In(statics)
+      }
+    };
+
+    if(statics.length > 0)
+     fields={...fields, ...staticsCondition};
+
+
+    // return fields
+
+    return this.jobRepository.find({
+      relations: ['company', 'static'],
+      where: fields,
+      order: {
+        'company': {
+          'premium': 'DESC'
+        }
+      }
+    });
+  }
+
+  // async jobs(fields?: any) {
+  //   return this.jobRepository.createQueryBuilder('job')
+  //     .leftJoinAndSelect('job.company', 'company')
+  //     .leftJoinAndSelect('job.static', 'statics')
+  //     .where(fields)
+  //     // .where((qb) => {
+  //     //   if (fields && fields.static) {
+  //     //     qb.where('statics.name LIKE :static', { staticName: `%${fields.staticName}%` });
+  //     //   }
+  //     // })
+  //     .orderBy('company.premium', 'DESC')
+  //     .getMany();
+  // }
+
 
 }

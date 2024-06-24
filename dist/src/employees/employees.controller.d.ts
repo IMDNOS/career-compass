@@ -57,4 +57,5 @@ export declare class EmployeesController {
         static: import("../statics/entities/static.entity").Static[];
         subcategory: import("../sub-categories/entities/sub-category.entity").SubCategory[];
     }>;
+    jobs(fields?: any): Promise<import("../job/entities/job.entity").Job[]>;
 }

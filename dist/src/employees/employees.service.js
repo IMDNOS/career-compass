@@ -19,15 +19,19 @@ const employee_entity_1 = require("./entities/employee.entity");
 const typeorm_2 = require("typeorm");
 const static_entity_1 = require("../statics/entities/static.entity");
 const sub_category_entity_1 = require("../sub-categories/entities/sub-category.entity");
+const job_entity_1 = require("../job/entities/job.entity");
 let EmployeesService = class EmployeesService {
-    constructor(employeeRepository, staticRepository, subCategoryRepository) {
+    constructor(employeeRepository, staticRepository, subCategoryRepository, jobRepository) {
         this.employeeRepository = employeeRepository;
         this.staticRepository = staticRepository;
         this.subCategoryRepository = subCategoryRepository;
+        this.jobRepository = jobRepository;
     }
     async getInfo(employee_id) {
-        return await this.employeeRepository.findOne({ where: { id: employee_id },
-            select: ['name', 'email', 'phone', 'home_address', 'birthday_date', 'image', 'resume', 'gender'] });
+        return await this.employeeRepository.findOne({
+            where: { id: employee_id },
+            select: ['name', 'email', 'phone', 'home_address', 'birthday_date', 'image', 'resume', 'gender'],
+        });
     }
     async update(updateEmployeeDto, employeeId) {
         if (!updateEmployeeDto || Object.keys(updateEmployeeDto).length === 0) {
@@ -83,7 +87,7 @@ let EmployeesService = class EmployeesService {
     async getSubcategories(employeeId) {
         const employee = await this.employeeRepository.findOne({
             where: { id: employeeId },
-            relations: ['subcategory']
+            relations: ['subcategory'],
         });
         return employee.subcategory;
     }
@@ -115,6 +119,38 @@ let EmployeesService = class EmployeesService {
         await this.employeeRepository.save(employee);
         return { ...employee };
     }
+    async jobs(fields) {
+        fields.active = true;
+        const statics = [];
+        if (fields && fields.category) {
+            statics.push(fields.category);
+            delete fields['category'];
+        }
+        if (fields && fields.level) {
+            statics.push(fields.level);
+            delete fields['level'];
+        }
+        if (fields && fields.type) {
+            statics.push(fields.type);
+            delete fields['type'];
+        }
+        const staticsCondition = {
+            static: {
+                name: (0, typeorm_2.In)(statics)
+            }
+        };
+        if (statics.length > 0)
+            fields = { ...fields, ...staticsCondition };
+        return this.jobRepository.find({
+            relations: ['company', 'static'],
+            where: fields,
+            order: {
+                'company': {
+                    'premium': 'DESC'
+                }
+            }
+        });
+    }
 };
 exports.EmployeesService = EmployeesService;
 exports.EmployeesService = EmployeesService = __decorate([
@@ -122,7 +158,9 @@ exports.EmployeesService = EmployeesService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(employee_entity_1.Employee)),
     __param(1, (0, typeorm_1.InjectRepository)(static_entity_1.Static)),
     __param(2, (0, typeorm_1.InjectRepository)(sub_category_entity_1.SubCategory)),
+    __param(3, (0, typeorm_1.InjectRepository)(job_entity_1.Job)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], EmployeesService);

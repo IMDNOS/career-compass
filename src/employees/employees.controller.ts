@@ -11,7 +11,7 @@ import {
   Get,
   Put,
   UseInterceptors,
-  UploadedFile,
+  UploadedFile, Query,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -65,7 +65,7 @@ export class EmployeesController {
     return this.employeesService.setSubcategories(id, subcategoriesDto);
   }
 
-
+  @UseGuards(EmployeeAtGuard)
   @Get('get_subcategories')
   getSubcategories(@Req() req: Request) {
     const id = req.user['id'];
@@ -104,5 +104,15 @@ export class EmployeesController {
     return this.employeesService.saveFile(file, id);
   }
 
+  @Get('jobs')
+  jobs(@Query() fields?:any){
+
+
+    // return fields.static
+
+
+    return this.employeesService.jobs(fields)
+
+  }
 
 }

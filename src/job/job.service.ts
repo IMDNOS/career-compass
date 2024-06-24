@@ -16,6 +16,7 @@ export class JobService {
     @InjectRepository(Company) private companyRepository: Repository<Company>,
     @InjectRepository(Static) private staticRepository: Repository<Static>,
     @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
+
   ) {}
 
 

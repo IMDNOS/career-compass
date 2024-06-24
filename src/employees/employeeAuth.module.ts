@@ -11,11 +11,13 @@ import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { Static } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
+import { Company } from '../company/entities/company.entity';
+import { Job } from '../job/entities/job.entity';
 
 
 
 @Module({
-  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory]),
+  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory,Job]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
   controllers: [EmployeeAuthController, EmployeesController ,],

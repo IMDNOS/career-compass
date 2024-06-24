@@ -4,11 +4,13 @@ import { Repository } from 'typeorm';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Static } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
+import { Job } from '../job/entities/job.entity';
 export declare class EmployeesService {
     private employeeRepository;
     private readonly staticRepository;
     private readonly subCategoryRepository;
-    constructor(employeeRepository: Repository<Employee>, staticRepository: Repository<Static>, subCategoryRepository: Repository<SubCategory>);
+    private readonly jobRepository;
+    constructor(employeeRepository: Repository<Employee>, staticRepository: Repository<Static>, subCategoryRepository: Repository<SubCategory>, jobRepository: Repository<Job>);
     getInfo(employee_id: number): Promise<Employee>;
     update(updateEmployeeDto: UpdateEmployeeDto, employeeId: number): Promise<Employee | {
         message: string;
@@ -61,4 +63,5 @@ export declare class EmployeesService {
         static: Static[];
         subcategory: SubCategory[];
     }>;
+    jobs(fields?: any): Promise<Job[]>;
 }

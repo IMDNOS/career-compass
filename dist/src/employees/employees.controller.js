@@ -56,6 +56,9 @@ let EmployeesController = class EmployeesController {
         const id = req.user['id'];
         return this.employeesService.saveFile(file, id);
     }
+    jobs(fields) {
+        return this.employeesService.jobs(fields);
+    }
 };
 exports.EmployeesController = EmployeesController;
 __decorate([
@@ -102,6 +105,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], EmployeesController.prototype, "setSubcategories", null);
 __decorate([
+    (0, common_1.UseGuards)(decorate_guards_1.EmployeeAtGuard),
     (0, common_1.Get)('get_subcategories'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -144,6 +148,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], EmployeesController.prototype, "uploadFile", null);
+__decorate([
+    (0, common_1.Get)('jobs'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], EmployeesController.prototype, "jobs", null);
 exports.EmployeesController = EmployeesController = __decorate([
     (0, common_1.Controller)('employees'),
     __metadata("design:paramtypes", [employees_service_1.EmployeesService])
