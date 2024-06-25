@@ -147,14 +147,22 @@ let EmployeesService = class EmployeesService {
             };
             fields = { ...fields, ...subcategoriesCondition };
         }
-        return this.jobRepository.find({
-            relations: ['company', 'static', 'subCategories'],
+        const jobs = await this.jobRepository.find({
             where: fields,
+            select: ['id']
+        });
+        const ids = [];
+        for (const job of jobs) {
+            ids.push(job.id);
+        }
+        return await this.jobRepository.find({
+            where: { id: (0, typeorm_2.In)(ids) },
+            relations: ['company', 'static', 'subCategories'],
             order: {
                 'company': {
                     'premium': 'DESC',
                 },
-            },
+            }
         });
     }
 };

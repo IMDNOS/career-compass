@@ -5,9 +5,7 @@ import { In, Repository } from 'typeorm';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
-import { Company } from '../company/entities/company.entity';
 import { Job } from '../job/entities/job.entity';
-import { from } from 'rxjs';
 
 @Injectable()
 export class EmployeesService {
@@ -179,15 +177,22 @@ export class EmployeesService {
       fields = { ...fields, ...subcategoriesCondition };
 
     }
-
-    return this.jobRepository.find({
-      relations: ['company', 'static', 'subCategories'],
+    const jobs = await this.jobRepository.find({
       where: fields,
-      order: {
-        'company': {
-          'premium': 'DESC',
-        },
-      },
+      select:['id']
+    });
+    const ids=[]
+    for (const job of jobs){
+      ids.push(job.id);
+    }
+    return await this.jobRepository.find({
+      where: { id: In(ids) },
+      relations: ['company', 'static', 'subCategories'],
+        order: {
+          'company': {
+            'premium': 'DESC',
+          },
+        }
     });
   }
 }
