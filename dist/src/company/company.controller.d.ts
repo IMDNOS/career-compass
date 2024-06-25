@@ -15,7 +15,7 @@ export declare class CompanyController {
         address: string;
         description: string;
         logo: string;
-        premium: boolean;
+        premiumLevel: number;
         active: boolean;
     }>;
     findAll(request: Request): Promise<import("../job/entities/job.entity").Job[]>;

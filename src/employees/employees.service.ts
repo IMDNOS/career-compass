@@ -1,4 +1,11 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { In, Repository } from 'typeorm';
@@ -6,6 +13,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
+import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -18,16 +26,23 @@ export class EmployeesService {
     private readonly subCategoryRepository: Repository<SubCategory>,
     @InjectRepository(Job)
     private readonly jobRepository: Repository<Job>,
-  ) {
-  }
+  ) {}
 
   async getInfo(employee_id: number) {
     return await this.employeeRepository.findOne({
       where: { id: employee_id },
-      select: ['name', 'email', 'phone', 'home_address', 'birthday_date', 'image', 'resume', 'gender'],
+      select: [
+        'name',
+        'email',
+        'phone',
+        'home_address',
+        'birthday_date',
+        'image',
+        'resume',
+        'gender',
+      ],
     });
   }
-
 
   async update(updateEmployeeDto: UpdateEmployeeDto, employeeId: number) {
     if (!updateEmployeeDto || Object.keys(updateEmployeeDto).length === 0) {
@@ -49,11 +64,16 @@ export class EmployeesService {
   }
 
   async setStatics(employeeId: number, staticsDto: { name: string }[]) {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+      relations: ['static'],
+    });
     employee.static = [];
 
     for (const staticDto of staticsDto) {
-      const staticEntity = await this.staticRepository.findOne({ where: { name: staticDto.name } });
+      const staticEntity = await this.staticRepository.findOne({
+        where: { name: staticDto.name },
+      });
       if (staticEntity) {
         employee.static.push(staticEntity);
       }
@@ -62,28 +82,42 @@ export class EmployeesService {
     return employee.static;
   }
 
-
   async getStatics(employeeId: number) {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+      relations: ['static'],
+    });
 
     if (!employee) {
       throw new Error(`Employee with id ${employeeId} not found`);
     }
 
-    const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
-    const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
-    const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
+    const levels = employee.static.filter(
+      (staticItem) => staticItem.type === Type.Level,
+    );
+    const jobTypes = employee.static.filter(
+      (staticItem) => staticItem.type === Type.Job_type,
+    );
+    const categories = employee.static.filter(
+      (staticItem) => staticItem.type === Type.Category,
+    );
 
     return { levels, jobTypes, categories };
   }
 
-
-  async setSubcategories(employeeId: number, subcategoriesDto: { name: string }[]) {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+  async setSubcategories(
+    employeeId: number,
+    subcategoriesDto: { name: string }[],
+  ) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
     employee.subcategory = [];
 
     for (const subCategoriesDto of subcategoriesDto) {
-      const subcategoryEntity = await this.subCategoryRepository.findOne({ where: { name: subCategoriesDto.name } });
+      const subcategoryEntity = await this.subCategoryRepository.findOne({
+        where: { name: subCategoriesDto.name },
+      });
       if (subcategoryEntity) {
         employee.subcategory.push(subcategoryEntity);
       }
@@ -101,6 +135,25 @@ export class EmployeesService {
     return employee.subcategory;
   }
 
+  async setEducationAndExperience(
+    id: number,
+    setEducationAndExperienceDto: SetEducationAndExperienceDto,
+  ) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!employee)
+      throw new ForbiddenException('Employee with id ${id} not found');
+
+    await this.employeeRepository.update(id, setEducationAndExperienceDto);
+
+    const updatedEmployee = await this.employeeRepository.findOne({
+      where: { id: id },
+    });
+
+    return updatedEmployee;
+  }
 
   async saveImage(file: Express.Multer.File, employeeId: number) {
     if (!file) {
@@ -119,7 +172,6 @@ export class EmployeesService {
     await this.employeeRepository.save(employee);
 
     return { ...employee };
-
   }
 
   async saveFile(file: Express.Multer.File, employeeId: number) {
@@ -139,11 +191,9 @@ export class EmployeesService {
     await this.employeeRepository.save(employee);
 
     return { ...employee };
-
   }
 
   async jobs(fields?: any) {
-
     fields.active = true;
 
     let staticsArray;
@@ -175,24 +225,23 @@ export class EmployeesService {
         },
       };
       fields = { ...fields, ...subcategoriesCondition };
-
     }
     const jobs = await this.jobRepository.find({
       where: fields,
-      select:['id']
+      select: ['id'],
     });
-    const ids=[]
-    for (const job of jobs){
+    const ids = [];
+    for (const job of jobs) {
       ids.push(job.id);
     }
     return await this.jobRepository.find({
       where: { id: In(ids) },
       relations: ['company', 'static', 'subCategories'],
-        order: {
-          'company': {
-            'premium': 'DESC',
-          },
-        }
+      order: {
+        company: {
+          premiumLevel: 'DESC',
+        },
+      },
     });
   }
 }

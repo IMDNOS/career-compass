@@ -19,6 +19,8 @@ export declare class Employee {
     image: string;
     resume: string;
     gender: Gender;
+    experience: string | null;
+    education: string | null;
     static: Static[];
     subcategory: SubCategory[];
 }

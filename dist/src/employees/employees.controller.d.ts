@@ -2,6 +2,7 @@
 import { Request } from 'express';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeesService } from './employees.service';
+import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
 export declare class EmployeesController {
     private readonly employeesService;
     constructor(employeesService: EmployeesService);
@@ -21,6 +22,7 @@ export declare class EmployeesController {
         name: string;
     }[], req: Request): Promise<import("../sub-categories/entities/sub-category.entity").SubCategory[]>;
     getSubcategories(req: Request): Promise<import("../sub-categories/entities/sub-category.entity").SubCategory[]>;
+    setEducationAndExperience(setEducationAndExperienceDto: SetEducationAndExperienceDto, req: Request): Promise<import("./entities/employee.entity").Employee>;
     uploadImage(file: Express.Multer.File, req: Request): Promise<{
         id: number;
         name: string;
@@ -36,6 +38,8 @@ export declare class EmployeesController {
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;
+        experience: string;
+        education: string;
         static: import("../statics/entities/static.entity").Static[];
         subcategory: import("../sub-categories/entities/sub-category.entity").SubCategory[];
     }>;
@@ -54,6 +58,8 @@ export declare class EmployeesController {
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;
+        experience: string;
+        education: string;
         static: import("../statics/entities/static.entity").Static[];
         subcategory: import("../sub-categories/entities/sub-category.entity").SubCategory[];
     }>;

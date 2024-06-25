@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { IsInt, Max, Min } from 'class-validator';
 
 // export enum State {
 //   Aleppo = 'Aleppo',
@@ -50,8 +51,12 @@ export class Company {
   @Column({nullable:true})
   logo: string;
 
-  @Column({default:false})
-  premium: boolean;
+  @Column({ type: 'int', default: 0 })
+  @IsInt()
+  @Min(0)
+  @Max(10)
+  premiumLevel: number;
+
 
   @Column({default:false})
   active: boolean;

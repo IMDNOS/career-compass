@@ -52,6 +52,11 @@ export class Employee {
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
 
+  @Column()
+  experience:string | null;
+
+  @Column()
+  education:string | null;
 
   @ManyToMany(() => Static)
   @JoinTable({ name: 'employee_statics' })

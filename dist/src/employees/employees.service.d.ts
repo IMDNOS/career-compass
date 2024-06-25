@@ -5,6 +5,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Static } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
+import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
 export declare class EmployeesService {
     private employeeRepository;
     private readonly staticRepository;
@@ -27,6 +28,7 @@ export declare class EmployeesService {
         name: string;
     }[]): Promise<SubCategory[]>;
     getSubcategories(employeeId: number): Promise<SubCategory[]>;
+    setEducationAndExperience(id: number, setEducationAndExperienceDto: SetEducationAndExperienceDto): Promise<Employee>;
     saveImage(file: Express.Multer.File, employeeId: number): Promise<{
         id: number;
         name: string;
@@ -42,6 +44,8 @@ export declare class EmployeesService {
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;
+        experience: string;
+        education: string;
         static: Static[];
         subcategory: SubCategory[];
     }>;
@@ -60,6 +64,8 @@ export declare class EmployeesService {
         image: string;
         resume: string;
         gender: import("./entities/employee.entity").Gender;
+        experience: string;
+        education: string;
         static: Static[];
         subcategory: SubCategory[];
     }>;

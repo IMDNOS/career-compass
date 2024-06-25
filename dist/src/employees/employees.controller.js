@@ -20,6 +20,7 @@ const common_1 = require("@nestjs/common");
 const multer_1 = require("multer");
 const path_1 = require("path");
 const platform_express_1 = require("@nestjs/platform-express");
+const set_education_and_experience_dto_1 = require("./dto/set-education-and-experience.dto");
 let EmployeesController = class EmployeesController {
     constructor(employeesService) {
         this.employeesService = employeesService;
@@ -47,6 +48,10 @@ let EmployeesController = class EmployeesController {
     getSubcategories(req) {
         const id = req.user['id'];
         return this.employeesService.getSubcategories(id);
+    }
+    setEducationAndExperience(setEducationAndExperienceDto, req) {
+        const id = req.user['id'];
+        return this.employeesService.setEducationAndExperience(id, setEducationAndExperienceDto);
     }
     uploadImage(file, req) {
         const id = req.user['id'];
@@ -114,12 +119,24 @@ __decorate([
 ], EmployeesController.prototype, "getSubcategories", null);
 __decorate([
     (0, common_1.UseGuards)(decorate_guards_1.EmployeeAtGuard),
+    (0, common_1.Post)('set_education&experience'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [set_education_and_experience_dto_1.SetEducationAndExperienceDto, Object]),
+    __metadata("design:returntype", void 0)
+], EmployeesController.prototype, "setEducationAndExperience", null);
+__decorate([
+    (0, common_1.UseGuards)(decorate_guards_1.EmployeeAtGuard),
     (0, common_1.Post)('upload-image'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
             destination: './uploadsImages',
             filename: (req, file, cb) => {
-                const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
+                const randomName = Array(32)
+                    .fill(null)
+                    .map(() => Math.round(Math.random() * 16).toString(16))
+                    .join('');
                 cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);
             },
         }),
@@ -137,7 +154,10 @@ __decorate([
         storage: (0, multer_1.diskStorage)({
             destination: './uploadsFiles',
             filename: (req, file, cb) => {
-                const randomName = Array(34).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
+                const randomName = Array(34)
+                    .fill(null)
+                    .map(() => Math.round(Math.random() * 16).toString(16))
+                    .join('');
                 cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);
             },
         }),

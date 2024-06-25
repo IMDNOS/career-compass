@@ -9,6 +9,6 @@ export declare class Company {
     address: string;
     description: string;
     logo: string;
-    premium: boolean;
+    premiumLevel: number;
     active: boolean;
 }

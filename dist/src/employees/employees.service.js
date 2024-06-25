@@ -30,7 +30,16 @@ let EmployeesService = class EmployeesService {
     async getInfo(employee_id) {
         return await this.employeeRepository.findOne({
             where: { id: employee_id },
-            select: ['name', 'email', 'phone', 'home_address', 'birthday_date', 'image', 'resume', 'gender'],
+            select: [
+                'name',
+                'email',
+                'phone',
+                'home_address',
+                'birthday_date',
+                'image',
+                'resume',
+                'gender',
+            ],
         });
     }
     async update(updateEmployeeDto, employeeId) {
@@ -51,10 +60,15 @@ let EmployeesService = class EmployeesService {
         return employee;
     }
     async setStatics(employeeId, staticsDto) {
-        const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
+        const employee = await this.employeeRepository.findOne({
+            where: { id: employeeId },
+            relations: ['static'],
+        });
         employee.static = [];
         for (const staticDto of staticsDto) {
-            const staticEntity = await this.staticRepository.findOne({ where: { name: staticDto.name } });
+            const staticEntity = await this.staticRepository.findOne({
+                where: { name: staticDto.name },
+            });
             if (staticEntity) {
                 employee.static.push(staticEntity);
             }
@@ -63,20 +77,27 @@ let EmployeesService = class EmployeesService {
         return employee.static;
     }
     async getStatics(employeeId) {
-        const employee = await this.employeeRepository.findOne({ where: { id: employeeId }, relations: ['static'] });
+        const employee = await this.employeeRepository.findOne({
+            where: { id: employeeId },
+            relations: ['static'],
+        });
         if (!employee) {
             throw new Error(`Employee with id ${employeeId} not found`);
         }
-        const levels = employee.static.filter(staticItem => staticItem.type === static_entity_1.Type.Level);
-        const jobTypes = employee.static.filter(staticItem => staticItem.type === static_entity_1.Type.Job_type);
-        const categories = employee.static.filter(staticItem => staticItem.type === static_entity_1.Type.Category);
+        const levels = employee.static.filter((staticItem) => staticItem.type === static_entity_1.Type.Level);
+        const jobTypes = employee.static.filter((staticItem) => staticItem.type === static_entity_1.Type.Job_type);
+        const categories = employee.static.filter((staticItem) => staticItem.type === static_entity_1.Type.Category);
         return { levels, jobTypes, categories };
     }
     async setSubcategories(employeeId, subcategoriesDto) {
-        const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+        const employee = await this.employeeRepository.findOne({
+            where: { id: employeeId },
+        });
         employee.subcategory = [];
         for (const subCategoriesDto of subcategoriesDto) {
-            const subcategoryEntity = await this.subCategoryRepository.findOne({ where: { name: subCategoriesDto.name } });
+            const subcategoryEntity = await this.subCategoryRepository.findOne({
+                where: { name: subCategoriesDto.name },
+            });
             if (subcategoryEntity) {
                 employee.subcategory.push(subcategoryEntity);
             }
@@ -90,6 +111,18 @@ let EmployeesService = class EmployeesService {
             relations: ['subcategory'],
         });
         return employee.subcategory;
+    }
+    async setEducationAndExperience(id, setEducationAndExperienceDto) {
+        const employee = await this.employeeRepository.findOne({
+            where: { id: id },
+        });
+        if (!employee)
+            throw new common_1.ForbiddenException('Employee with id ${id} not found');
+        await this.employeeRepository.update(id, setEducationAndExperienceDto);
+        const updatedEmployee = await this.employeeRepository.findOne({
+            where: { id: id },
+        });
+        return updatedEmployee;
     }
     async saveImage(file, employeeId) {
         if (!file) {
@@ -149,7 +182,7 @@ let EmployeesService = class EmployeesService {
         }
         const jobs = await this.jobRepository.find({
             where: fields,
-            select: ['id']
+            select: ['id'],
         });
         const ids = [];
         for (const job of jobs) {
@@ -159,10 +192,10 @@ let EmployeesService = class EmployeesService {
             where: { id: (0, typeorm_2.In)(ids) },
             relations: ['company', 'static', 'subCategories'],
             order: {
-                'company': {
-                    'premium': 'DESC',
+                company: {
+                    premiumLevel: 'DESC',
                 },
-            }
+            },
         });
     }
 };

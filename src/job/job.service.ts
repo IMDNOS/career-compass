@@ -23,7 +23,7 @@ export class JobService {
 
   async create(createJobDto: CreateJobDto, companyId: number) {
     const company = await this.companyRepository.findOne({where: { id: companyId },
-      select: ["id", "company_name", "email", "address", "description", "logo", "premium"]});
+      select: ["id", "company_name", "email", "address", "description", "logo", "premiumLevel"]});
 
       const jobType = await this.staticRepository.findOne({ where: { id: createJobDto.typeId } });
     console.log(jobType)

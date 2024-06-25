@@ -78,6 +78,14 @@ __decorate([
     __metadata("design:type", String)
 ], Employee.prototype, "gender", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Employee.prototype, "experience", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Employee.prototype, "education", void 0);
+__decorate([
     (0, typeorm_1.ManyToMany)(() => static_entity_1.Static),
     (0, typeorm_1.JoinTable)({ name: 'employee_statics' }),
     __metadata("design:type", Array)

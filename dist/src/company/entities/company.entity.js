@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Company = void 0;
 const typeorm_1 = require("typeorm");
+const class_validator_1 = require("class-validator");
 let Company = class Company {
 };
 exports.Company = Company;
@@ -55,9 +56,12 @@ __decorate([
     __metadata("design:type", String)
 ], Company.prototype, "logo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: false }),
-    __metadata("design:type", Boolean)
-], Company.prototype, "premium", void 0);
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.Max)(10),
+    __metadata("design:type", Number)
+], Company.prototype, "premiumLevel", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
