@@ -25,20 +25,23 @@ let StaticsController = class StaticsController {
     create(createStaticDto) {
         return this.staticsService.create(createStaticDto);
     }
-    findOne(id) {
-        return this.staticsService.findOne(+id);
-    }
     async getAllStatics() {
         return this.staticsService.findAllStatics();
     }
     async getSubcategoriesOfCategory(id) {
         return this.staticsService.getSubcategoriesOfCategory(+id);
     }
+    async getSubcategoriesOfCategories(categoriesArray) {
+        return this.staticsService.getSubcategoriesOfCategories(categoriesArray);
+    }
     update(id, updateStaticDto) {
         return this.staticsService.update(+id, updateStaticDto);
     }
     remove(id) {
         return this.staticsService.remove(+id);
+    }
+    findOne(id) {
+        return this.staticsService.findOne(+id);
     }
 };
 exports.StaticsController = StaticsController;
@@ -50,13 +53,6 @@ __decorate([
     __metadata("design:paramtypes", [create_static_dto_1.CreateStaticDto]),
     __metadata("design:returntype", void 0)
 ], StaticsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], StaticsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
@@ -70,6 +66,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], StaticsController.prototype, "getSubcategoriesOfCategory", null);
+__decorate([
+    (0, common_1.Get)('get_their_subcategories'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], StaticsController.prototype, "getSubcategoriesOfCategories", null);
 __decorate([
     (0, common_1.UseGuards)(decorate_guards_1.AtGuardSuperAdmin),
     (0, common_1.Patch)(':id'),
@@ -87,6 +90,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StaticsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], StaticsController.prototype, "findOne", null);
 exports.StaticsController = StaticsController = __decorate([
     (0, common_1.Controller)('statics'),
     __metadata("design:paramtypes", [statics_service_1.StaticsService])

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStaticDto } from './dto/create-static.dto';
 import { UpdateStaticDto } from './dto/update-static.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Static , Type} from './entities/static.entity';
 
 @Injectable()
@@ -93,6 +93,17 @@ export class StaticsService {
       categoryId: category.id,
     }));
   }
+  async getSubcategoriesOfCategories(categoriesArray: any) {
 
+   const categoriesIds = categoriesArray.categories.split(',').map(Number);
+
+   const categories = await this.staticRepository.find({ where: { id: In(categoriesIds) },relations: ['subCategories']   });
+
+
+    const subcategories = categories.flatMap(category => category.subCategories);
+
+
+    return subcategories;
+  }
 
 }

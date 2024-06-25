@@ -22,4 +22,5 @@ export declare class StaticsService {
         name: string;
         categoryId: number;
     }[]>;
+    getSubcategoriesOfCategories(categoriesArray: any): Promise<import("../sub-categories/entities/sub-category.entity").SubCategory[]>;
 }

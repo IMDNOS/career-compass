@@ -76,6 +76,12 @@ let StaticsService = class StaticsService {
             categoryId: category.id,
         }));
     }
+    async getSubcategoriesOfCategories(categoriesArray) {
+        const categoriesIds = categoriesArray.categories.split(',').map(Number);
+        const categories = await this.staticRepository.find({ where: { id: (0, typeorm_2.In)(categoriesIds) }, relations: ['subCategories'] });
+        const subcategories = categories.flatMap(category => category.subCategories);
+        return subcategories;
+    }
 };
 exports.StaticsService = StaticsService;
 exports.StaticsService = StaticsService = __decorate([
