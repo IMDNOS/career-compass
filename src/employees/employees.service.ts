@@ -7,6 +7,7 @@ import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 import { Company } from '../company/entities/company.entity';
 import { Job } from '../job/entities/job.entity';
+import { from } from 'rxjs';
 
 @Injectable()
 export class EmployeesService {
@@ -145,61 +146,48 @@ export class EmployeesService {
 
   async jobs(fields?: any) {
 
-    fields.active=true
+    fields.active = true;
 
-    const statics = [];
+    let staticsArray;
 
-    if (fields && fields.category) {
-      statics.push(fields.category);
-      delete fields['category'];
-    }
-    if (fields && fields.level) {
-      statics.push(fields.level);
-      delete fields['level'];
-    }
-    if (fields && fields.type) {
-      statics.push(fields.type);
-      delete fields['type'];
+    if (fields && fields.statics) {
+      staticsArray = fields.statics.split(',').map(Number);
+      delete fields.statics;
     }
 
+    let subcategoriesArray;
+    if (fields && fields.subcategories) {
+      subcategoriesArray = fields.subcategories.split(',').map(Number);
+      delete fields.subcategories;
+    }
 
-    const staticsCondition = {
-      static: {
-        // id:In(statics)// Mona this is to change the search from name to id
-        name: In(statics)
-      }
-    };
+    if (staticsArray) {
+      const staticsCondition = {
+        static: {
+          id: In(staticsArray),
+        },
+      };
+      fields = { ...fields, ...staticsCondition };
+    }
 
-    if(statics.length > 0)
-     fields={...fields, ...staticsCondition};
+    if (subcategoriesArray) {
+      const subcategoriesCondition = {
+        subCategories: {
+          id: In(subcategoriesArray),
+        },
+      };
+      fields = { ...fields, ...subcategoriesCondition };
 
-
-    // return fields
+    }
 
     return this.jobRepository.find({
-      relations: ['company', 'static'],
+      relations: ['company', 'static', 'subCategories'],
       where: fields,
       order: {
         'company': {
-          'premium': 'DESC'
-        }
-      }
+          'premium': 'DESC',
+        },
+      },
     });
   }
-
-  // async jobs(fields?: any) {
-  //   return this.jobRepository.createQueryBuilder('job')
-  //     .leftJoinAndSelect('job.company', 'company')
-  //     .leftJoinAndSelect('job.static', 'statics')
-  //     .where(fields)
-  //     // .where((qb) => {
-  //     //   if (fields && fields.static) {
-  //     //     qb.where('statics.name LIKE :static', { staticName: `%${fields.staticName}%` });
-  //     //   }
-  //     // })
-  //     .orderBy('company.premium', 'DESC')
-  //     .getMany();
-  // }
-
-
 }

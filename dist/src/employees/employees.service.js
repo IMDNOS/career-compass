@@ -121,34 +121,40 @@ let EmployeesService = class EmployeesService {
     }
     async jobs(fields) {
         fields.active = true;
-        const statics = [];
-        if (fields && fields.category) {
-            statics.push(fields.category);
-            delete fields['category'];
+        let staticsArray;
+        if (fields && fields.statics) {
+            staticsArray = fields.statics.split(',').map(Number);
+            delete fields.statics;
         }
-        if (fields && fields.level) {
-            statics.push(fields.level);
-            delete fields['level'];
+        let subcategoriesArray;
+        if (fields && fields.subcategories) {
+            subcategoriesArray = fields.subcategories.split(',').map(Number);
+            delete fields.subcategories;
         }
-        if (fields && fields.type) {
-            statics.push(fields.type);
-            delete fields['type'];
-        }
-        const staticsCondition = {
-            static: {
-                name: (0, typeorm_2.In)(statics)
-            }
-        };
-        if (statics.length > 0)
+        if (staticsArray) {
+            const staticsCondition = {
+                static: {
+                    id: (0, typeorm_2.In)(staticsArray),
+                },
+            };
             fields = { ...fields, ...staticsCondition };
+        }
+        if (subcategoriesArray) {
+            const subcategoriesCondition = {
+                subCategories: {
+                    id: (0, typeorm_2.In)(subcategoriesArray),
+                },
+            };
+            fields = { ...fields, ...subcategoriesCondition };
+        }
         return this.jobRepository.find({
-            relations: ['company', 'static'],
+            relations: ['company', 'static', 'subCategories'],
             where: fields,
             order: {
                 'company': {
-                    'premium': 'DESC'
-                }
-            }
+                    'premium': 'DESC',
+                },
+            },
         });
     }
 };
