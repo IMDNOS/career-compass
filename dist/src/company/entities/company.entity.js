@@ -63,6 +63,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Company.prototype, "premiumLevel", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 100 }),
+    __metadata("design:type", Number)
+], Company.prototype, "wallet", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], Company.prototype, "active", void 0);

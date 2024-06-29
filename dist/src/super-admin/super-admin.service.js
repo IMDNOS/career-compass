@@ -19,11 +19,13 @@ const employee_entity_1 = require("../employees/entities/employee.entity");
 const typeorm_2 = require("typeorm");
 const static_entity_1 = require("../statics/entities/static.entity");
 const sub_category_entity_1 = require("../sub-categories/entities/sub-category.entity");
+const job_entity_1 = require("../job/entities/job.entity");
 let SuperAdminService = class SuperAdminService {
-    constructor(employeeRepository, staticRepository, subCategoryRepository) {
+    constructor(employeeRepository, staticRepository, subCategoryRepository, jobRepository) {
         this.employeeRepository = employeeRepository;
         this.staticRepository = staticRepository;
         this.subCategoryRepository = subCategoryRepository;
+        this.jobRepository = jobRepository;
     }
     async findAll() {
         const employees = await this.employeeRepository.find({
@@ -72,6 +74,51 @@ let SuperAdminService = class SuperAdminService {
             };
         });
     }
+    async jobs(fields) {
+        let staticsArray;
+        if (fields && fields.statics) {
+            staticsArray = fields.statics.split(',').map(Number);
+            delete fields.statics;
+        }
+        let subcategoriesArray;
+        if (fields && fields.subcategories) {
+            subcategoriesArray = fields.subcategories.split(',').map(Number);
+            delete fields.subcategories;
+        }
+        if (staticsArray) {
+            const staticsCondition = {
+                static: {
+                    id: (0, typeorm_2.In)(staticsArray),
+                },
+            };
+            fields = { ...fields, ...staticsCondition };
+        }
+        if (subcategoriesArray) {
+            const subcategoriesCondition = {
+                subCategories: {
+                    id: (0, typeorm_2.In)(subcategoriesArray),
+                },
+            };
+            fields = { ...fields, ...subcategoriesCondition };
+        }
+        const jobs = await this.jobRepository.find({
+            where: fields,
+            select: ['id'],
+        });
+        const ids = [];
+        for (const job of jobs) {
+            ids.push(job.id);
+        }
+        return await this.jobRepository.find({
+            where: { id: (0, typeorm_2.In)(ids) },
+            relations: ['company', 'static', 'subCategories'],
+            order: {
+                company: {
+                    premiumLevel: 'DESC',
+                },
+            },
+        });
+    }
     async remove(id) {
         const employee = await this.employeeRepository.findOne({ where: { id: id } });
         if (!employee) {
@@ -83,6 +130,18 @@ let SuperAdminService = class SuperAdminService {
             message: `Employee with id ${id} has been successfully removed`,
         };
     }
+    async activateJob(activateJobDto) {
+        const job = await this.jobRepository.findOne({ where: { id: activateJobDto.job_id } });
+        if (!job) {
+            throw new common_1.NotFoundException(`Job with id ${activateJobDto.job_id} not found`);
+        }
+        if (job.active) {
+            throw new common_1.BadRequestException('job already activated');
+        }
+        job.active = true;
+        await this.jobRepository.update(job.id, job);
+        return 'Job activated successfully';
+    }
 };
 exports.SuperAdminService = SuperAdminService;
 exports.SuperAdminService = SuperAdminService = __decorate([
@@ -90,7 +149,9 @@ exports.SuperAdminService = SuperAdminService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(employee_entity_1.Employee)),
     __param(1, (0, typeorm_1.InjectRepository)(static_entity_1.Static)),
     __param(2, (0, typeorm_1.InjectRepository)(sub_category_entity_1.SubCategory)),
+    __param(3, (0, typeorm_1.InjectRepository)(job_entity_1.Job)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], SuperAdminService);

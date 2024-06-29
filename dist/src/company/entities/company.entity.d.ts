@@ -10,5 +10,6 @@ export declare class Company {
     description: string;
     logo: string;
     premiumLevel: number;
+    wallet: number;
     active: boolean;
 }

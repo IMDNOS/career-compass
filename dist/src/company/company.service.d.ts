@@ -18,6 +18,7 @@ export declare class CompanyService {
         description: string;
         logo: string;
         premiumLevel: number;
+        wallet: number;
         active: boolean;
     }>;
     findAll(companyID: number): Promise<Job[]>;

@@ -1,16 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { In, Repository } from 'typeorm';
 // import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 import { Static, Type } from 'src/statics/entities/static.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
+import { Job } from '../job/entities/job.entity';
+import { ActivateJobDto } from './dto/update-super-admin.dto';
 
 @Injectable()
 export class SuperAdminService {
   constructor(@InjectRepository(Employee) private employeeRepository: Repository<Employee>,
               @InjectRepository(Static) private staticRepository: Repository<Static>,
-              @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,){}
+              @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
+              @InjectRepository(Job) private jobRepository: Repository<Job>,
+              ){}
 
     async findAll() {
     const employees = await this.employeeRepository.find({
@@ -60,6 +64,60 @@ export class SuperAdminService {
           SubCategory:employee.subcategory}
       });
   }
+
+  async jobs(fields?: any) {
+    let staticsArray;
+
+    if (fields && fields.statics) {
+      staticsArray = fields.statics.split(',').map(Number);
+      delete fields.statics;
+    }
+
+    let subcategoriesArray;
+    if (fields && fields.subcategories) {
+      subcategoriesArray = fields.subcategories.split(',').map(Number);
+      delete fields.subcategories;
+    }
+
+    if (staticsArray) {
+      const staticsCondition = {
+        static: {
+          id: In(staticsArray),
+        },
+      };
+      fields = { ...fields, ...staticsCondition };
+    }
+
+    if (subcategoriesArray) {
+      const subcategoriesCondition = {
+        subCategories: {
+          id: In(subcategoriesArray),
+        },
+      };
+      fields = { ...fields, ...subcategoriesCondition };
+    }
+    const jobs = await this.jobRepository.find({
+      where: fields,
+      select: ['id'],
+    });
+    const ids = [];
+    for (const job of jobs) {
+      ids.push(job.id);
+    }
+    return await this.jobRepository.find({
+      where: { id: In(ids) },
+      relations: ['company', 'static', 'subCategories'],
+      order: {
+        company: {
+          premiumLevel: 'DESC',
+        },
+      },
+    });
+  }
+
+
+
+
   //
   //   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
   //     const employee = await this.employeeRepository.findOne({ where: { id }, relations: ['static', 'subcategory'] });
@@ -106,6 +164,25 @@ export class SuperAdminService {
         statusCode: 200,
         message: `Employee with id ${id} has been successfully removed`,
       };  }
+
+  async activateJob(activateJobDto:ActivateJobDto){
+    const job =await this.jobRepository.findOne({where:{id:activateJobDto.job_id}})
+
+    if (!job) {
+      throw new NotFoundException(`Job with id ${activateJobDto.job_id} not found`) //it returns the message with 201 status
+    }
+    if(job.active){
+      throw new BadRequestException('job already activated') //it returns the message with 201 status
+    }
+
+    job.active = true
+
+    await this.jobRepository.update(job.id,job)
+
+    return 'Job activated successfully'
+  }
+
+
 
 }
 

@@ -57,6 +57,9 @@ export class Company {
   @Max(10)
   premiumLevel: number;
 
+  @Column({default:100})
+  wallet:number
+
 
   @Column({default:false})
   active: boolean;

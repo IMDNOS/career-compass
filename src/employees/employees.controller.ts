@@ -128,8 +128,6 @@ export class EmployeesController {
 
   @Get('jobs')
   jobs(@Query() fields?: any) {
-    // return fields.static
-
     return this.employeesService.jobs(fields);
   }
 

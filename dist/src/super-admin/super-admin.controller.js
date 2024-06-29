@@ -16,6 +16,7 @@ exports.SuperAdminController = void 0;
 const common_1 = require("@nestjs/common");
 const super_admin_service_1 = require("./super-admin.service");
 const decorate_guards_1 = require("./strategies/decorate-guards");
+const update_super_admin_dto_1 = require("./dto/update-super-admin.dto");
 let SuperAdminController = class SuperAdminController {
     constructor(superAdminService) {
         this.superAdminService = superAdminService;
@@ -23,8 +24,18 @@ let SuperAdminController = class SuperAdminController {
     findAll() {
         return this.superAdminService.findAll();
     }
+    jobs(fields) {
+        return this.superAdminService.jobs(fields);
+    }
+    findOneJob(id) {
+        const fields = { id: id };
+        return this.superAdminService.jobs(fields);
+    }
     findOne(id) {
         return this.superAdminService.findOne(+id);
+    }
+    activateJob(activateJobDto) {
+        return this.superAdminService.activateJob(activateJobDto);
     }
     remove(id) {
         return this.superAdminService.remove(+id);
@@ -38,12 +49,34 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SuperAdminController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('jobs'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], SuperAdminController.prototype, "jobs", null);
+__decorate([
+    (0, common_1.Get)('jobs/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], SuperAdminController.prototype, "findOneJob", null);
+__decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], SuperAdminController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(decorate_guards_1.AtGuardSuperAdmin),
+    (0, common_1.Post)('activate_job'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_super_admin_dto_1.ActivateJobDto]),
+    __metadata("design:returntype", void 0)
+], SuperAdminController.prototype, "activateJob", null);
 __decorate([
     (0, common_1.UseGuards)(decorate_guards_1.AtGuardSuperAdmin),
     (0, common_1.Delete)(':id'),
