@@ -21,6 +21,7 @@ const multer_1 = require("multer");
 const path_1 = require("path");
 const platform_express_1 = require("@nestjs/platform-express");
 const set_education_and_experience_dto_1 = require("./dto/set-education-and-experience.dto");
+const apply_to_job_dto_1 = require("./dto/apply-to-job.dto");
 let EmployeesController = class EmployeesController {
     constructor(employeesService) {
         this.employeesService = employeesService;
@@ -63,6 +64,10 @@ let EmployeesController = class EmployeesController {
     }
     jobs(fields) {
         return this.employeesService.jobs(fields);
+    }
+    applyForJob(applyToJobDto, req) {
+        const id = req.user['id'];
+        return this.employeesService.applyForJob(id, applyToJobDto);
     }
 };
 exports.EmployeesController = EmployeesController;
@@ -175,6 +180,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], EmployeesController.prototype, "jobs", null);
+__decorate([
+    (0, common_1.UseGuards)(decorate_guards_1.EmployeeAtGuard),
+    (0, common_1.Post)('apply_for_job'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [apply_to_job_dto_1.ApplyToJobDto, Object]),
+    __metadata("design:returntype", void 0)
+], EmployeesController.prototype, "applyForJob", null);
 exports.EmployeesController = EmployeesController = __decorate([
     (0, common_1.Controller)('employees'),
     __metadata("design:paramtypes", [employees_service_1.EmployeesService])

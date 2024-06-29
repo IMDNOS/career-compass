@@ -14,6 +14,8 @@ import { Static, Type } from '../statics/entities/static.entity';
 import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
 import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
+import { ApplyToJobDto } from './dto/apply-to-job.dto';
+import { Employee_job } from '../job/entities/employee_job.entity';
 
 @Injectable()
 export class EmployeesService {
@@ -26,7 +28,10 @@ export class EmployeesService {
     private readonly subCategoryRepository: Repository<SubCategory>,
     @InjectRepository(Job)
     private readonly jobRepository: Repository<Job>,
-  ) {}
+    @InjectRepository(Employee_job)
+    private readonly employee_jobRepository: Repository<Employee_job>,
+  ) {
+  }
 
   async getInfo(employee_id: number) {
     return await this.employeeRepository.findOne({
@@ -243,5 +248,22 @@ export class EmployeesService {
         },
       },
     });
+  }
+
+  async applyForJob(employeeId: number, applyToJobDto: ApplyToJobDto) {
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+
+    const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } });
+
+    const employeeJob = this.employee_jobRepository.create({
+      employee: employee,
+      job: job,
+    });
+
+    //send the company a notification
+
+
+    return await this.employee_jobRepository.save(employeeJob);
+
   }
 }

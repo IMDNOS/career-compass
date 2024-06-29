@@ -19,6 +19,7 @@ import { extname } from 'path';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
+import { ApplyToJobDto } from './dto/apply-to-job.dto';
 
 @Controller('employees')
 export class EmployeesController {
@@ -132,6 +133,12 @@ export class EmployeesController {
     return this.employeesService.jobs(fields);
   }
 
+  @UseGuards(EmployeeAtGuard)
+  @Post('apply_for_job')
+  applyForJob(@Body() applyToJobDto:ApplyToJobDto,@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.applyForJob(id, applyToJobDto)
+  }
 
 
 

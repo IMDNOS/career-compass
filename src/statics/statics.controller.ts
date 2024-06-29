@@ -6,9 +6,8 @@ import { UpdateStaticDto } from './dto/update-static.dto';
 
 @Controller('statics')
 export class StaticsController {
-  constructor(private readonly staticsService: StaticsService) {}
-
-
+  constructor(private readonly staticsService: StaticsService) {
+  }
 
 
   @UseGuards(AtGuardSuperAdmin)
@@ -18,45 +17,23 @@ export class StaticsController {
   }
 
 
-
-  // @Get('levels')
-  // async getLevels() {
-  //   return this.staticsService.findAllLevels();
-  // }
-
-  // @Get('job-types')
-  // async getJobTypes() {
-  //   return this.staticsService.findAllJobTypes();
-  // }
-
-  // @Get('categories')
-  // async getCategories() {
-  //   return this.staticsService.findAllCategories();
-  // }
-
-
-
-
   @Get()
-  async getAllStatics(){
+  async getAllStatics() {
     return this.staticsService.findAllStatics();
   }
 
 
-
-   //get all subcategories of a category
-   @Get('get_subcategories/:id')
-   async getSubcategoriesOfCategory(@Param('id') id: string) {
-     return this.staticsService.getSubcategoriesOfCategory(+id);
-   }
-
-
-   @Get('get_their_subcategories')
-   async getSubcategoriesOfCategories(@Query() categoriesArray?: any) {
-     return this.staticsService.getSubcategoriesOfCategories(categoriesArray);
-   }
+  //get all subcategories of a category
+  @Get('get_subcategories/:id')
+  async getSubcategoriesOfCategory(@Param('id') id: string) {
+    return this.staticsService.getSubcategoriesOfCategory(+id);
+  }
 
 
+  @Get('get_their_subcategories')
+  async getSubcategoriesOfCategories(@Query() categoriesArray?: any) {
+    return this.staticsService.getSubcategoriesOfCategories(categoriesArray);
+  }
 
 
   @UseGuards(AtGuardSuperAdmin)

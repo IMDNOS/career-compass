@@ -20,12 +20,14 @@ const typeorm_2 = require("typeorm");
 const static_entity_1 = require("../statics/entities/static.entity");
 const sub_category_entity_1 = require("../sub-categories/entities/sub-category.entity");
 const job_entity_1 = require("../job/entities/job.entity");
+const employee_job_entity_1 = require("../job/entities/employee_job.entity");
 let EmployeesService = class EmployeesService {
-    constructor(employeeRepository, staticRepository, subCategoryRepository, jobRepository) {
+    constructor(employeeRepository, staticRepository, subCategoryRepository, jobRepository, employee_jobRepository) {
         this.employeeRepository = employeeRepository;
         this.staticRepository = staticRepository;
         this.subCategoryRepository = subCategoryRepository;
         this.jobRepository = jobRepository;
+        this.employee_jobRepository = employee_jobRepository;
     }
     async getInfo(employee_id) {
         return await this.employeeRepository.findOne({
@@ -198,6 +200,15 @@ let EmployeesService = class EmployeesService {
             },
         });
     }
+    async applyForJob(employeeId, applyToJobDto) {
+        const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+        const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } });
+        const employeeJob = this.employee_jobRepository.create({
+            employee: employee,
+            job: job,
+        });
+        return await this.employee_jobRepository.save(employeeJob);
+    }
 };
 exports.EmployeesService = EmployeesService;
 exports.EmployeesService = EmployeesService = __decorate([
@@ -206,7 +217,9 @@ exports.EmployeesService = EmployeesService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(static_entity_1.Static)),
     __param(2, (0, typeorm_1.InjectRepository)(sub_category_entity_1.SubCategory)),
     __param(3, (0, typeorm_1.InjectRepository)(job_entity_1.Job)),
+    __param(4, (0, typeorm_1.InjectRepository)(employee_job_entity_1.Employee_job)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])

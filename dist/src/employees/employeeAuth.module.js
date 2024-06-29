@@ -21,12 +21,13 @@ const employees_service_1 = require("./employees.service");
 const static_entity_1 = require("../statics/entities/static.entity");
 const sub_category_entity_1 = require("../sub-categories/entities/sub-category.entity");
 const job_entity_1 = require("../job/entities/job.entity");
+const employee_job_entity_1 = require("../job/entities/employee_job.entity");
 let EmployeeAuthModule = class EmployeeAuthModule {
 };
 exports.EmployeeAuthModule = EmployeeAuthModule;
 exports.EmployeeAuthModule = EmployeeAuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([employee_entity_1.Employee, static_entity_1.Static, sub_category_entity_1.SubCategory, job_entity_1.Job]),
+        imports: [typeorm_1.TypeOrmModule.forFeature([employee_entity_1.Employee, static_entity_1.Static, sub_category_entity_1.SubCategory, job_entity_1.Job, employee_job_entity_1.Employee_job]),
             jwt_1.JwtModule.register({}),
             config_1.ConfigModule.forRoot({ isGlobal: true })],
         controllers: [employeeAuth_controller_1.EmployeeAuthController, employees_controller_1.EmployeesController,],
