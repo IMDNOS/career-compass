@@ -2,11 +2,11 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundExc
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { In, Repository } from 'typeorm';
-// import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 import { Static, Type } from 'src/statics/entities/static.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
-import { ActivateJobDto } from './dto/update-super-admin.dto';
+import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
+import { Company } from '../company/entities/company.entity';
 
 @Injectable()
 export class SuperAdminService {
@@ -14,55 +14,59 @@ export class SuperAdminService {
               @InjectRepository(Static) private staticRepository: Repository<Static>,
               @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
               @InjectRepository(Job) private jobRepository: Repository<Job>,
-              ){}
+              @InjectRepository(Company) private companyRepository: Repository<Company>,
+  ) {
+  }
 
-    async findAll() {
+  async findAll() {
     const employees = await this.employeeRepository.find({
-        relations: ['static','subcategory'] });
+      relations: ['static', 'subcategory'],
+    });
 
-        return employees.map(employee => {
-          const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
-          const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
-          const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
-          return {
-            id: employee.id,
-            name: employee.name,
-            email:employee.email,
-            phone:employee.phone,
-            gender:employee.gender,
-            image:employee.image,
-            resume:employee.resume,
-            levels,
-            jobTypes,
-            categories,
-            SubCategory:employee.subcategory
-          }
-        });
+    return employees.map(employee => {
+      const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
+      const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
+      const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
+      return {
+        id: employee.id,
+        name: employee.name,
+        email: employee.email,
+        phone: employee.phone,
+        gender: employee.gender,
+        image: employee.image,
+        resume: employee.resume,
+        levels,
+        jobTypes,
+        categories,
+        SubCategory: employee.subcategory,
+      };
+    });
+  }
+
+  async findOne(id: number) {
+    const employee = await this.employeeRepository.find({ where: { id: id }, relations: ['static', 'subcategory'] });
+
+    if (!employee) {
+      throw new HttpException(`Employee with id ${id} not found`, HttpStatus.NOT_FOUND);
     }
-
-    async findOne(id: number) {
-      const employee = await this.employeeRepository.find({where:{id:id}, relations: ['static','subcategory'] });
-
-      if (!employee) {
-        throw new HttpException(`Employee with id ${id} not found`,HttpStatus.NOT_FOUND)
-      }
-      return employee.map(employee => {
-        const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
-        const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
-        const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
-        return {
-          id: employee.id,
-          name: employee.name,
-          email:employee.email,
-          phone:employee.phone,
-          gender:employee.gender,
-          image:employee.image,
-          resume:employee.resume,
-          levels,
-          jobTypes,
-          categories,
-          SubCategory:employee.subcategory}
-      });
+    return employee.map(employee => {
+      const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
+      const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
+      const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
+      return {
+        id: employee.id,
+        name: employee.name,
+        email: employee.email,
+        phone: employee.phone,
+        gender: employee.gender,
+        image: employee.image,
+        resume: employee.resume,
+        levels,
+        jobTypes,
+        categories,
+        SubCategory: employee.subcategory,
+      };
+    });
   }
 
   async jobs(fields?: any) {
@@ -116,8 +120,6 @@ export class SuperAdminService {
   }
 
 
-
-
   //
   //   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
   //     const employee = await this.employeeRepository.findOne({ where: { id }, relations: ['static', 'subcategory'] });
@@ -154,35 +156,72 @@ export class SuperAdminService {
   //    }
   //
   // }
-    async remove(id: number) {
-      const employee = await this.employeeRepository.findOne({where:{id:id}});
-      if (!employee) {
-        throw new HttpException(`Employee with id ${id} not found`,HttpStatus.NOT_FOUND)
-      }
-      await this.employeeRepository.remove(employee);
-      return {
-        statusCode: 200,
-        message: `Employee with id ${id} has been successfully removed`,
-      };  }
+  async remove(id: number) {
+    const employee = await this.employeeRepository.findOne({ where: { id: id } });
+    if (!employee) {
+      throw new HttpException(`Employee with id ${id} not found`, HttpStatus.NOT_FOUND);
+    }
+    await this.employeeRepository.remove(employee);
+    return {
+      statusCode: 200,
+      message: `Employee with id ${id} has been successfully removed`,
+    };
+  }
 
-  async activateJob(activateJobDto:ActivateJobDto){
-    const job =await this.jobRepository.findOne({where:{id:activateJobDto.job_id}})
+  async activateJob(activateJobDto: ActivateJobDto) {
+    const job = await this.jobRepository.findOne({ where: { id: activateJobDto.job_id } });
 
     if (!job) {
-      throw new NotFoundException(`Job with id ${activateJobDto.job_id} not found`) //it returns the message with 201 status
+      throw new NotFoundException(`Job with id ${activateJobDto.job_id} not found`); //it returns the message with 201 status
     }
-    if(job.active){
-      throw new BadRequestException('job already activated') //it returns the message with 201 status
+    if (job.active) {
+      throw new BadRequestException('job already activated'); //it returns the message with 201 status
     }
 
-    job.active = true
+    job.active = true;
 
-    await this.jobRepository.update(job.id,job)
 
-    return 'Job activated successfully'
+    //cut of the company's wallet 😈 and send a notification
+
+    await this.jobRepository.update(job.id, job);
+
+    return 'Job activated successfully';
   }
 
 
+  async chargeWallet(chargeWalletDto: ChargeWalletDto) {
+    const company = await this.companyRepository.findOne({ where: { id: chargeWalletDto.companyId } });
+
+    if (!company)
+      throw new NotFoundException(`Company with id ${chargeWalletDto.companyId} not found`);
+
+    const oldBalance = company.wallet;
+    const newBalance = oldBalance + chargeWalletDto.money;
+
+    company.wallet = newBalance;
+
+    await this.companyRepository.update(chargeWalletDto.companyId, company);
+
+    return {
+      oldBalance:oldBalance,
+      newBalance:newBalance
+    }
+  }
+
+
+ async setPremiumLevel(setPremiumCompany:SetPremiumCompany){
+    const company = await this.companyRepository.findOne({where:{id:setPremiumCompany.companyId}})
+
+   if (!company)
+     throw new NotFoundException(`Company with id ${setPremiumCompany.companyId} not found`);
+
+   company.premiumLevel=setPremiumCompany.premiumLevel;
+
+  await this.companyRepository.update(setPremiumCompany.companyId,company)
+
+   return 'company premium level was set to ' + company.premiumLevel;
+
+ }
 
 }
 

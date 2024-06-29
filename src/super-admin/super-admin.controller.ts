@@ -2,7 +2,7 @@ import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Query, Post } f
 import { SuperAdminService } from './super-admin.service';
 import { AtGuardSuperAdmin } from './strategies/decorate-guards';
 import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
-import { ActivateJobDto } from './dto/update-super-admin.dto';
+import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
 
 
 @Controller('superAdmin')
@@ -50,8 +50,17 @@ export class SuperAdminController {
     return this.superAdminService.remove(+id);
   }
 
+  @UseGuards(AtGuardSuperAdmin)
+  @Post('charge_wallet')
+  chargeWallet(@Body() chargeWalletDto:ChargeWalletDto) {
+    return this.superAdminService.chargeWallet(chargeWalletDto);
+  }
 
-
+@UseGuards(AtGuardSuperAdmin)
+@Post('set_premium_level')
+  setPremiumLevel(@Body() setPremiumCompany:SetPremiumCompany) {
+    return this.superAdminService.setPremiumLevel(setPremiumCompany);
+}
 
 
 
