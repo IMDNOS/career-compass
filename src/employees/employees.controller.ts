@@ -42,7 +42,7 @@ export class EmployeesController {
 
   @UseGuards(EmployeeAtGuard)
   @Post('set_statics')
-  setStatics(@Body() staticsDto: { name: string }[], @Req() req: Request) {
+  setStatics(@Body() staticsDto:{ name: string }[], @Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.setStatics(id, staticsDto);
   }

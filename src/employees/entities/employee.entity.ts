@@ -52,10 +52,10 @@ export class Employee {
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
 
-  @Column()
+  @Column({nullable:true})
   experience:string | null;
 
-  @Column()
+  @Column({nullable:true})
   education:string | null;
 
   @ManyToMany(() => Static)
