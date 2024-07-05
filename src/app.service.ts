@@ -120,10 +120,13 @@ export class AppService {
 
     {//super admin
       await this.superAdminRepository.save({
+        name:'imad',
         email: 'superAdmin@gmail.com',//password is: superAdmin123
         hashed_password: '$2b$10$s8lDzeYEqVX9ytw7FMl5re92OGzhXhuUE/fjJBJJOuvOvXP2rr8ta',
         active: true,
         manager: true,
+        age:20, // very young
+        location:'daraa/ibtaa'
       });
     }
   }catch {return 'already seeded'}

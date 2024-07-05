@@ -8,6 +8,7 @@ import { Job } from '../job/entities/job.entity';
 import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
 import { Company } from '../company/entities/company.entity';
 import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
+import { SuperAdmin } from './entities/super-admin.entity';
 
 @Injectable()
 export class SuperAdminService {
@@ -16,8 +17,8 @@ export class SuperAdminService {
               @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
               @InjectRepository(Job) private jobRepository: Repository<Job>,
               @InjectRepository(Company) private companyRepository: Repository<Company>,
-              @InjectRepository(EmployeeSubCategory)
-              private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
+              @InjectRepository(EmployeeSubCategory) private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
+              @InjectRepository(SuperAdmin) private superAdminRepository: Repository<SuperAdmin>,
   ) {
   }
 
@@ -251,6 +252,10 @@ export class SuperAdminService {
 
    return 'company premium level was set to ' + company.premiumLevel;
 
+ }
+
+ async getAllAdmins(){
+    return this.superAdminRepository.find({select:['id','name','email','age','location','manager']})
  }
 
 }

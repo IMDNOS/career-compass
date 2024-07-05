@@ -72,6 +72,12 @@ export class SuperAdminController {
     return this.superAdminService.setPremiumLevel(setPremiumCompany);
 }
 
+@Get('admins')
+  getAllAdmins(){
+    return this.superAdminService.getAllAdmins();
+}
+
+
 
 
 

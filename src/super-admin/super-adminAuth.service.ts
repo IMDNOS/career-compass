@@ -26,7 +26,8 @@ export class SuperAdminAuthService {
 
     if (passwordMatches) {
       const AccessToken = await this.getToken(superAdmin);
-      return AccessToken;
+      delete superAdmin.hashed_password
+      return {...superAdmin,...AccessToken}
     }
     throw new ForbiddenException('Wrong Password');
   }
