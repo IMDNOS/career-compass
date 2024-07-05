@@ -1,7 +1,6 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Query, Post } from '@nestjs/common';
+import { Controller, Get, Body, Param, Delete, UseGuards, Query, Post } from '@nestjs/common';
 import { SuperAdminService } from './super-admin.service';
 import { AtGuardSuperAdmin } from './strategies/decorate-guards';
-import { UpdateEmployeeDto } from '../employees/dto/update-employee.dto';
 import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
 
 
@@ -9,9 +8,24 @@ import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-
 export class SuperAdminController {
   constructor(private readonly superAdminService: SuperAdminService) {}
 
-  @Get()
+  @Get('getAllEmployees')
   findAll() {
-    return this.superAdminService.findAll();
+    return this.superAdminService.findAllEmployees();
+  }
+
+  @Get('getEmployee/:id')
+  findOneEmployeeById(@Param('id') id: string) {
+    return this.superAdminService.findOneEmployeeById(+id);
+  }
+
+  @Get('getAllCompanies')
+  findAllCompanies() {
+    return this.superAdminService.findAllCompanies();
+  }
+
+  @Get('getCompany/:id')
+  findOneCompanyById(@Param('id') id: string) {
+    return this.superAdminService.findOneCompanyById(+id);
   }
 
   @Get('jobs')
@@ -25,10 +39,6 @@ export class SuperAdminController {
     return this.superAdminService.jobs(fields);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.superAdminService.findOne(+id);
-  }
 
   @UseGuards(AtGuardSuperAdmin)
   @Post('activate_job')
@@ -43,7 +53,7 @@ export class SuperAdminController {
 //   update(@Param('id') id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
 //     return this.superAdminService.update(+id, updateEmployeeDto);
 //   }
-  //
+
   @UseGuards(AtGuardSuperAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {

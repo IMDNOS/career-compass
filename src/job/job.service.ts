@@ -25,10 +25,14 @@ export class JobService {
     const company = await this.companyRepository.findOne({where: { id: companyId },
       select: ["id", "company_name", "email", "address", "description", "logo", "premiumLevel"]});
 
+    if (!company) {
+      throw new NotFoundException(`company not found`);
+    }
+
       const jobType = await this.staticRepository.findOne({ where: { id: createJobDto.typeId } });
-    console.log(jobType)
+
       const level = await this.staticRepository.findOne({ where: { id: createJobDto.levelId } });
-    console.log(level)
+
       if (!jobType || !level) {
         throw new NotFoundException(`Job type or level not found`);
       }
@@ -59,6 +63,8 @@ export class JobService {
 
       await this.jobRepository.save(job);
       return job;
+      // const jj= await this.jobRepository.findOne({where:{id:job.id}})
+      // return jj;
     }
 
 

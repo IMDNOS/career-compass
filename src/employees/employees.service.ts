@@ -16,6 +16,7 @@ import { Job } from '../job/entities/job.entity';
 import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
 import { ApplyToJobDto } from './dto/apply-to-job.dto';
 import { Employee_job } from '../job/entities/employee_job.entity';
+import { EmployeeSubCategory } from './entities/employeeSubcategory.entity';
 
 @Injectable()
 export class EmployeesService {
@@ -30,6 +31,9 @@ export class EmployeesService {
     private readonly jobRepository: Repository<Job>,
     @InjectRepository(Employee_job)
     private readonly employee_jobRepository: Repository<Employee_job>,
+    @InjectRepository(EmployeeSubCategory)
+    private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
+
   ) {
   }
 
@@ -110,34 +114,72 @@ export class EmployeesService {
     return { levels, jobTypes, categories };
   }
 
-  async setSubcategories(
-    employeeId: number,
-    subcategoriesDto: { name: string }[],
-  ) {
-    const employee = await this.employeeRepository.findOne({
-      where: { id: employeeId },
-    });
-    employee.subcategory = [];
+async setSubcategories(
+  employeeId: number,
+  subcategoriesDto: { name: string }[],
+) {
+  const employee = await this.employeeRepository.findOne({
+    where: { id: employeeId },
+    relations: ['static'],
+  });
 
-    for (const subCategoriesDto of subcategoriesDto) {
-      const subcategoryEntity = await this.subCategoryRepository.findOne({
-        where: { name: subCategoriesDto.name },
-      });
-      if (subcategoryEntity) {
-        employee.subcategory.push(subcategoryEntity);
+  if (!employee)
+    throw new ForbiddenException(`Employee with id ${employeeId} not found`);
+
+  await this.employeeSubCategoryRepository.delete({ employee: { id: employeeId } });
+
+  const newEmployeeSubCategories = [];
+  const newEmployeeStaticIds = new Set<number>();
+
+  for (const subCategoryDto of subcategoriesDto) {
+    const subcategoryEntity = await this.subCategoryRepository.findOne({
+      where: { name: subCategoryDto.name },
+      relations: ['category'],
+    });
+
+    if (subcategoryEntity) {
+      const employeeSubCategory = new EmployeeSubCategory();
+      employeeSubCategory.employee = employee;
+      employeeSubCategory.subcategory = subcategoryEntity;
+
+      newEmployeeSubCategories.push(employeeSubCategory);
+
+      if (subcategoryEntity.category) {
+        newEmployeeStaticIds.add(subcategoryEntity.category.id);
       }
     }
-    await this.employeeRepository.save(employee);
-    return employee.subcategory;
   }
 
+  await this.employeeSubCategoryRepository.save(newEmployeeSubCategories);
+
+  if (newEmployeeStaticIds.size > 0) {
+    const newStatics = await this.staticRepository.find({ where: { id: In([...newEmployeeStaticIds]) } });
+    employee.static.push(...newStatics);
+    await this.employeeRepository.save(employee);
+  }
+
+  // const updatedEmployee = await this.employeeRepository.findOne({
+  //   where: { id: employeeId },
+  //   relations: ['static'],
+  // });
+
+  const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+    where: { employee: { id: employeeId } },
+    relations: ['subcategory'],
+  });
+
+  return employeeSubCategories.map(es => es.subcategory);
+}
+
+
+
   async getSubcategories(employeeId: number) {
-    const employee = await this.employeeRepository.findOne({
-      where: { id: employeeId },
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      where: { employee: { id: employeeId } },
       relations: ['subcategory'],
     });
 
-    return employee.subcategory;
+    return employeeSubCategories.map(es => es.subcategory);
   }
 
   async setEducationAndExperience(
@@ -149,7 +191,7 @@ export class EmployeesService {
     });
 
     if (!employee)
-      throw new ForbiddenException('Employee with id ${id} not found');
+      throw new ForbiddenException(`Employee with id ${id} not found`);
 
     await this.employeeRepository.update(id, setEducationAndExperienceDto);
 
@@ -179,6 +221,20 @@ export class EmployeesService {
     return { ...employee };
   }
 
+  async getimage(employeeId: number) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    const employeeImagePath = `uploadsimages/${employee.image}`;
+
+    return employeeImagePath;
+  }
+
+
   async saveFile(file: Express.Multer.File, employeeId: number) {
     if (!file) {
       throw new BadRequestException('File not provided');
@@ -197,6 +253,61 @@ export class EmployeesService {
 
     return { ...employee };
   }
+
+  async getresume(employeeId: number) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    const employeeResumePath = `uploadsFiles/${employee.resume}`;
+
+    return employeeResumePath;
+  }
+
+  async primalFilter(employeeId: number) {
+
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    const employeeWithStatics = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+      relations: ['static'],
+    });
+
+    const employeeStaticIds = employeeWithStatics.static.map(staticItem => staticItem.id);
+
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      where: { employee: { id: employeeId } },
+      relations: ['subcategory'],
+    });
+
+    const employeeSubCategoryIds = employeeSubCategories.map(es => es.subcategory.id);
+
+    let fields: any = { active: true };
+    if (employeeStaticIds.length) {
+      fields.static = { id: In(employeeStaticIds) };
+    }
+    if (employeeSubCategoryIds.length) {
+      fields.subCategories = { id: In(employeeSubCategoryIds) };
+    }
+
+    const jobs = await this.jobRepository.find({
+      where: fields,
+      relations: ['company', 'static', 'subCategories'],
+    });
+
+    return jobs.filter(job =>
+      (!job.wanted_gender || job.wanted_gender === employee.gender) &&
+      (!job.experience_years || job.experience_years <= employee.experience) &&
+      (!job.company.address || job.company.address === employee.home_address)
+    );
+  }
+
 
   async jobs(fields?: any) {
     fields.active = true;

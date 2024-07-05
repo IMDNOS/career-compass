@@ -28,6 +28,13 @@ export class CompanyController {
 
 
   @UseGuards(CompanyAtGuard)
+  @Get('get_logo')
+  getImage(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.companyService.getlogo(id);
+  }
+
+  @UseGuards(CompanyAtGuard)
   @Post('upload-logo')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -53,7 +60,7 @@ export class CompanyController {
   findAll(@Req() request: Request) {
     const company = request.user;
     const companyId=company['id']
-    return this.companyService.findAll(companyId);
+    return this.companyService.findAllJobs(companyId);
   }
 
   @UseGuards(CompanyAtGuard)
@@ -61,7 +68,7 @@ export class CompanyController {
   findOne(@Param('id') id: string ,@Req() request: Request) {
     const company = request.user;
     const companyId=company['id']
-    return this.companyService.findOne(+id,companyId);
+    return this.companyService.findOneJobById(+id,companyId);
   }
 //
 //

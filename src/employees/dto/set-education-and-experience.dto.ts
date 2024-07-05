@@ -7,7 +7,7 @@ import { CreateEmployeeDto } from './create-employee.dto';
 export class  SetEducationAndExperienceDto{
   @IsNotEmpty()
   @IsString()
-  experience:string
+  experience:number
 
   @IsNotEmpty()
   @IsString()

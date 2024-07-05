@@ -7,6 +7,7 @@ import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
 import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
 import { Company } from '../company/entities/company.entity';
+import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
 
 @Injectable()
 export class SuperAdminService {
@@ -15,18 +16,38 @@ export class SuperAdminService {
               @InjectRepository(SubCategory) private subCategoryRepository: Repository<SubCategory>,
               @InjectRepository(Job) private jobRepository: Repository<Job>,
               @InjectRepository(Company) private companyRepository: Repository<Company>,
+              @InjectRepository(EmployeeSubCategory)
+              private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
   ) {
   }
 
-  async findAll() {
+  async findAllCompanies(){
+    const companies= await this.companyRepository.find();
+    return companies;
+  }
+
+  async findOneCompanyById(companyId:number){
+    const company= await this.companyRepository.find({where:{id:companyId}});
+    return company;
+  }
+
+
+  async findAllEmployees() {
     const employees = await this.employeeRepository.find({
-      relations: ['static', 'subcategory'],
+      relations: ['static'],
+    });
+
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      relations: ['employee', 'subcategory'],
     });
 
     return employees.map(employee => {
       const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
       const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
       const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
+      const subcategories = employeeSubCategories.filter(es => es.employee.id === employee.id)
+        .map(es => es.subcategory);
+
       return {
         id: employee.id,
         name: employee.name,
@@ -38,36 +59,46 @@ export class SuperAdminService {
         levels,
         jobTypes,
         categories,
-        SubCategory: employee.subcategory,
+        subcategories,
       };
     });
   }
 
-  async findOne(id: number) {
-    const employee = await this.employeeRepository.find({ where: { id: id }, relations: ['static', 'subcategory'] });
+  async findOneEmployeeById(id: number) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: id },
+      relations: ['static']
+    });
 
     if (!employee) {
       throw new HttpException(`Employee with id ${id} not found`, HttpStatus.NOT_FOUND);
     }
-    return employee.map(employee => {
-      const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
-      const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
-      const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
-      return {
-        id: employee.id,
-        name: employee.name,
-        email: employee.email,
-        phone: employee.phone,
-        gender: employee.gender,
-        image: employee.image,
-        resume: employee.resume,
-        levels,
-        jobTypes,
-        categories,
-        SubCategory: employee.subcategory,
-      };
+
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      relations: ['employee', 'subcategory'],
     });
+
+    const levels = employee.static.filter(staticItem => staticItem.type === Type.Level);
+    const jobTypes = employee.static.filter(staticItem => staticItem.type === Type.Job_type);
+    const categories = employee.static.filter(staticItem => staticItem.type === Type.Category);
+    const subcategories = employeeSubCategories.filter(es => es.employee.id === employee.id)
+      .map(es => es.subcategory);
+
+    return {
+      id: employee.id,
+      name: employee.name,
+      email: employee.email,
+      phone: employee.phone,
+      gender: employee.gender,
+      image: employee.image,
+      resume: employee.resume,
+      levels,
+      jobTypes,
+      categories,
+      subcategories, // Corrected subcategory mapping
+    };
   }
+
 
   async jobs(fields?: any) {
     let staticsArray;
@@ -120,7 +151,6 @@ export class SuperAdminService {
   }
 
 
-  //
   //   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
   //     const employee = await this.employeeRepository.findOne({ where: { id }, relations: ['static', 'subcategory'] });
   //

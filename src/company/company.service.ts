@@ -33,7 +33,20 @@ export class CompanyService {
   }
 
 
-  async findAll(companyID: number): Promise<Job[]> {
+  async getlogo(companyId: number) {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+    });
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+
+    const companyImagePath = `uploadsimages/${company.logo}`;
+
+    return companyImagePath;
+  }
+
+  async findAllJobs(companyID: number): Promise<Job[]> {
 
     return this.jobRepository.find({ where:{company: { id: companyID },active : true},
       relations: ['static', 'subCategories'],
@@ -41,7 +54,7 @@ export class CompanyService {
     });
   }
 
-  async findOne(id: number,companyID: number): Promise<Job[]> {
+  async findOneJobById(id: number,companyID: number): Promise<Job[]> {
     return await this.jobRepository.find({
       where: { id: id , company: { id: companyID },active : true} , // Filter by company ID,
       relations: ['static', 'subCategories'],

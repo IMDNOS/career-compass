@@ -48,6 +48,13 @@ export class EmployeesController {
   }
 
   @UseGuards(EmployeeAtGuard)
+  @Get('primal-filter')
+  primalFilter(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.primalFilter(id);
+  }
+
+  @UseGuards(EmployeeAtGuard)
   @Get('get_statics')
   getStatics(@Req() req: Request) {
     const id = req.user['id'];
@@ -55,11 +62,23 @@ export class EmployeesController {
   }
 
   @UseGuards(EmployeeAtGuard)
+  @Get('get_image')
+  getImage(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.getimage(id);
+  }
+  @UseGuards(EmployeeAtGuard)
+  @Get('get_resume')
+  getResume(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.getresume(id);
+  }
+
+  @UseGuards(EmployeeAtGuard)
   @Post('set_subcategories')
   setSubcategories(
     @Body() subcategoriesDto: { name: string }[],
-    @Req() req: Request,
-  ) {
+    @Req() req: Request) {
     const id = req.user['id'];
     return this.employeesService.setSubcategories(id, subcategoriesDto);
   }
