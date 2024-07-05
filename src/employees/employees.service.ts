@@ -73,6 +73,7 @@ export class EmployeesService {
   }
 
   async setStatics(employeeId: number, staticsDto: { name: string }[]) {
+
     const employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
       relations: ['static'],
