@@ -300,6 +300,11 @@ async setSubcategories(
     const jobs = await this.jobRepository.find({
       where: fields,
       relations: ['company', 'static', 'subCategories'],
+      order:{
+        company:{
+          premiumLevel: 'DESC',
+        }
+      }
     });
 
     return jobs.filter(job =>
