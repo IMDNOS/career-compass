@@ -258,5 +258,10 @@ export class SuperAdminService {
     return this.superAdminRepository.find({select:['id','name','email','age','location','manager']})
  }
 
+ async getMyInfo(id:number){
+    const admin = await this.superAdminRepository.findOne({ where: { id: id } });
+    return admin
+ }
+
 }
 

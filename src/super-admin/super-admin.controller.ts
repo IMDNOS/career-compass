@@ -1,7 +1,8 @@
-import { Controller, Get, Body, Param, Delete, UseGuards, Query, Post } from '@nestjs/common';
+import { Controller, Get, Body, Param, Delete, UseGuards, Query, Post, Req } from '@nestjs/common';
 import { SuperAdminService } from './super-admin.service';
 import { AtGuardSuperAdmin } from './strategies/decorate-guards';
 import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-dtos.dto';
+import { Request } from 'express';
 
 
 @Controller('superAdmin')
@@ -77,7 +78,14 @@ export class SuperAdminController {
     return this.superAdminService.getAllAdmins();
 }
 
+@UseGuards(AtGuardSuperAdmin)
+@Get('getMyInfo')
+  getMyInfo(@Req() req: Request) {
+  const id = req.user['id'];
 
+  return this.superAdminService.getMyInfo(id)
+
+}
 
 
 
