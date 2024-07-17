@@ -43,6 +43,10 @@ export class CompanyService {
 
     const companyImagePath = `uploadsimages/${company.logo}`;
 
+    if(company.logo === null){
+      throw new BadRequestException('Logo not provided');
+    }
+
     return companyImagePath;
   }
 

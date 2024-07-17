@@ -232,6 +232,10 @@ async setSubcategories(
 
     const employeeImagePath = `uploadsimages/${employee.image}`;
 
+    if(employee.image === null){
+      throw new BadRequestException('image not provided');
+    }
+
     return employeeImagePath;
   }
 
@@ -264,6 +268,10 @@ async setSubcategories(
     }
 
     const employeeResumePath = `uploadsFiles/${employee.resume}`;
+
+    if(employee.resume === null){
+      throw new BadRequestException('resume not provided');
+    }
 
     return employeeResumePath;
   }
