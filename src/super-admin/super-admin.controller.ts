@@ -82,7 +82,6 @@ export class SuperAdminController {
 @Get('getMyInfo')
   getMyInfo(@Req() req: Request) {
   const id = req.user['id'];
-
   return this.superAdminService.getMyInfo(id)
 
 }

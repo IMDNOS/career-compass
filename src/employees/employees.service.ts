@@ -33,7 +33,6 @@ export class EmployeesService {
     private readonly employee_jobRepository: Repository<Employee_job>,
     @InjectRepository(EmployeeSubCategory)
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
-
   ) {
   }
 
@@ -115,63 +114,62 @@ export class EmployeesService {
     return { levels, jobTypes, categories };
   }
 
-async setSubcategories(
-  employeeId: number,
-  subcategoriesDto: { name: string }[],
-) {
-  const employee = await this.employeeRepository.findOne({
-    where: { id: employeeId },
-    relations: ['static'],
-  });
-
-  if (!employee)
-    throw new ForbiddenException(`Employee with id ${employeeId} not found`);
-
-  await this.employeeSubCategoryRepository.delete({ employee: { id: employeeId } });
-
-  const newEmployeeSubCategories = [];
-  const newEmployeeStaticIds = new Set<number>();
-
-  for (const subCategoryDto of subcategoriesDto) {
-    const subcategoryEntity = await this.subCategoryRepository.findOne({
-      where: { name: subCategoryDto.name },
-      relations: ['category'],
+  async setSubcategories(
+    employeeId: number,
+    subcategoriesDto: { name: string }[],
+  ) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+      relations: ['static'],
     });
 
-    if (subcategoryEntity) {
-      const employeeSubCategory = new EmployeeSubCategory();
-      employeeSubCategory.employee = employee;
-      employeeSubCategory.subcategory = subcategoryEntity;
+    if (!employee)
+      throw new ForbiddenException(`Employee with id ${employeeId} not found`);
 
-      newEmployeeSubCategories.push(employeeSubCategory);
+    await this.employeeSubCategoryRepository.delete({ employee: { id: employeeId } });
 
-      if (subcategoryEntity.category) {
-        newEmployeeStaticIds.add(subcategoryEntity.category.id);
+    const newEmployeeSubCategories = [];
+    const newEmployeeStaticIds = new Set<number>();
+
+    for (const subCategoryDto of subcategoriesDto) {
+      const subcategoryEntity = await this.subCategoryRepository.findOne({
+        where: { name: subCategoryDto.name },
+        relations: ['category'],
+      });
+
+      if (subcategoryEntity) {
+        const employeeSubCategory = new EmployeeSubCategory();
+        employeeSubCategory.employee = employee;
+        employeeSubCategory.subcategory = subcategoryEntity;
+
+        newEmployeeSubCategories.push(employeeSubCategory);
+
+        if (subcategoryEntity.category) {
+          newEmployeeStaticIds.add(subcategoryEntity.category.id);
+        }
       }
     }
+
+    await this.employeeSubCategoryRepository.save(newEmployeeSubCategories);
+
+    if (newEmployeeStaticIds.size > 0) {
+      const newStatics = await this.staticRepository.find({ where: { id: In([...newEmployeeStaticIds]) } });
+      employee.static.push(...newStatics);
+      await this.employeeRepository.save(employee);
+    }
+
+    // const updatedEmployee = await this.employeeRepository.findOne({
+    //   where: { id: employeeId },
+    //   relations: ['static'],
+    // });
+
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      where: { employee: { id: employeeId } },
+      relations: ['subcategory'],
+    });
+
+    return employeeSubCategories.map(es => es.subcategory);
   }
-
-  await this.employeeSubCategoryRepository.save(newEmployeeSubCategories);
-
-  if (newEmployeeStaticIds.size > 0) {
-    const newStatics = await this.staticRepository.find({ where: { id: In([...newEmployeeStaticIds]) } });
-    employee.static.push(...newStatics);
-    await this.employeeRepository.save(employee);
-  }
-
-  // const updatedEmployee = await this.employeeRepository.findOne({
-  //   where: { id: employeeId },
-  //   relations: ['static'],
-  // });
-
-  const employeeSubCategories = await this.employeeSubCategoryRepository.find({
-    where: { employee: { id: employeeId } },
-    relations: ['subcategory'],
-  });
-
-  return employeeSubCategories.map(es => es.subcategory);
-}
-
 
 
   async getSubcategories(employeeId: number) {
@@ -232,7 +230,7 @@ async setSubcategories(
 
     const employeeImagePath = `uploadsimages/${employee.image}`;
 
-    if(employee.image === null){
+    if (employee.image === null) {
       throw new BadRequestException('image not provided');
     }
 
@@ -269,7 +267,7 @@ async setSubcategories(
 
     const employeeResumePath = `uploadsFiles/${employee.resume}`;
 
-    if(employee.resume === null){
+    if (employee.resume === null) {
       throw new BadRequestException('resume not provided');
     }
 
@@ -288,7 +286,11 @@ async setSubcategories(
       relations: ['static'],
     });
 
+    // return employeeWithStatics
+
     const employeeStaticIds = employeeWithStatics.static.map(staticItem => staticItem.id);
+
+    // return employeeStaticIds;
 
     const employeeSubCategories = await this.employeeSubCategoryRepository.find({
       where: { employee: { id: employeeId } },
@@ -297,7 +299,9 @@ async setSubcategories(
 
     const employeeSubCategoryIds = employeeSubCategories.map(es => es.subcategory.id);
 
-    let fields: any = { active: true };
+    // return employeeSubCategoryIds;
+
+    const fields: any = { active: true };
     if (employeeStaticIds.length) {
       fields.static = { id: In(employeeStaticIds) };
     }
@@ -305,20 +309,32 @@ async setSubcategories(
       fields.subCategories = { id: In(employeeSubCategoryIds) };
     }
 
-    const jobs = await this.jobRepository.find({
+
+    const jobsIds = await this.jobRepository.find({
       where: fields,
-      relations: ['company', 'static', 'subCategories'],
-      order:{
-        company:{
-          premiumLevel: 'DESC',
-        }
-      }
+      select: ['id'],
     });
 
+    const ids = [];
+    for (const job of jobsIds) {
+      ids.push(job.id);
+    }
+
+    const jobs = await this.jobRepository.find({
+      where: { id: In(ids) },
+      relations: ['company', 'static', 'subCategories'],
+      order: {
+        company: {
+          premiumLevel: 'DESC',
+        },
+      },
+    });
+
+
     return jobs.filter(job =>
-      (!job.wanted_gender || job.wanted_gender === employee.gender) &&
-      (!job.experience_years || job.experience_years <= employee.experience) &&
-      (!job.company.address || job.company.address === employee.home_address)
+        (!job.wanted_gender || job.wanted_gender === employee.gender)
+        && (!job.experience_years || job.experience_years <= employee.experience),
+      // && (!job.company.address || job.company.address === employee.home_address)
     );
   }
 

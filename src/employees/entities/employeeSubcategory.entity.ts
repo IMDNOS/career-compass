@@ -7,7 +7,7 @@ export class EmployeeSubCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({nullable:true})
   certification: number|null;
 
   @ManyToOne(() => Employee)

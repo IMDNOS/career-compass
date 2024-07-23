@@ -65,7 +65,7 @@ export class CompanyService {
       select: ["id", "title", "company","description", "salary", "work_hours", "experience_years","wanted_gender"]
     });
   }
-//
+
 //   update(id: number, updateCompanyDto: UpdateCompanyDto) {
 //     return `This action updates a #${id} company`;
 //   }
