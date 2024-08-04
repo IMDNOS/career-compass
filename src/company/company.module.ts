@@ -10,9 +10,10 @@ import { Company } from './entities/company.entity';
 import { AtStrategy } from './strategies/at-strategy';
 import { RtStrategy } from './strategies/rt-strategy';
 import { Job } from '../job/entities/job.entity';
+import { Employee_job } from '../job/entities/employee_job.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Company,Job]),
+  imports:[TypeOrmModule.forFeature([Company,Job,Company,Employee_job,Employee]),
     JwtModule.register({})],
   controllers: [CompanyController,CompanyAuthController],
   providers: [CompanyService,CompanyAuthService,AtStrategy,RtStrategy],

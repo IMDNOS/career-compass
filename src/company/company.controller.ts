@@ -21,6 +21,7 @@ import { EmployeeAtGuard } from '../employees/strategies/decorate-guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -50,11 +51,31 @@ export class CompanyController {
     return this.companyService.saveLogo(file, id);
   }
 
-//   @Post()
-//   create(@Body() createCompanyDto: CreateCompanyDto) {
-//     return this.companyService.create(createCompanyDto);
-//   }
-//
+  @UseGuards(CompanyAtGuard)
+  @Get('getAllEmployeeApplying')
+  getAllEmployeeApplying(@Req() request: Request,@Body() JobDto:ApplyToJobDto) {
+    const company = request.user;
+    const companyId=company['id']
+    return this.companyService.getEmployeesApplying(companyId,JobDto);
+  }
+
+  @UseGuards(CompanyAtGuard)
+  @Get('getAllEmployeeAccepted')
+  getAllEmployeeAccepted(@Req() request: Request,@Body() JobDto:ApplyToJobDto) {
+    const company = request.user;
+    const companyId=company['id']
+    return this.companyService.getEmployeesAccepted(companyId,JobDto);
+  }
+
+
+  @UseGuards(CompanyAtGuard)
+  @Patch('employeeAcceptance/:id')
+  employeeAccepted(@Req() request: Request ,@Param('id') id: string,@Body() JobDto:ApplyToJobDto) {
+    const company = request.user;
+    const companyId=company['id']
+    return this.companyService.employeeAcceptance(+id,companyId,JobDto);
+  }
+
   @UseGuards(CompanyAtGuard)
   @Get('')
   findAll(@Req() request: Request) {
