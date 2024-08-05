@@ -72,7 +72,7 @@ export class CompanyService {
   }
 
 
-  async getEmployeesApplying(companyId: number, job: ApplyToJobDto) {
+  async getEmployeesApplying(companyId: number, jobId:number) {
     const Company = await this.companyRepository.findOne({
       where: { id: companyId }
     });
@@ -81,11 +81,11 @@ export class CompanyService {
     }
 
     const Job = await this.jobRepository.findOne({
-      where: { id: job.job_id, company: Company }
+      where: { id: jobId, company: Company }
     });
 
     if (!Job) {
-      throw new NotFoundException(`Job with ID ${job.job_id} not found`);
+      throw new NotFoundException(`Job with ID ${jobId} not found`);
     }
 
     const employeeJobs = await this.employee_jobRepository.find({
@@ -97,14 +97,14 @@ export class CompanyService {
     });
 
     if (!employeeJobs || employeeJobs.length === 0) {
-      throw new NotFoundException(`No employees applying for job with ID ${job.job_id} found`);
+      throw new NotFoundException(`No employees applying for job with ID ${jobId} found`);
     }
 
     return employeeJobs;
   }
 
 
-  async getEmployeesAccepted(companyId:number ,job:ApplyToJobDto){
+  async getEmployeesAccepted(companyId:number ,jobId:number){
     const Company = await this.companyRepository.findOne({
       where: { id: companyId }
     });
@@ -112,9 +112,9 @@ export class CompanyService {
       throw new NotFoundException(`Company with ID ${companyId} not found`);
     }
 
-    const Job = await this.jobRepository.findOne({where:{id:job.job_id , company:Company}});
+    const Job = await this.jobRepository.findOne({where:{id:jobId , company:Company}});
     if (!Job) {
-      throw new NotFoundException(`Job with ID ${job.job_id} not found`);
+      throw new NotFoundException(`Job with ID ${jobId} not found`);
     }
 
     const employeesJob =await this.employee_jobRepository.find({where:{
@@ -125,7 +125,7 @@ export class CompanyService {
   });
 
   if (!employeesJob || employeesJob.length === 0) {
-  throw new NotFoundException(`No employees accepted for job with ID ${job.job_id} found`);
+  throw new NotFoundException(`No employees accepted for job with ID ${jobId} found`);
 }
 
 return employeesJob;

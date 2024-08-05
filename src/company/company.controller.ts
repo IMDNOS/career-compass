@@ -52,19 +52,19 @@ export class CompanyController {
   }
 
   @UseGuards(CompanyAtGuard)
-  @Get('getAllEmployeeApplying')
-  getAllEmployeeApplying(@Req() request: Request,@Body() JobDto:ApplyToJobDto) {
+  @Get('getAllEmployeeApplying/:id')
+  getAllEmployeeApplying(@Req() request: Request,@Param('id') jobId: string) {
     const company = request.user;
     const companyId=company['id']
-    return this.companyService.getEmployeesApplying(companyId,JobDto);
+    return this.companyService.getEmployeesApplying(companyId,+jobId);
   }
 
   @UseGuards(CompanyAtGuard)
-  @Get('getAllEmployeeAccepted')
-  getAllEmployeeAccepted(@Req() request: Request,@Body() JobDto:ApplyToJobDto) {
+  @Get('getAllEmployeeAccepted/:id')
+  getAllEmployeeAccepted(@Req() request: Request,@Param('id') jobId: string) {
     const company = request.user;
     const companyId=company['id']
-    return this.companyService.getEmployeesAccepted(companyId,JobDto);
+    return this.companyService.getEmployeesAccepted(companyId,+jobId);
   }
 
 
