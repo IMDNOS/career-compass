@@ -63,7 +63,8 @@ export class EmployeesService {
       return { message: 'Employee not found' };
     }
     updateEmployeeDto.email = employee.email;
-    await this.employeeRepository.update(employee, updateEmployeeDto);
+
+    await this.employeeRepository.update(employee.id, updateEmployeeDto);
 
     employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
@@ -330,6 +331,7 @@ export class EmployeesService {
       },
     });
 
+    // return jobs
 
     return jobs.filter(job =>
         (!job.wanted_gender || job.wanted_gender === employee.gender)
