@@ -32,7 +32,18 @@ export class ExamsService {
       answer: createExamDto.answer,
     });
 
-    return this.examRepository.save(exam);
+    const result = await this.examRepository.save(exam);
+
+    const exams = await this.findAll({'subCategory.id':subcategoryId})
+
+    if(exams.length===10)
+    {
+      subcategory.exam_available = true
+    }
+      await this.subCategoryRepository.update(subcategoryId,subcategory)
+
+    return result
+
   }
 
   async findAll(fields?: any) {
@@ -57,11 +68,23 @@ export class ExamsService {
   }
 
  async remove(id: number) {
-    const exam = await this.examRepository.findOne({where: { id: id }});
+    const exam = await this.examRepository.findOne({where: { id: id } ,relations:['subCategory']});
     if (!exam)
       throw new NotFoundException(`Exam with id ${id} not found`);
 
     await this.examRepository.remove(exam);
+
+
+    const subcategory = await this.subCategoryRepository.findOne({where: { id: exam.subCategory.id }});
+
+   const exams = await this.findAll({'subCategory.id':subcategory.id})
+
+   if(exams.length===9)
+   {
+     subcategory.exam_available = false
+   }
+   await this.subCategoryRepository.update(subcategory.id,subcategory)
+
     return 'deleted successfully'
   }
 }
