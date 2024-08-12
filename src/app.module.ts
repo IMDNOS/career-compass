@@ -14,6 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { Static } from './statics/entities/static.entity';
 import { SubCategory } from './sub-categories/entities/sub-category.entity';
 import { SuperAdmin } from './super-admin/entities/super-admin.entity';
+import { NotificationModule } from './notification/notification.module';
 
 
 @Module({
@@ -28,7 +29,7 @@ import { SuperAdmin } from './super-admin/entities/super-admin.entity';
       rootPath: './uploadsFiles',
       serveRoot:'/uploadsFiles',
     }),
-    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule],
+    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, NotificationModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_PIPE,
