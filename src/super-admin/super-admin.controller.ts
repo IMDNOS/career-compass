@@ -7,7 +7,8 @@ import { Request } from 'express';
 
 @Controller('superAdmin')
 export class SuperAdminController {
-  constructor(private readonly superAdminService: SuperAdminService) {}
+  constructor(private readonly superAdminService: SuperAdminService) {
+  }
 
   @Get('getAllEmployees')
   findAll() {
@@ -36,17 +37,16 @@ export class SuperAdminController {
 
   @Get('jobs/:id')
   findOneJob(@Param('id') id: string) {
-    const fields ={id : id}
+    const fields = { id: id };
     return this.superAdminService.jobs(fields);
   }
 
 
   @UseGuards(AtGuardSuperAdmin)
   @Post('activate_job')
-  activateJob(@Body() activateJobDto:ActivateJobDto) {
-    return this.superAdminService.activateJob(activateJobDto)
+  activateJob(@Body() activateJobDto: ActivateJobDto) {
+    return this.superAdminService.activateJob(activateJobDto);
   }
-
 
 
 // @UseGuards(AtGuardSuperAdmin)
@@ -63,30 +63,32 @@ export class SuperAdminController {
 
   @UseGuards(AtGuardSuperAdmin)
   @Post('charge_wallet')
-  chargeWallet(@Body() chargeWalletDto:ChargeWalletDto) {
+  chargeWallet(@Body() chargeWalletDto: ChargeWalletDto) {
     return this.superAdminService.chargeWallet(chargeWalletDto);
   }
 
-@UseGuards(AtGuardSuperAdmin)
-@Post('set_premium_level')
-  setPremiumLevel(@Body() setPremiumCompany:SetPremiumCompany) {
+  @UseGuards(AtGuardSuperAdmin)
+  @Post('set_premium_level')
+  setPremiumLevel(@Body() setPremiumCompany: SetPremiumCompany) {
     return this.superAdminService.setPremiumLevel(setPremiumCompany);
-}
+  }
 
-@Get('admins')
-  getAllAdmins(){
+  @Get('admins')
+  getAllAdmins() {
     return this.superAdminService.getAllAdmins();
-}
+  }
 
-@UseGuards(AtGuardSuperAdmin)
-@Get('getMyInfo')
+  @UseGuards(AtGuardSuperAdmin)
+  @Get('getMyInfo')
   getMyInfo(@Req() req: Request) {
-  const id = req.user['id'];
-  return this.superAdminService.getMyInfo(id)
+    const id = req.user['id'];
+    return this.superAdminService.getMyInfo(id);
+  }
 
-}
-
-
-
+  @UseGuards(AtGuardSuperAdmin)
+  @Get('getNotifications')
+  getNotifications() {
+    return this.superAdminService.getNotifications()
+  }
 
 }

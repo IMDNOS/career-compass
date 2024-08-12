@@ -22,10 +22,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
+import { RequestPremiumDto } from './dto/request-premium.dto';
 
 @Controller('company')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(private readonly companyService: CompanyService) {
+  }
 
 
   @UseGuards(CompanyAtGuard)
@@ -53,55 +55,51 @@ export class CompanyController {
 
   @UseGuards(CompanyAtGuard)
   @Get('getAllEmployeeApplying/:id')
-  getAllEmployeeApplying(@Req() request: Request,@Param('id') jobId: string) {
+  getAllEmployeeApplying(@Req() request: Request, @Param('id') jobId: string) {
     const company = request.user;
-    const companyId=company['id']
-    return this.companyService.getEmployeesApplying(companyId,+jobId);
+    const companyId = company['id'];
+    return this.companyService.getEmployeesApplying(companyId, +jobId);
   }
 
   @UseGuards(CompanyAtGuard)
   @Get('getAllEmployeeAccepted/:id')
-  getAllEmployeeAccepted(@Req() request: Request,@Param('id') jobId: string) {
+  getAllEmployeeAccepted(@Req() request: Request, @Param('id') jobId: string) {
     const company = request.user;
-    const companyId=company['id']
-    return this.companyService.getEmployeesAccepted(companyId,+jobId);
+    const companyId = company['id'];
+    return this.companyService.getEmployeesAccepted(companyId, +jobId);
   }
 
 
   @UseGuards(CompanyAtGuard)
   @Patch('employeeAcceptance/:id')
-  employeeAccepted(@Req() request: Request ,@Param('id') id: string,@Body() JobDto:ApplyToJobDto) {
+  employeeAccepted(@Req() request: Request, @Param('id') id: string, @Body() JobDto: ApplyToJobDto) {
     const company = request.user;
-    const companyId=company['id']
-    return this.companyService.employeeAcceptance(+id,companyId,JobDto);
+    const companyId = company['id'];
+    return this.companyService.employeeAcceptance(+id, companyId, JobDto);
   }
 
   @UseGuards(CompanyAtGuard)
   @Get('')
   findAll(@Req() request: Request) {
     const company = request.user;
-    const companyId=company['id']
+    const companyId = company['id'];
     return this.companyService.findAllJobs(companyId);
   }
 
   @UseGuards(CompanyAtGuard)
   @Get(':id')
-  findOne(@Param('id') id: string ,@Req() request: Request) {
+  findOne(@Param('id') id: string, @Req() request: Request) {
     const company = request.user;
-    const companyId=company['id']
-    return this.companyService.findOneJobById(+id,companyId);
+    const companyId = company['id'];
+    return this.companyService.findOneJobById(+id, companyId);
   }
-//
-//
-//   @Patch(':id')
-//   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-//     return this.companyService.update(+id, updateCompanyDto);
-//   }
-//
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.companyService.remove(+id);
-//   }
 
+  @UseGuards(CompanyAtGuard)
+  @Post('premium_request')
+  premiumRequest(@Req() request: Request, @Body() requestPremiumDto: RequestPremiumDto) {
+    const company = request.user;
+    const companyId = company['id'];
+    return this.companyService.premiumRequest(companyId,requestPremiumDto)
+  }
 
 }

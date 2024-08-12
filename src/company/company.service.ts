@@ -8,14 +8,20 @@ import { Repository } from 'typeorm';
 import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
 import { Employee } from '../employees/entities/employee.entity';
 import { Employee_job } from '../job/entities/employee_job.entity';
+import { RequestPremiumDto } from './dto/request-premium.dto';
+import { Static } from '../statics/entities/static.entity';
+import { AdminNotifications } from '../super-admin/entities/admin-notifications.entity';
 
 @Injectable()
 export class CompanyService {
   constructor(
     @InjectRepository(Company) private companyRepository: Repository<Company>,
-    @InjectRepository(Job) private jobRepository: Repository<Job> ,
+    @InjectRepository(Job) private jobRepository: Repository<Job>,
     @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
-    @InjectRepository(Employee_job) private readonly employee_jobRepository: Repository<Employee_job>,) {}
+    @InjectRepository(Employee_job) private readonly employee_jobRepository: Repository<Employee_job>,
+    @InjectRepository(AdminNotifications) private readonly adminNotificationsRepository: Repository<AdminNotifications>,
+    ) {
+  }
 
 
   async saveLogo(file: Express.Multer.File, companyId: number) {
@@ -48,7 +54,7 @@ export class CompanyService {
 
     const companyImagePath = `uploadsimages/${company.logo}`;
 
-    if(company.logo === null){
+    if (company.logo === null) {
       throw new BadRequestException('Logo not provided');
     }
 
@@ -57,31 +63,32 @@ export class CompanyService {
 
   async findAllJobs(companyID: number): Promise<Job[]> {
 
-    return this.jobRepository.find({ where:{company: { id: companyID },active : true},
+    return this.jobRepository.find({
+      where: { company: { id: companyID }, active: true },
       relations: ['static', 'subCategories'],
-      select: ["id", "title", "company","description", "salary", "work_hours", "experience_years","wanted_gender"]
+      select: ['id', 'title', 'company', 'description', 'salary', 'work_hours', 'experience_years', 'wanted_gender'],
     });
   }
 
-  async findOneJobById(id: number,companyID: number): Promise<Job[]> {
+  async findOneJobById(id: number, companyID: number): Promise<Job[]> {
     return await this.jobRepository.find({
-      where: { id: id , company: { id: companyID },active : true} , // Filter by company ID,
+      where: { id: id, company: { id: companyID }, active: true }, // Filter by company ID,
       relations: ['static', 'subCategories'],
-      select: ["id", "title", "company","description", "salary", "work_hours", "experience_years","wanted_gender"]
+      select: ['id', 'title', 'company', 'description', 'salary', 'work_hours', 'experience_years', 'wanted_gender'],
     });
   }
 
 
-  async getEmployeesApplying(companyId: number, jobId:number) {
+  async getEmployeesApplying(companyId: number, jobId: number) {
     const Company = await this.companyRepository.findOne({
-      where: { id: companyId }
+      where: { id: companyId },
     });
     if (!Company) {
       throw new NotFoundException(`Company with ID ${companyId} not found`);
     }
 
     const Job = await this.jobRepository.findOne({
-      where: { id: jobId, company: Company }
+      where: { id: jobId, company: Company },
     });
 
     if (!Job) {
@@ -91,9 +98,9 @@ export class CompanyService {
     const employeeJobs = await this.employee_jobRepository.find({
       where: {
         job: Job,
-        accepted: false
+        accepted: false,
       },
-      relations: ['employee', 'job']
+      relations: ['employee', 'job'],
     });
 
     if (!employeeJobs || employeeJobs.length === 0) {
@@ -104,32 +111,33 @@ export class CompanyService {
   }
 
 
-  async getEmployeesAccepted(companyId:number ,jobId:number){
+  async getEmployeesAccepted(companyId: number, jobId: number) {
     const Company = await this.companyRepository.findOne({
-      where: { id: companyId }
+      where: { id: companyId },
     });
     if (!Company) {
       throw new NotFoundException(`Company with ID ${companyId} not found`);
     }
 
-    const Job = await this.jobRepository.findOne({where:{id:jobId , company:Company}});
+    const Job = await this.jobRepository.findOne({ where: { id: jobId, company: Company } });
     if (!Job) {
       throw new NotFoundException(`Job with ID ${jobId} not found`);
     }
 
-    const employeesJob =await this.employee_jobRepository.find({where:{
+    const employeesJob = await this.employee_jobRepository.find({
+      where: {
         job: Job,
-        accepted:true
+        accepted: true,
       },
-      relations: ['employee', 'job']
-  });
+      relations: ['employee', 'job'],
+    });
 
-  if (!employeesJob || employeesJob.length === 0) {
-  throw new NotFoundException(`No employees accepted for job with ID ${jobId} found`);
-}
+    if (!employeesJob || employeesJob.length === 0) {
+      throw new NotFoundException(`No employees accepted for job with ID ${jobId} found`);
+    }
 
-return employeesJob;
-}
+    return employeesJob;
+  }
 
 
   async employeeAcceptance(id: number, companyId: number, job: ApplyToJobDto) {
@@ -180,6 +188,22 @@ return employeesJob;
       message: 'The employee has been successfully accepted.',
       employeeJob: employeeJob,
     };
+  }
+
+  async premiumRequest(companyId:number,requestPremiumDto: RequestPremiumDto) {
+        const company = await this.companyRepository.findOne({where: { id: companyId }});
+        if (!company) {
+          throw new NotFoundException(`Company with ID ${companyId} not found`);
+        }
+
+        const message = `The company with ID ${companyId} requested a premium level ${requestPremiumDto.premiumLevel}.`;
+
+        const notification = this.adminNotificationsRepository.create({
+          company: company,
+          body:message
+        })
+
+    return await this.adminNotificationsRepository.save(notification);
   }
 
 

@@ -13,9 +13,10 @@ import { Static } from 'src/statics/entities/static.entity';
 import { Job } from '../job/entities/job.entity';
 import { Company } from '../company/entities/company.entity';
 import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
+import { AdminNotifications } from './entities/admin-notifications.entity';
 
 @Module({
-  imports:[ TypeOrmModule.forFeature([SuperAdmin,Employee,SubCategory,Static,Job,Company,EmployeeSubCategory]),
+  imports:[ TypeOrmModule.forFeature([SuperAdmin,Employee,SubCategory,Static,Job,Company,EmployeeSubCategory,AdminNotifications]),
     JwtModule.register({})],
   controllers: [SuperAdminAuthController, SuperAdminController],
   providers: [SuperAdminAuthService ,SuperAdminService, AtStrategySuperAdmin]
