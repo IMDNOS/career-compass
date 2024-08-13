@@ -10,6 +10,9 @@ export class EmployeeSubCategory {
   @Column({nullable:true})
   certification: number|null;
 
+  @Column({nullable:true})
+  last_apply:Date | null
+
   @ManyToOne(() => Employee)
   employee: Employee;
 

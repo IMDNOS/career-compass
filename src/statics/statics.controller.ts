@@ -22,6 +22,11 @@ export class StaticsController {
     return this.staticsService.findAllStatics();
   }
 
+  @Get('all_categories')
+  getAllCategories() {
+    return this.staticsService.getAllCategories()
+  }
+
 
   //get all subcategories of a category
   @Get('get_subcategories/:id')

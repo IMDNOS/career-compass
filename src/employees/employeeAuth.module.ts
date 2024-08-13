@@ -14,11 +14,12 @@ import { SubCategory } from '../sub-categories/entities/sub-category.entity';
 import { Job } from '../job/entities/job.entity';
 import { Employee_job } from '../job/entities/employee_job.entity';
 import { EmployeeSubCategory } from './entities/employeeSubcategory.entity';
+import { Exam } from '../exams/entities/exam.entity';
 
 
 
 @Module({
-  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory,Job,Employee_job,EmployeeSubCategory]),
+  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory,Job,Employee_job,EmployeeSubCategory,Exam]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
   controllers: [EmployeeAuthController, EmployeesController ,],

@@ -4,7 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
+  NotFoundException, UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
@@ -17,6 +17,9 @@ import { SetEducationAndExperienceDto } from './dto/set-education-and-experience
 import { ApplyToJobDto } from './dto/apply-to-job.dto';
 import { Employee_job } from '../job/entities/employee_job.entity';
 import { EmployeeSubCategory } from './entities/employeeSubcategory.entity';
+import { ApplyToExamDto } from './dto/apply-to-exam.dto';
+import { Exam } from '../exams/entities/exam.entity';
+import { PostExamResultDto } from './dto/post-exam-result.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -33,6 +36,8 @@ export class EmployeesService {
     private readonly employee_jobRepository: Repository<Employee_job>,
     @InjectRepository(EmployeeSubCategory)
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
+    @InjectRepository(Exam)
+    private examRepository: Repository<Exam>,
   ) {
   }
 
@@ -409,4 +414,88 @@ export class EmployeesService {
     return await this.employee_jobRepository.save(employeeJob);
 
   }
+
+  async applyToExam(employeeId: number, applyToExamDto: ApplyToExamDto) {
+    const employee = await this.employeeRepository.find({ where: { id: employeeId } });
+    if (!employee) {
+      throw new NotFoundException(`Company with ID ${employeeId} not found`);
+    }
+
+
+    const subcategory = await this.subCategoryRepository.findOne({ where: { id: applyToExamDto.subcategoryId } });
+    if (!subcategory.exam_available) {
+      throw new BadRequestException(`subcategory with ID ${applyToExamDto.subcategoryId} no exam_available`);
+    }
+
+    const employeeSubcategory = await this.employeeSubCategoryRepository.find({ where: { subcategory: subcategory } });
+
+    const lastApply = employeeSubcategory[0].last_apply;
+
+    const today = new Date();
+
+    const daysSinceLastApply = lastApply ? Math.floor((today.getTime() - lastApply.getTime()) / (1000 * 3600 * 24)) : 100;
+
+
+    if (daysSinceLastApply < 90) {
+      throw new UnauthorizedException(`You have to wait ${90 - daysSinceLastApply} days more`);
+    }
+
+    const exam = await this.examRepository.find({ where: { subCategory: subcategory } });
+
+    const shuffledExams = this.shuffleArray(exam);
+
+    return shuffledExams.slice(0, 10);
+  }
+
+  async postExamResult(employeeId: number, postExamResultDto: PostExamResultDto) {
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+    if (!employee) {
+      throw new NotFoundException(`Company with ID ${employeeId} not found`);
+    }
+
+    const subcategory = await this.subCategoryRepository.findOne({ where: { id: postExamResultDto.subcategoryId } });
+
+    if (!subcategory) {
+      throw new BadRequestException(`subcategory with ID ${subcategory.id} not found`);
+    }
+
+
+    if (postExamResultDto.result < 6) {
+      postExamResultDto.result = 0;
+    } else {
+      postExamResultDto.result *= 10;
+    }
+
+    const employeeSubcategory = await this.employeeSubCategoryRepository.findOne({
+      where: {
+        employee: employee,
+        subcategory: subcategory,
+      },
+    });
+
+    employeeSubcategory.last_apply = new Date();
+    employeeSubcategory.certification = postExamResultDto.result;
+
+
+    await this.employeeSubCategoryRepository.update(employeeSubcategory.id, employeeSubcategory);
+
+
+    return await this.employeeSubCategoryRepository.findOne({
+      where: {
+        employee: employee,
+        subcategory: subcategory,
+      },
+    });
+
+  }
+
+  private shuffleArray(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+
 }
