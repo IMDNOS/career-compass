@@ -15,10 +15,12 @@ import { Static } from './statics/entities/static.entity';
 import { SubCategory } from './sub-categories/entities/sub-category.entity';
 import { SuperAdmin } from './super-admin/entities/super-admin.entity';
 import { ExamsModule } from './exams/exams.module';
+import { ConfigModule } from '@nestjs/config';
+import { EmailSender } from './mail-sender';
 
 
 @Module({
-  imports: [ TypeOrmModule.forRoot(config),
+  imports: [ TypeOrmModule.forRoot(config),ConfigModule.forRoot(),
     TypeOrmModule.forFeature([Static,SubCategory,SuperAdmin])
     ,
     ServeStaticModule.forRoot({
@@ -31,7 +33,7 @@ import { ExamsModule } from './exams/exams.module';
     }),
     EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, ExamsModule],
   controllers: [AppController],
-  providers: [AppService, {
+  providers: [AppService,EmailSender, {
     provide: APP_PIPE,
     useClass: ValidationPipe,
   }],

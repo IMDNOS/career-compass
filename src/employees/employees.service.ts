@@ -21,6 +21,7 @@ import { ApplyToExamDto } from './dto/apply-to-exam.dto';
 import { Exam } from '../exams/entities/exam.entity';
 import { PostExamResultDto } from './dto/post-exam-result.dto';
 
+
 @Injectable()
 export class EmployeesService {
   constructor(
@@ -38,6 +39,7 @@ export class EmployeesService {
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
     @InjectRepository(Exam)
     private examRepository: Repository<Exam>,
+
   ) {
   }
 
@@ -185,6 +187,35 @@ export class EmployeesService {
     });
 
     return employeeSubCategories.map(es => es.subcategory);
+  }
+  async getSubcategoriesFull(employeeId: number) {
+    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+      where: { employee: { id: employeeId } },
+      relations: ['subcategory'],
+    });
+
+    const today=new Date()
+
+    for (const employeeSubCategory of employeeSubCategories) {
+      employeeSubCategory['can_apply'] = true;
+
+      if(!employeeSubCategory.last_apply)
+        continue
+
+
+      const timeDifference = today.getTime() - employeeSubCategory.last_apply.getTime();
+      const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+
+
+      if (daysDifference < 90) {
+        employeeSubCategory['can_apply'] = false;
+      }
+
+    }
+
+
+    return employeeSubCategories
   }
 
   async setEducationAndExperience(
@@ -436,7 +467,7 @@ export class EmployeesService {
     const daysSinceLastApply = lastApply ? Math.floor((today.getTime() - lastApply.getTime()) / (1000 * 3600 * 24)) : 100;
 
 
-    if (daysSinceLastApply < 90) {
+    if (daysSinceLastApply < 89) {
       throw new UnauthorizedException(`You have to wait ${90 - daysSinceLastApply} days more`);
     }
 
@@ -461,7 +492,7 @@ export class EmployeesService {
 
 
     if (postExamResultDto.result < 6) {
-      postExamResultDto.result = 0;
+      postExamResultDto.result = null;
     } else {
       postExamResultDto.result *= 10;
     }
@@ -488,6 +519,17 @@ export class EmployeesService {
     });
 
   }
+
+
+
+
+
+
+
+
+
+
+
 
   private shuffleArray(array: any[]): any[] {
     for (let i = array.length - 1; i > 0; i--) {

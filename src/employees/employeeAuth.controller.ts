@@ -4,7 +4,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { Request } from 'express';
 import { EmployeeAtGuard, EmployeeRtGuard } from './strategies/decorate-guards';
-import { Tokens } from './types/tokens.type';
+// import { Tokens } from './types/tokens.type';
 import { ActivateEmployeeDto } from './dto/activate-employee.dto';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
 
