@@ -275,5 +275,11 @@ export class SuperAdminService {
    return notifications
  }
 
+
+ async getCertifications() {
+   const employeeSubCategories = await this.employeeSubCategoryRepository.find({relations:['subcategory','employee']})
+   return employeeSubCategories
+ }
+
 }
 

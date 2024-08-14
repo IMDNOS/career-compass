@@ -91,4 +91,11 @@ export class SuperAdminController {
     return this.superAdminService.getNotifications()
   }
 
+
+
+  @UseGuards(AtGuardSuperAdmin)
+  @Get('get_certifications')
+  getCertifications(){
+    return this.superAdminService.getCertifications();
+  }
 }
