@@ -17,6 +17,7 @@ import { SuperAdmin } from './super-admin/entities/super-admin.entity';
 import { ExamsModule } from './exams/exams.module';
 import { ConfigModule } from '@nestjs/config';
 import { EmailSender } from './mail-sender';
+import { EventModule } from './event/event.module';
 
 
 @Module({
@@ -31,7 +32,7 @@ import { EmailSender } from './mail-sender';
       rootPath: './uploadsFiles',
       serveRoot:'/uploadsFiles',
     }),
-    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, ExamsModule],
+    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, ExamsModule, EventModule],
   controllers: [AppController],
   providers: [AppService,EmailSender, {
     provide: APP_PIPE,
