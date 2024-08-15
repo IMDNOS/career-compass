@@ -475,7 +475,12 @@ export class EmployeesService {
 
     const shuffledExams = this.shuffleArray(exam);
 
-    return shuffledExams.slice(0, 10);
+    const slicedExams= shuffledExams.slice(0, 10);
+
+    for (let i = 0; i < slicedExams.length; i++) {
+      slicedExams[i]['subcategoryId']=subcategory.id
+    }
+    return slicedExams
   }
 
   async postExamResult(employeeId: number, postExamResultDto: PostExamResultDto) {
