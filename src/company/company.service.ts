@@ -215,4 +215,58 @@ export class CompanyService {
 //     return `This action removes a #${id} company`;
 //   }
 
+  async getInfoCompany(company_id: number) {
+    return await this.companyRepository.findOne({
+      where: { id: company_id },
+      select: [
+        'company_name',
+        'email',
+        'phone',
+        'address',
+        'description',
+        'logo',
+        'premiumLevel',
+        'wallet',
+      ]
+    });
+  }
+
+
+  async updateCompany(updateCompanyDto: UpdateCompanyDto, companyId: number){
+    try{
+      if (!updateCompanyDto || Object.keys(updateCompanyDto).length === 0) {
+        throw new HttpException('Empty request', HttpStatus.BAD_REQUEST);
+      }
+      const company = await this.employeeRepository.findOne({
+        where: { id: companyId },
+      });
+      if (!company) {
+        return { message: 'Company not found' };
+      }
+      updateCompanyDto.email = company.email;
+
+      const saveInfo= await this.employeeRepository.save(company);
+      // if (saveInfo) {
+      //   // send push notification
+      //   await this.sendAndSavePushNotificationCompany(
+      //     saveInfo,
+      //     'Profile Update',
+      //     'Your Profile have been updated successfully'
+      //   )
+      //     .catch((e: any) => {
+      //       console.log('Error sending push notification', e);
+      //     });
+      // }
+
+      return  await this.employeeRepository.findOne({
+        where: { id: companyId },
+      });
+    }
+    catch (error) {
+      return error;
+    }
+
+  }
+
+
 }

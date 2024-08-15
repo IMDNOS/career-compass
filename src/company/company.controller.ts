@@ -9,20 +9,17 @@ import {
   UseGuards,
   Req,
   UseInterceptors,
-  UploadedFile,
+  UploadedFile, Put,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CompanyAtGuard } from './strategies/decorate-guards';
-// import { UpdateCompanyDto } from './dto/update-company.dto';
-// import { CreateCompanyDto } from './dto/create-company.dto';
-// import { CompanyAtGuard } from './strategies/decorate-guards';
 import { Express, Request } from 'express';
-import { EmployeeAtGuard } from '../employees/strategies/decorate-guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
 import { RequestPremiumDto } from './dto/request-premium.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -87,6 +84,22 @@ export class CompanyController {
   }
 
   @UseGuards(CompanyAtGuard)
+  @Get('get_info_company')
+  getInfo(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.companyService.getInfoCompany(id);
+  }
+
+  @UseGuards(CompanyAtGuard)
+  @Put('update_company')
+  update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
+    const id = req.user['id'];
+    return this.companyService.updateCompany(updateCompanyDto,id);
+  }
+
+
+
+  @UseGuards(CompanyAtGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() request: Request) {
     const company = request.user;
@@ -101,5 +114,8 @@ export class CompanyController {
     const companyId = company['id'];
     return this.companyService.premiumRequest(companyId,requestPremiumDto)
   }
+
+
+
 
 }
