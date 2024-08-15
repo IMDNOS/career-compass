@@ -188,6 +188,37 @@ export class EmployeesService {
 
     return employeeSubCategories.map(es => es.subcategory);
   }
+  // async getSubcategoriesFull(employeeId: number) {
+  //   const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+  //     where: { employee: { id: employeeId } },
+  //     relations: ['subcategory'],
+  //   });
+  //
+  //   const today=new Date()
+  //
+  //   for (const employeeSubCategory of employeeSubCategories) {
+  //     employeeSubCategory['can_apply'] = true;
+  //
+  //     if(!employeeSubCategory.last_apply)
+  //       continue
+  //
+  //
+  //     const timeDifference = today.getTime() - employeeSubCategory.last_apply.getTime();
+  //     const daysDifference = timeDifference / (1000 * 3600 * 24);
+  //
+  //
+  //
+  //     if (daysDifference < 90) {
+  //       employeeSubCategory['can_apply'] = false;
+  //     }
+  //
+  //   }
+  //
+  //
+  //   return employeeSubCategories
+  // }
+
+
   async getSubcategoriesFull(employeeId: number) {
     const employeeSubCategories = await this.employeeSubCategoryRepository.find({
       where: { employee: { id: employeeId } },
@@ -214,9 +245,23 @@ export class EmployeesService {
 
     }
 
+    const modifiedEmployeeSubCategories = []
 
-    return employeeSubCategories
+    for (const subCategory of employeeSubCategories) {
+      const item={}
+      item['id']=subCategory.subcategory.id
+      item['name']=subCategory.subcategory.name
+      item['certification']=subCategory.certification
+      item['can_apply']=subCategory.subcategory.exam_available&&subCategory['can_apply']
+      
+      modifiedEmployeeSubCategories.push(item)
+    }
+
+    return modifiedEmployeeSubCategories
+
   }
+
+
 
   async setEducationAndExperience(
     id: number,
