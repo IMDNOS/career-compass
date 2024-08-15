@@ -102,8 +102,16 @@ export class JobService {
   //   return `This action updates a #${id} job`;
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} job`;
-  // }
+  async remove(id: number) {
+
+    const job = await this.jobRepository.findOne({where:{id:id}});
+
+    if (!job) {
+      throw new NotFoundException(`Job with id ${id} not found`);
+    }
+
+    await this.jobRepository.remove(job)
+    return 'job deleted successfully'
+  }
 
 }

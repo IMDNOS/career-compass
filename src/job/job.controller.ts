@@ -4,6 +4,7 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { CompanyAtGuard } from '../company/strategies/decorate-guards';
 import { Request } from 'express';
+import { AtGuardSuperAdmin } from '../super-admin/strategies/decorate-guards';
 
 @Controller('job')
 export class JobController {
@@ -34,8 +35,9 @@ export class JobController {
 //     return this.jobService.update(+id, updateJobDto);
 //   }
 //
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.jobService.remove(+id);
-//   }
+  @UseGuards(AtGuardSuperAdmin)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.jobService.remove(+id);
+  }
 }
