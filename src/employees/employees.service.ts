@@ -180,14 +180,14 @@ export class EmployeesService {
   }
 
 
-  async getSubcategories(employeeId: number) {
-    const employeeSubCategories = await this.employeeSubCategoryRepository.find({
-      where: { employee: { id: employeeId } },
-      relations: ['subcategory'],
-    });
-
-    return employeeSubCategories.map(es => es.subcategory);
-  }
+  // async getSubcategories(employeeId: number) {
+  //   const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+  //     where: { employee: { id: employeeId } },
+  //     relations: ['subcategory'],
+  //   });
+  //
+  //   return employeeSubCategories.map(es => es.subcategory);
+  // }
   // async getSubcategoriesFull(employeeId: number) {
   //   const employeeSubCategories = await this.employeeSubCategoryRepository.find({
   //     where: { employee: { id: employeeId } },

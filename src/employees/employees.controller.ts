@@ -90,14 +90,14 @@ export class EmployeesController {
   @Get('get_subcategories')
   getSubcategories(@Req() req: Request) {
     const id = req.user['id'];
-    return this.employeesService.getSubcategories(id);
-  }
-  @UseGuards(EmployeeAtGuard)
-  @Get('get_subcategories_full')
-  getSubcategoriesFull(@Req() req: Request) {
-    const id = req.user['id'];
     return this.employeesService.getSubcategoriesFull(id);
   }
+  // @UseGuards(EmployeeAtGuard)
+  // @Get('get_subcategories_full')
+  // getSubcategoriesFull(@Req() req: Request) {
+  //   const id = req.user['id'];
+  //   return this.employeesService.getSubcategoriesFull(id);
+  // }
 
   @UseGuards(EmployeeAtGuard)
   @Post('set_education&experience')
