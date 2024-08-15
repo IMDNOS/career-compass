@@ -6,11 +6,11 @@ import { SubCategory } from './sub-categories/entities/sub-category.entity';
 import { SuperAdmin } from './super-admin/entities/super-admin.entity';
 import * as firebase from 'firebase-admin';
 
-firebase.initializeApp({
-  credential: firebase.credential.cert(
-    './firebase-admin-sdk.json'
-  ),
-});
+// firebase.initializeApp({
+//   credential: firebase.credential.cert(
+//     './firebase-admin-sdk.json'
+//   ),
+// });
 
 @Injectable()
 export class AppService {
