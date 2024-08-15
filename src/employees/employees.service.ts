@@ -20,6 +20,11 @@ import { EmployeeSubCategory } from './entities/employeeSubcategory.entity';
 import { ApplyToExamDto } from './dto/apply-to-exam.dto';
 import { Exam } from '../exams/entities/exam.entity';
 import { PostExamResultDto } from './dto/post-exam-result.dto';
+import { NotificationsEmployee } from './entities/notification-employee.entity';
+import { NotificationTokenEmployee } from './entities/employee-notification-token.entity';
+import * as firebase from 'firebase-admin';
+import { NotificationDto } from './dto/create-notification.dto';
+
 
 
 @Injectable()
@@ -39,7 +44,10 @@ export class EmployeesService {
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
     @InjectRepository(Exam)
     private examRepository: Repository<Exam>,
-
+    @InjectRepository(NotificationsEmployee)
+    private readonly notificationRepository: Repository<NotificationsEmployee>,
+    @InjectRepository(NotificationTokenEmployee)
+    private readonly notificationTokenRepository: Repository<NotificationTokenEmployee>,
   ) {
   }
 
@@ -253,7 +261,7 @@ export class EmployeesService {
       item['name']=subCategory.subcategory.name
       item['certification']=subCategory.certification
       item['can_apply']=subCategory.subcategory.exam_available&&subCategory['can_apply']
-      
+
       modifiedEmployeeSubCategories.push(item)
     }
 
@@ -475,9 +483,14 @@ export class EmployeesService {
   }
 
   async applyForJob(employeeId: number, applyToJobDto: ApplyToJobDto) {
+    const cheack=await this.employee_jobRepository.findOne({where:{employee:{id:employeeId}}})
+
+    if (cheack){
+      throw new ForbiddenException('You are applying on this job already')
+    }
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
 
-    const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } });
+    const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } ,relations:['company']},);
 
     const employeeJob = this.employee_jobRepository.create({
       employee: employee,
@@ -570,8 +583,75 @@ export class EmployeesService {
 
   }
 
+  async saveNotificationToken(employeeId: number, notificationDto: NotificationDto ){
+    const employee= await this.employeeRepository.findOne({ where: { id: employeeId } });
+
+    let notificationToken = await this.notificationTokenRepository.findOne({
+      where: { employee: { id: employeeId } }
+    });
+
+    if (!notificationToken) {
+      notificationToken = this.notificationTokenRepository.create({
+        employee: employee,
+        device_type: notificationDto.device_type,
+        notification_token: notificationDto.notification_token
+      });
+      await this.notificationTokenRepository.save(notificationToken);
+    }
+    else {
+      notificationToken.device_type = notificationDto.device_type;
+      notificationToken.notification_token = notificationDto.notification_token;
+      await this.notificationTokenRepository.save(notificationToken);
+    }
+    return notificationToken;
+  };
 
 
+  async getNotificationsForEmployee(employeeId: number) {
+    return await this.notificationRepository.find({
+      where: {
+        notificationToken: {
+          employee: {
+            id: employeeId,
+          },
+        },
+      },
+    });
+  }
+
+  async sendAndSavePushNotification(employee: any, title: string, body: string) {
+    try {
+      const notificationTokenEmployee = await this.notificationTokenRepository.findOne({
+        where: { employee: { id: employee.id } }
+      });
+
+      if (!notificationTokenEmployee) {
+        throw new ForbiddenException('Notification token for the employee not found.');
+      }
+
+      const newNotification = this.notificationRepository.create({
+        notificationToken: notificationTokenEmployee,
+        title,
+        body,
+      });
+
+      await this.notificationRepository.save(newNotification);
+
+      await firebase
+        .messaging()
+        .send({
+          notification: { title, body },
+          token: notificationTokenEmployee.notification_token,
+          android: { priority: 'high' },
+        })
+        .catch((error: any) => {
+          console.error('Error sending push notification:', error);
+        });
+    } catch (error) {
+      console.error('Error in sendAndSavePushNotification method:', error);
+      throw error;
+    }
+  }
 
 
 

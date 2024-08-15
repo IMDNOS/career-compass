@@ -1,16 +1,27 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCompanyDto } from './dto/create-company.dto';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Job } from '../job/entities/job.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
+import * as firebase from 'firebase-admin';
+
 import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
 import { Employee } from '../employees/entities/employee.entity';
 import { Employee_job } from '../job/entities/employee_job.entity';
 import { RequestPremiumDto } from './dto/request-premium.dto';
-import { Static } from '../statics/entities/static.entity';
 import { AdminNotifications } from '../super-admin/entities/admin-notifications.entity';
+import { EmployeesService } from '../employees/employees.service';
+import { NotificationTokenCompany } from './entities/company-notification-token.entity';
+import { NotificationsCompany } from './entities/notification-company.entity';
+import { NotificationDto } from '../employees/dto/create-notification.dto';
 
 @Injectable()
 export class CompanyService {
@@ -20,6 +31,9 @@ export class CompanyService {
     @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
     @InjectRepository(Employee_job) private readonly employee_jobRepository: Repository<Employee_job>,
     @InjectRepository(AdminNotifications) private readonly adminNotificationsRepository: Repository<AdminNotifications>,
+    @InjectRepository(NotificationTokenCompany) private readonly companyNotificationTokenRepository: Repository<NotificationTokenCompany> ,
+    @InjectRepository(NotificationsCompany) private readonly companyNotificationsRepository: Repository<NotificationsCompany>,
+
     ) {
   }
 
@@ -191,17 +205,17 @@ export class CompanyService {
   }
 
   async premiumRequest(companyId:number,requestPremiumDto: RequestPremiumDto) {
-        const company = await this.companyRepository.findOne({where: { id: companyId }});
-        if (!company) {
-          throw new NotFoundException(`Company with ID ${companyId} not found`);
-        }
+    const company = await this.companyRepository.findOne({where: { id: companyId }});
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
 
-        const message = `The company with ID ${companyId} requested a premium level ${requestPremiumDto.premiumLevel}.`;
+    const message = `The company with ID ${companyId} requested a premium level ${requestPremiumDto.premiumLevel}.`;
 
-        const notification = this.adminNotificationsRepository.create({
-          company: company,
-          body:message
-        })
+    const notification = this.adminNotificationsRepository.create({
+      company: company,
+      body:message
+    })
 
     return await this.adminNotificationsRepository.save(notification);
   }
@@ -268,5 +282,81 @@ export class CompanyService {
 
   }
 
+  
+  ///
+  async saveNotificationTokenCompany(companyId: number, notificationDto: NotificationDto ){
+    const company= await this.companyRepository.findOne({ where: { id: companyId } });
+
+    let notificationToken = await this.companyNotificationTokenRepository.findOne({
+      where: { company: { id: companyId } }
+    });
+
+    if (!notificationToken) {
+      notificationToken = this.companyNotificationTokenRepository.create({
+        company: company,
+        device_type: notificationDto.device_type,
+        notification_token: notificationDto.notification_token
+      });
+      await this.companyNotificationTokenRepository.save(notificationToken);
+    }
+    else {
+      notificationToken.device_type = notificationDto.device_type;
+      notificationToken.notification_token = notificationDto.notification_token;
+      await this.companyNotificationTokenRepository.save(notificationToken);
+    }
+    return notificationToken;
+  };
+
+
+
+  async getNotificationsForCompany(companyId: number)
+  {
+    return await this.companyNotificationsRepository.find({
+      where: {
+        notificationTokenCompany: {
+          company: {
+            id: companyId,
+          },
+        },
+      },
+    });
+  }
+
+  async sendAndSavePushNotificationCompany(company: any, title: string, body: string) {
+    try {
+      const notificationTokenCompany = await this.companyNotificationTokenRepository.findOne({
+        where: { company: { id: company.id } }
+      });
+
+      if (!notificationTokenCompany) {
+        throw new ForbiddenException('Notification token for the company not found.');
+      }
+
+      const newNotification = this.companyNotificationsRepository.create({
+        notificationTokenCompany: notificationTokenCompany,
+        title,
+        body,
+      });
+
+      await this.companyNotificationsRepository.save(newNotification);
+
+      await firebase
+        .messaging()
+        .send({
+          notification: { title, body },
+          token: notificationTokenCompany.notification_token,
+          android: { priority: 'high' },
+        })
+        .catch((error: any) => {
+          console.error('Error sending push notification:', error);
+        });
+    } catch (error) {
+      console.error('Error in sendAndSavePushNotification method:', error);
+      throw error;
+    }
+  }
+  
+  
+  
 
 }

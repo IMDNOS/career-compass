@@ -20,6 +20,7 @@ import { extname } from 'path';
 import { ApplyToJobDto } from '../employees/dto/apply-to-job.dto';
 import { RequestPremiumDto } from './dto/request-premium.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { NotificationDto } from '../employees/dto/create-notification.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -90,22 +91,15 @@ export class CompanyController {
     return this.companyService.getInfoCompany(id);
   }
 
-  @UseGuards(CompanyAtGuard)
-  @Put('update_company')
-  update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
-    const id = req.user['id'];
-    return this.companyService.updateCompany(updateCompanyDto,id);
-  }
+  // @UseGuards(CompanyAtGuard)
+  // @Put('update_company')
+  // update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
+  //   const id = req.user['id'];
+  //   return this.companyService.updateCompany(updateCompanyDto,id);
+  // }
 
 
 
-  @UseGuards(CompanyAtGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string, @Req() request: Request) {
-    const company = request.user;
-    const companyId = company['id'];
-    return this.companyService.findOneJobById(+id, companyId);
-  }
 
   @UseGuards(CompanyAtGuard)
   @Post('premium_request')
@@ -115,7 +109,30 @@ export class CompanyController {
     return this.companyService.premiumRequest(companyId,requestPremiumDto)
   }
 
+  @UseGuards(CompanyAtGuard)
+  @Get('get-notifications-company')
+  GetNotificationCompany(@Req() req: Request) {
+    // return 'hello';
+    const company = req.user;
+    const companyId = company['id'];
+    return this.companyService.getNotificationsForCompany(+companyId);
+  }
 
 
+
+  @UseGuards(CompanyAtGuard)
+  @Post('save-notificationToken-company')
+  saveNotificationTokenCompany(@Body() notificationDto:NotificationDto,@Req() req: Request) {
+    const id = req.user['id'];
+    return this.companyService.saveNotificationTokenCompany(id, notificationDto)
+  }
+
+  @UseGuards(CompanyAtGuard)
+  @Get(':id')
+  findOne(@Param('id') id: string, @Req() request: Request) {
+    const company = request.user;
+    const companyId = company['id'];
+    return this.companyService.findOneJobById(+id, companyId);
+  }
 
 }
