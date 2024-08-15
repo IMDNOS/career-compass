@@ -9,12 +9,16 @@ import { Tokens } from './types/tokens.type';
 import { JwtService } from '@nestjs/jwt';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
 import { ActivateCompanyDto } from './dto/activate-company.dto';
+import { EmailSender } from '../mail-sender';
 
 
 @Injectable()
 export class CompanyAuthService {
   constructor(@InjectRepository(Company) private companyRepository: Repository<Company>,
-              private jwtService: JwtService) {}
+              private jwtService: JwtService,
+              private readonly emailSender: EmailSender,
+
+  ) {}
 
 
   async register(createCompanyDto: CreateCompanyDto) {
@@ -46,6 +50,10 @@ export class CompanyAuthService {
         await this.companyRepository.update(company.id, company);
 
         return newCode;
+
+        // return  await this.emailSender.mailTransport(company.email,'Your Career Compass activation code',`<strong>Your acrtivation code is <br> ${newCode} </strong>`)
+
+
       } else {
         return await this.getTokens(company);
       }

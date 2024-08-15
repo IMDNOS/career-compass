@@ -4,7 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
+  NotFoundException, UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
@@ -17,6 +17,15 @@ import { SetEducationAndExperienceDto } from './dto/set-education-and-experience
 import { ApplyToJobDto } from './dto/apply-to-job.dto';
 import { Employee_job } from '../job/entities/employee_job.entity';
 import { EmployeeSubCategory } from './entities/employeeSubcategory.entity';
+import { ApplyToExamDto } from './dto/apply-to-exam.dto';
+import { Exam } from '../exams/entities/exam.entity';
+import { PostExamResultDto } from './dto/post-exam-result.dto';
+import { NotificationsEmployee } from './entities/notification-employee.entity';
+import { NotificationTokenEmployee } from './entities/employee-notification-token.entity';
+import * as firebase from 'firebase-admin';
+import { NotificationDto } from './dto/create-notification.dto';
+
+
 
 @Injectable()
 export class EmployeesService {
@@ -33,6 +42,12 @@ export class EmployeesService {
     private readonly employee_jobRepository: Repository<Employee_job>,
     @InjectRepository(EmployeeSubCategory)
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
+    @InjectRepository(Exam)
+    private examRepository: Repository<Exam>,
+    @InjectRepository(NotificationsEmployee)
+    private readonly notificationRepository: Repository<NotificationsEmployee>,
+    @InjectRepository(NotificationTokenEmployee)
+    private readonly notificationTokenRepository: Repository<NotificationTokenEmployee>,
   ) {
   }
 
@@ -173,14 +188,88 @@ export class EmployeesService {
   }
 
 
-  async getSubcategories(employeeId: number) {
+  // async getSubcategories(employeeId: number) {
+  //   const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+  //     where: { employee: { id: employeeId } },
+  //     relations: ['subcategory'],
+  //   });
+  //
+  //   return employeeSubCategories.map(es => es.subcategory);
+  // }
+  // async getSubcategoriesFull(employeeId: number) {
+  //   const employeeSubCategories = await this.employeeSubCategoryRepository.find({
+  //     where: { employee: { id: employeeId } },
+  //     relations: ['subcategory'],
+  //   });
+  //
+  //   const today=new Date()
+  //
+  //   for (const employeeSubCategory of employeeSubCategories) {
+  //     employeeSubCategory['can_apply'] = true;
+  //
+  //     if(!employeeSubCategory.last_apply)
+  //       continue
+  //
+  //
+  //     const timeDifference = today.getTime() - employeeSubCategory.last_apply.getTime();
+  //     const daysDifference = timeDifference / (1000 * 3600 * 24);
+  //
+  //
+  //
+  //     if (daysDifference < 90) {
+  //       employeeSubCategory['can_apply'] = false;
+  //     }
+  //
+  //   }
+  //
+  //
+  //   return employeeSubCategories
+  // }
+
+
+  async getSubcategoriesFull(employeeId: number) {
     const employeeSubCategories = await this.employeeSubCategoryRepository.find({
       where: { employee: { id: employeeId } },
       relations: ['subcategory'],
     });
 
-    return employeeSubCategories.map(es => es.subcategory);
+    const today=new Date()
+
+    for (const employeeSubCategory of employeeSubCategories) {
+      employeeSubCategory['can_apply'] = true;
+
+      if(!employeeSubCategory.last_apply)
+        continue
+
+
+      const timeDifference = today.getTime() - employeeSubCategory.last_apply.getTime();
+      const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+
+
+      if (daysDifference < 90) {
+        employeeSubCategory['can_apply'] = false;
+      }
+
+    }
+
+    const modifiedEmployeeSubCategories = []
+
+    for (const subCategory of employeeSubCategories) {
+      const item={}
+      item['id']=subCategory.subcategory.id
+      item['name']=subCategory.subcategory.name
+      item['certification']=subCategory.certification
+      item['can_apply']=subCategory.subcategory.exam_available&&subCategory['can_apply']
+
+      modifiedEmployeeSubCategories.push(item)
+    }
+
+    return modifiedEmployeeSubCategories
+
   }
+
+
 
   async setEducationAndExperience(
     id: number,
@@ -394,9 +483,14 @@ export class EmployeesService {
   }
 
   async applyForJob(employeeId: number, applyToJobDto: ApplyToJobDto) {
+    const cheack=await this.employee_jobRepository.findOne({where:{employee:{id:employeeId}}})
+
+    if (cheack){
+      throw new ForbiddenException('You are applying on this job already')
+    }
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
 
-    const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } });
+    const job = await this.jobRepository.findOne({ where: { id: applyToJobDto.job_id } ,relations:['company']},);
 
     const employeeJob = this.employee_jobRepository.create({
       employee: employee,
@@ -409,4 +503,171 @@ export class EmployeesService {
     return await this.employee_jobRepository.save(employeeJob);
 
   }
+
+  async applyToExam(employeeId: number, applyToExamDto: ApplyToExamDto) {
+    const employee = await this.employeeRepository.find({ where: { id: employeeId } });
+    if (!employee) {
+      throw new NotFoundException(`Company with ID ${employeeId} not found`);
+    }
+
+
+    const subcategory = await this.subCategoryRepository.findOne({ where: { id: applyToExamDto.subcategoryId } });
+    if (!subcategory.exam_available) {
+      throw new BadRequestException(`subcategory with ID ${applyToExamDto.subcategoryId} no exam_available`);
+    }
+
+    const employeeSubcategory = await this.employeeSubCategoryRepository.find({ where: { subcategory: subcategory } });
+
+    const lastApply = employeeSubcategory[0].last_apply;
+
+    const today = new Date();
+
+    const daysSinceLastApply = lastApply ? Math.floor((today.getTime() - lastApply.getTime()) / (1000 * 3600 * 24)) : 100;
+
+
+    if (daysSinceLastApply < 89) {
+      throw new UnauthorizedException(`You have to wait ${90 - daysSinceLastApply} days more`);
+    }
+
+    const exam = await this.examRepository.find({ where: { subCategory: subcategory } });
+
+    const shuffledExams = this.shuffleArray(exam);
+
+    const slicedExams= shuffledExams.slice(0, 10);
+
+    for (let i = 0; i < slicedExams.length; i++) {
+      slicedExams[i]['subcategoryId']=subcategory.id
+    }
+    return slicedExams
+  }
+
+  async postExamResult(employeeId: number, postExamResultDto: PostExamResultDto) {
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+    if (!employee) {
+      throw new NotFoundException(`Company with ID ${employeeId} not found`);
+    }
+
+    const subcategory = await this.subCategoryRepository.findOne({ where: { id: postExamResultDto.subcategoryId } });
+
+    if (!subcategory) {
+      throw new BadRequestException(`subcategory with ID ${subcategory.id} not found`);
+    }
+
+
+    if (postExamResultDto.result < 6) {
+      postExamResultDto.result = null;
+    } else {
+      postExamResultDto.result *= 10;
+    }
+
+    const employeeSubcategory = await this.employeeSubCategoryRepository.findOne({
+      where: {
+        employee: employee,
+        subcategory: subcategory,
+      },
+    });
+
+    employeeSubcategory.last_apply = new Date();
+    employeeSubcategory.certification = postExamResultDto.result;
+
+
+    await this.employeeSubCategoryRepository.update(employeeSubcategory.id, employeeSubcategory);
+
+
+    return await this.employeeSubCategoryRepository.findOne({
+      where: {
+        employee: employee,
+        subcategory: subcategory,
+      },
+    });
+
+  }
+
+  async saveNotificationToken(employeeId: number, notificationDto: NotificationDto ){
+    const employee= await this.employeeRepository.findOne({ where: { id: employeeId } });
+
+    let notificationToken = await this.notificationTokenRepository.findOne({
+      where: { employee: { id: employeeId } }
+    });
+
+    if (!notificationToken) {
+      notificationToken = this.notificationTokenRepository.create({
+        employee: employee,
+        device_type: notificationDto.device_type,
+        notification_token: notificationDto.notification_token
+      });
+      await this.notificationTokenRepository.save(notificationToken);
+    }
+    else {
+      notificationToken.device_type = notificationDto.device_type;
+      notificationToken.notification_token = notificationDto.notification_token;
+      await this.notificationTokenRepository.save(notificationToken);
+    }
+    return notificationToken;
+  };
+
+
+  async getNotificationsForEmployee(employeeId: number) {
+    return await this.notificationRepository.find({
+      where: {
+        notificationToken: {
+          employee: {
+            id: employeeId,
+          },
+        },
+      },
+    });
+  }
+
+  async sendAndSavePushNotification(employee: any, title: string, body: string) {
+    try {
+      const notificationTokenEmployee = await this.notificationTokenRepository.findOne({
+        where: { employee: { id: employee.id } }
+      });
+
+      if (!notificationTokenEmployee) {
+        throw new ForbiddenException('Notification token for the employee not found.');
+      }
+
+      const newNotification = this.notificationRepository.create({
+        notificationToken: notificationTokenEmployee,
+        title,
+        body,
+      });
+
+      await this.notificationRepository.save(newNotification);
+
+      await firebase
+        .messaging()
+        .send({
+          notification: { title, body },
+          token: notificationTokenEmployee.notification_token,
+          android: { priority: 'high' },
+        })
+        .catch((error: any) => {
+          console.error('Error sending push notification:', error);
+        });
+    } catch (error) {
+      console.error('Error in sendAndSavePushNotification method:', error);
+      throw error;
+    }
+  }
+
+
+
+
+
+
+
+
+
+  private shuffleArray(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+
 }

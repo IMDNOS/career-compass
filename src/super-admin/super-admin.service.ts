@@ -9,6 +9,7 @@ import { ActivateJobDto, ChargeWalletDto, SetPremiumCompany } from './dto/admin-
 import { Company } from '../company/entities/company.entity';
 import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
 import { SuperAdmin } from './entities/super-admin.entity';
+import { AdminNotifications } from './entities/admin-notifications.entity';
 
 @Injectable()
 export class SuperAdminService {
@@ -19,6 +20,7 @@ export class SuperAdminService {
               @InjectRepository(Company) private companyRepository: Repository<Company>,
               @InjectRepository(EmployeeSubCategory) private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
               @InjectRepository(SuperAdmin) private superAdminRepository: Repository<SuperAdmin>,
+              @InjectRepository(AdminNotifications) private adminNotificationsRepository: Repository<AdminNotifications>,
   ) {
   }
 
@@ -261,6 +263,22 @@ export class SuperAdminService {
  async getMyInfo(id:number){
     const admin = await this.superAdminRepository.findOne({ where: { id: id } });
     return admin
+ }
+
+
+ async getNotifications(){
+    const notifications = await this.adminNotificationsRepository.find({
+      relations: ['company','employee'],
+      order:{date:'DESC'}
+    })
+
+   return notifications
+ }
+
+
+ async getCertifications() {
+   const employeeSubCategories = await this.employeeSubCategoryRepository.find({relations:['subcategory','employee']})
+   return employeeSubCategories
  }
 
 }

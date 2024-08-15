@@ -20,6 +20,10 @@ import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SetEducationAndExperienceDto } from './dto/set-education-and-experience.dto';
 import { ApplyToJobDto } from './dto/apply-to-job.dto';
+import { IsNotEmpty } from 'class-validator';
+import { ApplyToExamDto } from './dto/apply-to-exam.dto';
+import { PostExamResultDto } from './dto/post-exam-result.dto';
+import { NotificationDto } from './dto/create-notification.dto';
 
 @Controller('employees')
 export class EmployeesController {
@@ -87,8 +91,14 @@ export class EmployeesController {
   @Get('get_subcategories')
   getSubcategories(@Req() req: Request) {
     const id = req.user['id'];
-    return this.employeesService.getSubcategories(id);
+    return this.employeesService.getSubcategoriesFull(id);
   }
+  // @UseGuards(EmployeeAtGuard)
+  // @Get('get_subcategories_full')
+  // getSubcategoriesFull(@Req() req: Request) {
+  //   const id = req.user['id'];
+  //   return this.employeesService.getSubcategoriesFull(id);
+  // }
 
   @UseGuards(EmployeeAtGuard)
   @Post('set_education&experience')
@@ -156,6 +166,39 @@ export class EmployeesController {
     const id = req.user['id'];
     return this.employeesService.applyForJob(id, applyToJobDto)
   }
+
+  @UseGuards(EmployeeAtGuard)
+  @Post('save-notificationToken')
+  savenotificationToken(@Body() notificationDto:NotificationDto,@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.saveNotificationToken(id, notificationDto)
+  }
+
+  @UseGuards(EmployeeAtGuard)
+  @Get('get-notifications')
+  getNotification(@Req() req: Request) {
+    const id = req.user['id'];
+    return this.employeesService.getNotificationsForEmployee(id);
+  }
+
+
+
+
+  @UseGuards(EmployeeAtGuard)
+  @Post('apply_to_exam')
+  applyToExam(@Req() req: Request,@Body() applyToExamDto: ApplyToExamDto) {
+    const id = req.user['id'];
+    return this.employeesService.applyToExam(id, applyToExamDto)
+  }
+
+@UseGuards(EmployeeAtGuard)
+@Post('post_exam_result')
+  postExamResult(@Req() req: Request,@Body() postExamResultDto: PostExamResultDto) {
+    const id = req.user['id'];
+    return this.employeesService.postExamResult(id, postExamResultDto)
+}
+
+
 
 
 

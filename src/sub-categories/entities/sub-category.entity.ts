@@ -14,4 +14,6 @@ export class SubCategory {
   @JoinColumn({ name: 'categoryId' })
   category: Static;
 
+  @Column({default:false})
+  exam_available:boolean
 }

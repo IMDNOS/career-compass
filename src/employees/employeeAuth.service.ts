@@ -10,13 +10,16 @@ import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ActivateEmployeeDto } from './dto/activate-employee.dto';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
+import { EmailSender } from '../mail-sender';
 
 
 @Injectable()
 export class EmployeeAuthService {
 
   constructor(@InjectRepository(Employee) private employeeRepository: Repository<Employee>,
-              private jwtService: JwtService) {
+              private jwtService: JwtService,
+              private readonly mailSender:EmailSender,
+              ) {
   }
 
 
@@ -60,6 +63,11 @@ export class EmployeeAuthService {
         await this.employeeRepository.update(employee.id, employee);
 
         return newCode;
+
+         // return  await this.mailSender.mailTransport(employee.email,'Your Career Compass activation code',`<strong>Your acrtivation code is <br> ${newCode} </strong>`)
+
+
+
       } else {
         return await this.getTokens(employee);
       }

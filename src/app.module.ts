@@ -14,11 +14,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { Static } from './statics/entities/static.entity';
 import { SubCategory } from './sub-categories/entities/sub-category.entity';
 import { SuperAdmin } from './super-admin/entities/super-admin.entity';
-import { NotificationModule } from './notification/notification.module';
+import { ExamsModule } from './exams/exams.module';
+import { ConfigModule } from '@nestjs/config';
+import { EmailSender } from './mail-sender';
+import { EventModule } from './event/event.module';
 
 
 @Module({
-  imports: [ TypeOrmModule.forRoot(config),
+  imports: [ TypeOrmModule.forRoot(config),ConfigModule.forRoot(),
     TypeOrmModule.forFeature([Static,SubCategory,SuperAdmin])
     ,
     ServeStaticModule.forRoot({
@@ -29,9 +32,9 @@ import { NotificationModule } from './notification/notification.module';
       rootPath: './uploadsFiles',
       serveRoot:'/uploadsFiles',
     }),
-    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, NotificationModule],
+    EmployeeAuthModule, SubCategoriesModule, SuperAdminModule, CompanyModule, JobModule, StaticsModule, ExamsModule, EventModule],
   controllers: [AppController],
-  providers: [AppService, {
+  providers: [AppService,EmailSender, {
     provide: APP_PIPE,
     useClass: ValidationPipe,
   }],
