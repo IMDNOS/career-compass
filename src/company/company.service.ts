@@ -426,10 +426,10 @@ export class CompanyService {
 
  async inactivateJob(companyId: number,jobId:number){
 
-    const company = await this.companyRepository.findOne({where:{id: companyId}});
-     if (!company) {
-       throw new NotFoundException(`Company with ID ${companyId} not found`);
-     }
+    // const company = await this.companyRepository.findOne({where:{id: companyId}});
+    //  if (!company) {
+    //    throw new NotFoundException(`Company with ID ${companyId} not found`);
+    //  }
 
      const job = await this.jobRepository.findOne({where:{id: jobId}});
 
