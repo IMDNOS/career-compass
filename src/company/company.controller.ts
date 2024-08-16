@@ -95,10 +95,8 @@ export class CompanyController {
   @Put('update_company')
   update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
     const id = req.user['id'];
-    return this.companyService.updateCompany(updateCompanyDto,id);
+    return this.companyService.updateCompany(updateCompanyDto, id);
   }
-
-
 
 
   @UseGuards(CompanyAtGuard)
@@ -106,7 +104,7 @@ export class CompanyController {
   premiumRequest(@Req() request: Request, @Body() requestPremiumDto: RequestPremiumDto) {
     const company = request.user;
     const companyId = company['id'];
-    return this.companyService.premiumRequest(companyId,requestPremiumDto)
+    return this.companyService.premiumRequest(companyId, requestPremiumDto);
   }
 
   @UseGuards(CompanyAtGuard)
@@ -119,12 +117,11 @@ export class CompanyController {
   }
 
 
-
   @UseGuards(CompanyAtGuard)
   @Post('save-notificationToken-company')
-  saveNotificationTokenCompany(@Body() notificationDto:NotificationDto,@Req() req: Request) {
+  saveNotificationTokenCompany(@Body() notificationDto: NotificationDto, @Req() req: Request) {
     const id = req.user['id'];
-    return this.companyService.saveNotificationTokenCompany(id, notificationDto)
+    return this.companyService.saveNotificationTokenCompany(id, notificationDto);
   }
 
   @UseGuards(CompanyAtGuard)
@@ -134,5 +131,14 @@ export class CompanyController {
     const companyId = company['id'];
     return this.companyService.findOneJobById(+id, companyId);
   }
+
+  @UseGuards(CompanyAtGuard)
+  @Post('inactivateJob/:id')
+  inactivateJob(@Param('id') jobId: string, @Req() request: Request) {
+    const company = request.user;
+    const companyId = company['id'];
+      return this.companyService.inactivateJob(+jobId, companyId);
+  }
+
 
 }
