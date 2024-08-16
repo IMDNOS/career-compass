@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { CompanyAtGuard, CompanyRtGuard } from './strategies/decorate-guards';
 import { RequestActivationCodeDto } from '../employees/dto/request-activation-code.dto';
 import { ActivateEmployeeDto } from '../employees/dto/activate-employee.dto';
+import { PostNewPasswordDto } from '../employees/dto/post-new-password.dto';
 
 
 
@@ -50,6 +51,10 @@ export class CompanyAuthController {
   refreshTokens(@Req() req: Request) {
     const company = req.user;
     return this.companyAuthService.refreshTokens(company['id'], company['refreshToken']);
+  }
+  @Post('post_new_password')
+  post_new_password(@Body() pastNewPasswordDto:PostNewPasswordDto) {
+    return this.companyAuthService.post_new_password(pastNewPasswordDto)
   }
 
 }

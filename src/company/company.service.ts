@@ -125,17 +125,43 @@ export class CompanyService {
     if (!employeeJobs || employeeJobs.length === 0) {
       throw new NotFoundException(`No employees applying for job with ID ${jobId} found`);
     }
+    // for (const employeeJob of employeeJobs) {
+    //   delete employeeJob.employee.hashed_password
+    //   delete employeeJob.employee.hashedRT
+    //   delete employeeJob.employee.hashedCode
+    //
+    //   const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+    //   for (const employeeSubcategory of employeeSubcategories) {
+    //     employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
+    //     if(!employeeSubcategory.certification)
+    //     employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+    //   }
+    // }
     for (const employeeJob of employeeJobs) {
-      delete employeeJob.employee.hashed_password
-      delete employeeJob.employee.hashedRT
-      delete employeeJob.employee.hashedCode
+      delete employeeJob.employee.hashed_password;
+      delete employeeJob.employee.hashedRT;
+      delete employeeJob.employee.hashedCode;
 
-      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      const certifications = [];
+
+      const employeeSubcategories = await this.employeeSubCategoryRepository.find({
+        where: { employee: employeeJob.employee },
+        relations: ['subcategory'],
+      });
+
+
       for (const employeeSubcategory of employeeSubcategories) {
-        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
-        if(!employeeSubcategory.certification)
-        employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+        let mark = String(employeeSubcategory.certification);
+
+        if (!mark)
+          mark = 'unknown';
+
+        certifications.push({
+          'name': employeeSubcategory.subcategory.name,
+          'mark': mark,
+        });
       }
+      employeeJob['certifications'] = certifications;
     }
     return employeeJobs;
   }
@@ -166,17 +192,43 @@ export class CompanyService {
       throw new NotFoundException(`No employees accepted for job with ID ${jobId} found`);
     }
 
+    // for (const employeeJob of employeesJob) {
+    //   delete employeeJob.employee.hashed_password
+    //   delete employeeJob.employee.hashedRT
+    //   delete employeeJob.employee.hashedCode
+    //
+    //   const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+    //   for (const employeeSubcategory of employeeSubcategories) {
+    //     employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
+    //     if(!employeeSubcategory.certification)
+    //       employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+    //   }
+    // }
     for (const employeeJob of employeesJob) {
-      delete employeeJob.employee.hashed_password
-      delete employeeJob.employee.hashedRT
-      delete employeeJob.employee.hashedCode
+      delete employeeJob.employee.hashed_password;
+      delete employeeJob.employee.hashedRT;
+      delete employeeJob.employee.hashedCode;
 
-      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      const certifications = [];
+
+      const employeeSubcategories = await this.employeeSubCategoryRepository.find({
+        where: { employee: employeeJob.employee },
+        relations: ['subcategory'],
+      });
+
+
       for (const employeeSubcategory of employeeSubcategories) {
-        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
-        if(!employeeSubcategory.certification)
-          employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+        let mark = String(employeeSubcategory.certification);
+
+        if (!mark)
+          mark = 'unknown';
+
+        certifications.push({
+          'name': employeeSubcategory.subcategory.name,
+          'mark': mark,
+        });
       }
+      employeeJob['certifications'] = certifications;
     }
 
 

@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
 import { ActivateCompanyDto } from './dto/activate-company.dto';
 import { EmailSender } from '../mail-sender';
+import { PostNewPasswordDto } from '../employees/dto/post-new-password.dto';
 
 
 @Injectable()
@@ -41,7 +42,7 @@ export class CompanyAuthService {
     const company = await this.companyRepository.findOne({ where: { email: requestActivationCodeDto.email } });
 
     if (company) {
-      if (!company.active) {
+      // if (!company.active) {
         const newCode = this.generateRandomCode();
         const newHash = this.hashData(newCode);
 
@@ -54,9 +55,9 @@ export class CompanyAuthService {
         // return  await this.emailSender.mailTransport(company.email,'Your Career Compass activation code',`<strong>Your acrtivation code is <br> ${newCode} </strong>`)
 
 
-      } else {
-        return await this.getTokens(company);
-      }
+      // } else {
+      //   return await this.getTokens(company);
+      // }
     } else {
       throw new HttpException('Email does not exists', HttpStatus.BAD_REQUEST);
     }
@@ -129,6 +130,35 @@ export class CompanyAuthService {
     await this.updateRefreshToken(company.id, tokens.refresh_token);
     return tokens;
   }
+
+
+  async post_new_password(postNewPasswordDto:PostNewPasswordDto){
+    const company = await this.companyRepository.findOne({where: {email: postNewPasswordDto.email}});
+
+    if (!company)
+    {
+      throw new ForbiddenException('Email Does not exist');
+    }
+
+    const codeMatches = await bcrypt.compare(postNewPasswordDto.activationCode, company.hashedCode);
+
+    if (codeMatches) {
+      const hashedPassword = await this.hashData(postNewPasswordDto.password);
+      company.hashed_password=hashedPassword;
+      await this.companyRepository.update(company.id, company);
+      return 'password updated successfully';
+    }
+
+    throw new ForbiddenException('Wrong Code');
+
+
+  }
+
+
+
+
+
+  /////
 
   private async hashData(data: string) {
     return bcrypt.hash(data, 10);
