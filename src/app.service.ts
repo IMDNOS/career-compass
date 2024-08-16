@@ -5,12 +5,16 @@ import { Repository } from 'typeorm';
 import { SubCategory } from './sub-categories/entities/sub-category.entity';
 import { SuperAdmin } from './super-admin/entities/super-admin.entity';
 import * as firebase from 'firebase-admin';
+import * as path from "node:path";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const admin =require("firebase-admin");
 firebase.initializeApp({
-  credential: firebase.credential.cert(
-    './firebase-admin-sdk.json'
+  credential: admin.credential.cert(
+       'pushnotifications-f1d90-firebase-adminsdk-1mh2m-a5d175824e.json'
   ),
 });
+module.exports.admin=admin;
 
 @Injectable()
 export class AppService {

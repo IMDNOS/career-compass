@@ -97,6 +97,17 @@ export class CompanyService {
     });
   }
 
+  async findAllJobsNotActive(companyID: number): Promise<Job[]> {
+
+    return this.jobRepository.find({
+      where: { company: { id: companyID }, active: false },
+      relations: ['static', 'subCategories'],
+      select: ['id', 'title', 'company', 'description', 'salary', 'work_hours', 'experience_years', 'wanted_gender'],
+    });
+  }
+
+
+
 
   async getEmployeesApplying(companyId: number, jobId: number) {
     const Company = await this.companyRepository.findOne({

@@ -85,6 +85,15 @@ export class CompanyController {
   }
 
   @UseGuards(CompanyAtGuard)
+  @Get('findAllNotActive')
+  findAllNotActive(@Req() request: Request) {
+    const company = request.user;
+    const companyId = company['id'];
+    return this.companyService.findAllJobsNotActive(companyId);
+  }
+
+
+  @UseGuards(CompanyAtGuard)
   @Get('get_info_company')
   getInfo(@Req() req: Request) {
     const id = req.user['id'];
