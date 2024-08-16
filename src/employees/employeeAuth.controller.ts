@@ -7,6 +7,7 @@ import { EmployeeAtGuard, EmployeeRtGuard } from './strategies/decorate-guards';
 // import { Tokens } from './types/tokens.type';
 import { ActivateEmployeeDto } from './dto/activate-employee.dto';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
+import { PostNewPasswordDto } from './dto/post-new-password.dto';
 
 
 @Controller('employeeAuth')
@@ -48,4 +49,16 @@ export class EmployeeAuthController {
     const employee = req.user;
     return this.employeesService.refreshTokens(employee['id'], employee['refreshToken']);
   }
+
+  // @Post('forget_password')
+  // forget_password(@Body() requestActivationCodeDto:RequestActivationCodeDto ) {
+  //   return this.employeesService.requestActivationCode(requestActivationCodeDto)
+  // }
+
+  @Post('post_new_password')
+  post_new_password(@Body() pastNewPasswordDto:PostNewPasswordDto) {
+    return this.employeesService.post_new_password(pastNewPasswordDto)
+  }
+
+
 }

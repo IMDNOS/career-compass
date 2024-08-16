@@ -33,13 +33,13 @@ export class CompanyService {
     @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
     @InjectRepository(Employee_job) private readonly employee_jobRepository: Repository<Employee_job>,
     @InjectRepository(AdminNotifications) private readonly adminNotificationsRepository: Repository<AdminNotifications>,
-    @InjectRepository(NotificationTokenCompany) private readonly companyNotificationTokenRepository: Repository<NotificationTokenCompany> ,
+    @InjectRepository(NotificationTokenCompany) private readonly companyNotificationTokenRepository: Repository<NotificationTokenCompany>,
     @InjectRepository(NotificationsCompany) private readonly companyNotificationsRepository: Repository<NotificationsCompany>,
     @InjectRepository(NotificationsEmployee) private readonly notificationsEmployeeRepository: Repository<NotificationsEmployee>,
     @InjectRepository(NotificationTokenEmployee) private readonly notificationTokenEmployeeRepository: Repository<NotificationTokenEmployee>,
     @InjectRepository(EmployeeSubCategory)
     private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
-    ) {
+  ) {
   }
 
 
@@ -126,16 +126,30 @@ export class CompanyService {
       throw new NotFoundException(`No employees applying for job with ID ${jobId} found`);
     }
     for (const employeeJob of employeeJobs) {
-      delete employeeJob.employee.hashed_password
-      delete employeeJob.employee.hashedRT
-      delete employeeJob.employee.hashedCode
+      delete employeeJob.employee.hashed_password;
+      delete employeeJob.employee.hashedRT;
+      delete employeeJob.employee.hashedCode;
 
-      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      const certifications = [];
+
+      const employeeSubcategories = await this.employeeSubCategoryRepository.find({
+        where: { employee: employeeJob.employee },
+        relations: ['subcategory'],
+      });
+
+
       for (const employeeSubcategory of employeeSubcategories) {
-        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
-        if(!employeeSubcategory.certification)
-        employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+        let mark = String(employeeSubcategory.certification);
+
+        if (!mark)
+          mark = 'unknown';
+
+        certifications.push({
+          'name': employeeSubcategory.subcategory.name,
+          'mark': mark,
+        });
       }
+      employeeJob['certifications'] = certifications;
     }
     return employeeJobs;
   }
@@ -167,19 +181,31 @@ export class CompanyService {
     }
 
     for (const employeeJob of employeesJob) {
-      delete employeeJob.employee.hashed_password
-      delete employeeJob.employee.hashedRT
-      delete employeeJob.employee.hashedCode
+      delete employeeJob.employee.hashed_password;
+      delete employeeJob.employee.hashedRT;
+      delete employeeJob.employee.hashedCode;
 
-      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      const certifications = [];
+
+      const employeeSubcategories = await this.employeeSubCategoryRepository.find({
+        where: { employee: employeeJob.employee },
+        relations: ['subcategory'],
+      });
+
+
       for (const employeeSubcategory of employeeSubcategories) {
-        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
-        if(!employeeSubcategory.certification)
-          employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+        let mark = String(employeeSubcategory.certification);
+
+        if (!mark)
+          mark = 'unknown';
+
+        certifications.push({
+          'name': employeeSubcategory.subcategory.name,
+          'mark': mark,
+        });
       }
+      employeeJob['certifications'] = certifications;
     }
-
-
     return employeesJob;
   }
 
@@ -226,7 +252,7 @@ export class CompanyService {
     }
 
     employeeJob.accepted = true;
-     const save= await this.employee_jobRepository.save(employeeJob);
+    const save = await this.employee_jobRepository.save(employeeJob);
     if (save) {
 
       await this.sendAndSavePushNotificationForEmployee(
@@ -245,8 +271,8 @@ export class CompanyService {
     };
   }
 
-  async premiumRequest(companyId:number,requestPremiumDto: RequestPremiumDto) {
-    const company = await this.companyRepository.findOne({where: { id: companyId }});
+  async premiumRequest(companyId: number, requestPremiumDto: RequestPremiumDto) {
+    const company = await this.companyRepository.findOne({ where: { id: companyId } });
     if (!company) {
       throw new NotFoundException(`Company with ID ${companyId} not found`);
     }
@@ -255,12 +281,11 @@ export class CompanyService {
 
     const notification = this.adminNotificationsRepository.create({
       company: company,
-      body:message
-    })
+      body: message,
+    });
 
     return await this.adminNotificationsRepository.save(notification);
   }
-
 
 
   async getInfoCompany(company_id: number) {
@@ -275,13 +300,13 @@ export class CompanyService {
         'logo',
         'premiumLevel',
         'wallet',
-      ]
+      ],
     });
   }
 
 
-  async updateCompany(updateCompanyDto: UpdateCompanyDto, companyId: number){
-    try{
+  async updateCompany(updateCompanyDto: UpdateCompanyDto, companyId: number) {
+    try {
       if (!updateCompanyDto || Object.keys(updateCompanyDto).length === 0) {
         throw new HttpException('Empty request', HttpStatus.BAD_REQUEST);
       }
@@ -293,47 +318,45 @@ export class CompanyService {
       }
       updateCompanyDto.email = company.email;
 
-      const saveInfo= await this.companyRepository.update(company.id,updateCompanyDto);
+      const saveInfo = await this.companyRepository.update(company.id, updateCompanyDto);
       if (saveInfo) {
         // send push notification
         await this.sendAndSavePushNotificationCompany(
           saveInfo,
           'Profile Update',
-          'Your Profile have been updated successfully'
+          'Your Profile have been updated successfully',
         )
           .catch((e: any) => {
             console.log('Error sending push notification', e);
           });
       }
 
-      return  await this.companyRepository.findOne({
+      return await this.companyRepository.findOne({
         where: { id: companyId },
       });
-    }
-    catch (error) {
+    } catch (error) {
       return error;
     }
 
   }
 
-  
+
   ///
-  async saveNotificationTokenCompany(companyId: number, notificationDto: NotificationDto ){
-    const company= await this.companyRepository.findOne({ where: { id: companyId } });
+  async saveNotificationTokenCompany(companyId: number, notificationDto: NotificationDto) {
+    const company = await this.companyRepository.findOne({ where: { id: companyId } });
 
     let notificationToken = await this.companyNotificationTokenRepository.findOne({
-      where: { company: { id: companyId } }
+      where: { company: { id: companyId } },
     });
 
     if (!notificationToken) {
       notificationToken = this.companyNotificationTokenRepository.create({
         company: company,
         device_type: notificationDto.device_type,
-        notification_token: notificationDto.notification_token
+        notification_token: notificationDto.notification_token,
       });
       await this.companyNotificationTokenRepository.save(notificationToken);
-    }
-    else {
+    } else {
       notificationToken.device_type = notificationDto.device_type;
       notificationToken.notification_token = notificationDto.notification_token;
       await this.companyNotificationTokenRepository.save(notificationToken);
@@ -342,9 +365,7 @@ export class CompanyService {
   };
 
 
-
-  async getNotificationsForCompany(companyId: number)
-  {
+  async getNotificationsForCompany(companyId: number) {
     return await this.companyNotificationsRepository.find({
       where: {
         notificationTokenCompany: {
@@ -359,7 +380,7 @@ export class CompanyService {
   async sendAndSavePushNotificationCompany(company: any, title: string, body: string) {
     try {
       const notificationTokenCompany = await this.companyNotificationTokenRepository.findOne({
-        where: { company: { id: company.id } }
+        where: { company: { id: company.id } },
       });
 
       if (!notificationTokenCompany) {
@@ -394,7 +415,7 @@ export class CompanyService {
   async sendAndSavePushNotificationForEmployee(employee: any, title: string, body: string) {
     try {
       const notificationTokenEmployee = await this.notificationTokenEmployeeRepository.findOne({
-        where: { employee: { id: employee.id } }
+        where: { employee: { id: employee.id } },
       });
 
       if (!notificationTokenEmployee) {
@@ -424,9 +445,6 @@ export class CompanyService {
       throw error;
     }
   }
-
-
-
 
 
 }
