@@ -19,6 +19,7 @@ import { NotificationTokenCompany } from './entities/company-notification-token.
 import { NotificationTokenEmployee } from '../employees/entities/employee-notification-token.entity';
 import { NotificationsEmployee } from '../employees/entities/notification-employee.entity';
 import { EmployeeAuthModule } from '../employees/employeeAuth.module';
+import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -28,6 +29,7 @@ import { EmployeeAuthModule } from '../employees/employeeAuth.module';
     Employee_job,
     Employee,
     AdminNotifications,
+    EmployeeSubCategory,
     NotificationTokenCompany, NotificationsCompany,
     NotificationsEmployee, NotificationTokenEmployee,
   ]),

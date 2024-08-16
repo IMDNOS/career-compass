@@ -23,6 +23,7 @@ import { NotificationsCompany } from './entities/notification-company.entity';
 import { NotificationDto } from '../employees/dto/create-notification.dto';
 import { NotificationsEmployee } from '../employees/entities/notification-employee.entity';
 import { NotificationTokenEmployee } from '../employees/entities/employee-notification-token.entity';
+import { EmployeeSubCategory } from '../employees/entities/employeeSubcategory.entity';
 
 @Injectable()
 export class CompanyService {
@@ -36,6 +37,8 @@ export class CompanyService {
     @InjectRepository(NotificationsCompany) private readonly companyNotificationsRepository: Repository<NotificationsCompany>,
     @InjectRepository(NotificationsEmployee) private readonly notificationsEmployeeRepository: Repository<NotificationsEmployee>,
     @InjectRepository(NotificationTokenEmployee) private readonly notificationTokenEmployeeRepository: Repository<NotificationTokenEmployee>,
+    @InjectRepository(EmployeeSubCategory)
+    private employeeSubCategoryRepository: Repository<EmployeeSubCategory>,
     ) {
   }
 
@@ -116,13 +119,24 @@ export class CompanyService {
         job: Job,
         accepted: false,
       },
-      relations: ['employee', 'job'],
+      relations: ['employee'/*, 'job'*/],
     });
 
     if (!employeeJobs || employeeJobs.length === 0) {
       throw new NotFoundException(`No employees applying for job with ID ${jobId} found`);
     }
+    for (const employeeJob of employeeJobs) {
+      delete employeeJob.employee.hashed_password
+      delete employeeJob.employee.hashedRT
+      delete employeeJob.employee.hashedCode
 
+      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      for (const employeeSubcategory of employeeSubcategories) {
+        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
+        if(!employeeSubcategory.certification)
+        employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+      }
+    }
     return employeeJobs;
   }
 
@@ -145,12 +159,26 @@ export class CompanyService {
         job: Job,
         accepted: true,
       },
-      relations: ['employee', 'job'],
+      relations: ['employee'/*, 'job'*/],
     });
 
     if (!employeesJob || employeesJob.length === 0) {
       throw new NotFoundException(`No employees accepted for job with ID ${jobId} found`);
     }
+
+    for (const employeeJob of employeesJob) {
+      delete employeeJob.employee.hashed_password
+      delete employeeJob.employee.hashedRT
+      delete employeeJob.employee.hashedCode
+
+      const employeeSubcategories= await this.employeeSubCategoryRepository.find({where:{employee:employeeJob.employee},relations:['subcategory']})
+      for (const employeeSubcategory of employeeSubcategories) {
+        employeeJob.employee[ employeeSubcategory.subcategory.name]=employeeSubcategory.certification
+        if(!employeeSubcategory.certification)
+          employeeJob.employee[ employeeSubcategory.subcategory.name]="unknown"
+      }
+    }
+
 
     return employeesJob;
   }
