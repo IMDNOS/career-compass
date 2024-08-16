@@ -265,7 +265,7 @@ export class CompanyService {
       }
       updateCompanyDto.email = company.email;
 
-      const saveInfo= await this.employeeRepository.save(company);
+      const saveInfo= await this.companyRepository.update(company.id,updateCompanyDto);
       if (saveInfo) {
         // send push notification
         await this.sendAndSavePushNotificationCompany(
@@ -278,7 +278,7 @@ export class CompanyService {
           });
       }
 
-      return  await this.employeeRepository.findOne({
+      return  await this.companyRepository.findOne({
         where: { id: companyId },
       });
     }
