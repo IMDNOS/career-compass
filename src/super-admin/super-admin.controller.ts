@@ -10,6 +10,34 @@ export class SuperAdminController {
   constructor(private readonly superAdminService: SuperAdminService) {
   }
 
+
+
+  @Get('NumberOfEmployees')
+  NumberOfEmployees() {
+    return this.superAdminService.NumberOfEmployees();
+  }
+
+  @Get('countEmployeesByGovernorate')
+  countEmployeesByGovernorate() {
+    return this.superAdminService.countEmployeesByGovernorate();
+  }
+
+  @Get('NumberOfCompanies')
+  NumberOfCompanies() {
+    return this.superAdminService.NumberOfCompanies();
+  }
+  @Get('NumberOfJobs')
+  NumberOfJobs() {
+    return this.superAdminService.NumberOfJobs();
+  }
+
+  @Get('getTopThreeJobsWithMostApplicants')
+  getTopThreeJobsWithMostApplicants() {
+    return this.superAdminService.getTopThreeJobsWithMostApplicants();
+  }
+
+
+
   @Get('getAllEmployees')
   findAll() {
     return this.superAdminService.findAllEmployees();

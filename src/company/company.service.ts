@@ -280,40 +280,43 @@ export class CompanyService {
   }
 
 
-  async updateCompany(updateCompanyDto: UpdateCompanyDto, companyId: number){
-    try{
+  async updateCompany(updateCompanyDto: UpdateCompanyDto, companyId: number) {
+    try {
       if (!updateCompanyDto || Object.keys(updateCompanyDto).length === 0) {
         throw new HttpException('Empty request', HttpStatus.BAD_REQUEST);
       }
-      const company = await this.employeeRepository.findOne({
+
+      const company = await this.companyRepository.findOne({
         where: { id: companyId },
       });
+
       if (!company) {
         return { message: 'Company not found' };
       }
+
+      company.company_name = updateCompanyDto.company_name || company.company_name;
+      company.phone = updateCompanyDto.phone || company.phone;
+      company.description = updateCompanyDto.description || company.description;
+      company.address = updateCompanyDto.address || company.address;
       updateCompanyDto.email = company.email;
 
-      const saveInfo= await this.companyRepository.update(company.id,updateCompanyDto);
+      const saveInfo = await this.companyRepository.save(company);
       if (saveInfo) {
-        // send push notification
         await this.sendAndSavePushNotificationCompany(
-          saveInfo,
-          'Profile Update',
-          'Your Profile have been updated successfully'
-        )
-          .catch((e: any) => {
-            console.log('Error sending push notification', e);
-          });
+            saveInfo,
+            'Profile Update',
+            'Your Profile has been updated successfully'
+        ).catch((e: any) => {
+          console.log('Error sending push notification', e);
+        });
       }
 
-      return  await this.companyRepository.findOne({
+      return await this.companyRepository.findOne({
         where: { id: companyId },
       });
-    }
-    catch (error) {
+    } catch (error) {
       return error;
     }
-
   }
 
   

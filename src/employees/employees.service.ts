@@ -78,23 +78,46 @@ export class EmployeesService {
   }
 
   async update(updateEmployeeDto: UpdateEmployeeDto, employeeId: number) {
-    if (!updateEmployeeDto || Object.keys(updateEmployeeDto).length === 0) {
-      throw new HttpException('Empty request', HttpStatus.BAD_REQUEST);
-    }
-    let employee = await this.employeeRepository.findOne({
-      where: { id: employeeId },
-    });
-    if (!employee) {
-      return { message: 'Employee not found' };
-    }
-    updateEmployeeDto.email = employee.email;
+    try{
+      if (!updateEmployeeDto || Object.keys(updateEmployeeDto).length === 0) {
+        throw new HttpException('Empty request', HttpStatus.BAD_REQUEST);
+      }
+      let employee = await this.employeeRepository.findOne({
+        where: { id: employeeId },
+      });
+      if (!employee) {
+        return { message: 'Employee not found' };
+      }
 
-    await this.employeeRepository.update(employee.id, updateEmployeeDto);
+      employee.name = updateEmployeeDto.name || employee.name;
+      employee.phone = updateEmployeeDto.phone || employee.phone;
+      employee.description = updateEmployeeDto.description || employee.description;
+      employee.home_address = updateEmployeeDto.home_address || employee.home_address;
+      employee.gender=updateEmployeeDto.gender || employee.gender;
+      employee.birthday_date=updateEmployeeDto.birthday_date || employee.birthday_date;
+      updateEmployeeDto.email = employee.email;
 
-    employee = await this.employeeRepository.findOne({
-      where: { id: employeeId },
-    });
-    return employee;
+      const saveInfo= await this.employeeRepository.save(employee)
+      if (saveInfo) {
+        // send push notification
+        await this.sendAndSavePushNotificationForEmployee(
+            saveInfo,
+            'Profile Update',
+            'Your Profile have been updated successfully'
+        )
+            .catch((e: any) => {
+              console.log('Error sending push notification', e);
+            });
+      }
+
+      employee = await this.employeeRepository.findOne({
+        where: { id: employeeId },
+      });
+      return employee;
+    }
+    catch (error) {
+      return error;
+    }
   }
 
   async setStatics(employeeId: number, staticsDto: { name: string }[]) {
