@@ -91,12 +91,12 @@ export class CompanyController {
     return this.companyService.getInfoCompany(id);
   }
 
-  // @UseGuards(CompanyAtGuard)
-  // @Put('update_company')
-  // update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
-  //   const id = req.user['id'];
-  //   return this.companyService.updateCompany(updateCompanyDto,id);
-  // }
+  @UseGuards(CompanyAtGuard)
+  @Put('update_company')
+  update(@Body() updateCompanyDto: UpdateCompanyDto, @Req() req: Request) {
+    const id = req.user['id'];
+    return this.companyService.updateCompany(updateCompanyDto,id);
+  }
 
 
 
