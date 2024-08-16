@@ -18,11 +18,14 @@ import { Exam } from '../exams/entities/exam.entity';
 import { EmailSender } from '../mail-sender';
 import { NotificationsEmployee } from './entities/notification-employee.entity';
 import { NotificationTokenEmployee } from './entities/employee-notification-token.entity';
+import { Company } from '../company/entities/company.entity';
+import { NotificationTokenCompany } from '../company/entities/company-notification-token.entity';
+import { NotificationsCompany } from '../company/entities/notification-company.entity';
 
 
 
 @Module({
-  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory,Job,Employee_job,EmployeeSubCategory,Exam,NotificationsEmployee,NotificationTokenEmployee]),
+  imports:[ TypeOrmModule.forFeature([Employee,Static,SubCategory,Job,Employee_job,EmployeeSubCategory,Exam,NotificationsEmployee,NotificationTokenEmployee,NotificationTokenCompany, NotificationsCompany,Company]),
     JwtModule.register({}),
     ConfigModule.forRoot({ isGlobal: true })],
   controllers: [EmployeeAuthController, EmployeesController ,],

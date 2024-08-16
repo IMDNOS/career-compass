@@ -24,6 +24,9 @@ import { NotificationsEmployee } from './entities/notification-employee.entity';
 import { NotificationTokenEmployee } from './entities/employee-notification-token.entity';
 import * as firebase from 'firebase-admin';
 import { NotificationDto } from './dto/create-notification.dto';
+import { Company } from '../company/entities/company.entity';
+import { NotificationsCompany } from '../company/entities/notification-company.entity';
+import { NotificationTokenCompany } from '../company/entities/company-notification-token.entity';
 
 
 
@@ -48,6 +51,13 @@ export class EmployeesService {
     private readonly notificationRepository: Repository<NotificationsEmployee>,
     @InjectRepository(NotificationTokenEmployee)
     private readonly notificationTokenRepository: Repository<NotificationTokenEmployee>,
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>,
+    @InjectRepository(NotificationsCompany)
+    private readonly notificationsCompanyRepository: Repository<NotificationsCompany>,
+    @InjectRepository(NotificationTokenCompany)
+    private readonly notificationTokenCompanyRepository:Repository<NotificationTokenCompany>,
+
   ) {
   }
 
@@ -497,10 +507,28 @@ export class EmployeesService {
       job: job,
     });
 
+    // return await this.employee_jobRepository.save(employeeJob);
+
+    const save =await this.employee_jobRepository.save(employeeJob);
+    const company = await this.companyRepository.findOne({where:{id:job.company.id}})
+
+
     //send the company a notification
 
+    if (save) {
 
-    return await this.employee_jobRepository.save(employeeJob);
+      await this.sendAndSavePushNotificationCompany(
+        company,
+        'An employee applies for the job',
+        `The employee with id : ${employeeId} applies for the job with id : ${job.id}`,
+      )
+        .catch((e: any) => {
+          console.log('Error sending push notification', e);
+        });
+    }
+
+    return save
+
 
   }
 
@@ -619,7 +647,7 @@ export class EmployeesService {
     });
   }
 
-  async sendAndSavePushNotification(employee: any, title: string, body: string) {
+  async sendAndSavePushNotificationForEmployee(employee: any, title: string, body: string) {
     try {
       const notificationTokenEmployee = await this.notificationTokenRepository.findOne({
         where: { employee: { id: employee.id } }
@@ -653,6 +681,39 @@ export class EmployeesService {
     }
   }
 
+  async sendAndSavePushNotificationCompany(company: any, title: string, body: string) {
+    try {
+      const notificationTokenCompany = await this.notificationTokenCompanyRepository.findOne({
+        where: { company: { id: company.id } }
+      });
+
+      if (!notificationTokenCompany) {
+        throw new ForbiddenException('Notification token for the company not found.');
+      }
+
+      const newNotification = this.notificationsCompanyRepository.create({
+        notificationTokenCompany: notificationTokenCompany,
+        title,
+        body,
+      });
+
+      await this.notificationsCompanyRepository.save(newNotification);
+
+      await firebase
+        .messaging()
+        .send({
+          notification: { title, body },
+          token: notificationTokenCompany.notification_token,
+          android: { priority: 'high' },
+        })
+        .catch((error: any) => {
+          console.error('Error sending push notification:', error);
+        });
+    } catch (error) {
+      console.error('Error in sendAndSavePushNotification method:', error);
+      throw error;
+    }
+  }
 
 
 

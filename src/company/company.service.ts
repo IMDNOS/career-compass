@@ -18,10 +18,11 @@ import { Employee } from '../employees/entities/employee.entity';
 import { Employee_job } from '../job/entities/employee_job.entity';
 import { RequestPremiumDto } from './dto/request-premium.dto';
 import { AdminNotifications } from '../super-admin/entities/admin-notifications.entity';
-import { EmployeesService } from '../employees/employees.service';
 import { NotificationTokenCompany } from './entities/company-notification-token.entity';
 import { NotificationsCompany } from './entities/notification-company.entity';
 import { NotificationDto } from '../employees/dto/create-notification.dto';
+import { NotificationsEmployee } from '../employees/entities/notification-employee.entity';
+import { NotificationTokenEmployee } from '../employees/entities/employee-notification-token.entity';
 
 @Injectable()
 export class CompanyService {
@@ -33,7 +34,8 @@ export class CompanyService {
     @InjectRepository(AdminNotifications) private readonly adminNotificationsRepository: Repository<AdminNotifications>,
     @InjectRepository(NotificationTokenCompany) private readonly companyNotificationTokenRepository: Repository<NotificationTokenCompany> ,
     @InjectRepository(NotificationsCompany) private readonly companyNotificationsRepository: Repository<NotificationsCompany>,
-
+    @InjectRepository(NotificationsEmployee) private readonly notificationsEmployeeRepository: Repository<NotificationsEmployee>,
+    @InjectRepository(NotificationTokenEmployee) private readonly notificationTokenEmployeeRepository: Repository<NotificationTokenEmployee>,
     ) {
   }
 
@@ -196,7 +198,18 @@ export class CompanyService {
     }
 
     employeeJob.accepted = true;
-    await this.employee_jobRepository.save(employeeJob);
+     const save= await this.employee_jobRepository.save(employeeJob);
+    if (save) {
+
+      await this.sendAndSavePushNotificationForEmployee(
+        employee,
+        'You have been accepted for the job',
+        `Congratulations, you have been accepted for the job ${Job.title} you applied for some time ago`,
+      )
+        .catch((e: any) => {
+          console.log('Error sending push notification', e);
+        });
+    }
 
     return {
       message: 'The employee has been successfully accepted.',
@@ -221,13 +234,6 @@ export class CompanyService {
   }
 
 
-//   update(id: number, updateCompanyDto: UpdateCompanyDto) {
-//     return `This action updates a #${id} company`;
-//   }
-//
-//   remove(id: number) {
-//     return `This action removes a #${id} company`;
-//   }
 
   async getInfoCompany(company_id: number) {
     return await this.companyRepository.findOne({
@@ -260,17 +266,17 @@ export class CompanyService {
       updateCompanyDto.email = company.email;
 
       const saveInfo= await this.employeeRepository.save(company);
-      // if (saveInfo) {
-      //   // send push notification
-      //   await this.sendAndSavePushNotificationCompany(
-      //     saveInfo,
-      //     'Profile Update',
-      //     'Your Profile have been updated successfully'
-      //   )
-      //     .catch((e: any) => {
-      //       console.log('Error sending push notification', e);
-      //     });
-      // }
+      if (saveInfo) {
+        // send push notification
+        await this.sendAndSavePushNotificationCompany(
+          saveInfo,
+          'Profile Update',
+          'Your Profile have been updated successfully'
+        )
+          .catch((e: any) => {
+            console.log('Error sending push notification', e);
+          });
+      }
 
       return  await this.employeeRepository.findOne({
         where: { id: companyId },
@@ -355,8 +361,44 @@ export class CompanyService {
       throw error;
     }
   }
-  
-  
-  
+
+
+  async sendAndSavePushNotificationForEmployee(employee: any, title: string, body: string) {
+    try {
+      const notificationTokenEmployee = await this.notificationTokenEmployeeRepository.findOne({
+        where: { employee: { id: employee.id } }
+      });
+
+      if (!notificationTokenEmployee) {
+        throw new ForbiddenException('Notification token for the employee not found.');
+      }
+
+      const newNotification = this.notificationsEmployeeRepository.create({
+        notificationToken: notificationTokenEmployee,
+        title,
+        body,
+      });
+
+      await this.notificationsEmployeeRepository.save(newNotification);
+
+      await firebase
+        .messaging()
+        .send({
+          notification: { title, body },
+          token: notificationTokenEmployee.notification_token,
+          android: { priority: 'high' },
+        })
+        .catch((error: any) => {
+          console.error('Error sending push notification:', error);
+        });
+    } catch (error) {
+      console.error('Error in sendAndSavePushNotification method:', error);
+      throw error;
+    }
+  }
+
+
+
+
 
 }

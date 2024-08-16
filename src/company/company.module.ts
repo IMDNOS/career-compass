@@ -16,6 +16,9 @@ import { EmailSender } from '../mail-sender';
 import { EmployeesService } from '../employees/employees.service';
 import { NotificationsCompany } from './entities/notification-company.entity';
 import { NotificationTokenCompany } from './entities/company-notification-token.entity';
+import { NotificationTokenEmployee } from '../employees/entities/employee-notification-token.entity';
+import { NotificationsEmployee } from '../employees/entities/notification-employee.entity';
+import { EmployeeAuthModule } from '../employees/employeeAuth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -26,9 +29,11 @@ import { NotificationTokenCompany } from './entities/company-notification-token.
     Employee,
     AdminNotifications,
     NotificationTokenCompany, NotificationsCompany,
-    // Notifications, NotificationTokenEmployee,
+    NotificationsEmployee, NotificationTokenEmployee,
   ]),
-    JwtModule.register({})],
+    JwtModule.register({}),
+  // EmployeeAuthModule
+  ],
   controllers: [CompanyController, CompanyAuthController],
   providers: [
     CompanyService,
