@@ -423,6 +423,35 @@ export class CompanyService {
     });
   }
 
+
+ async inactivateJob(companyId: number,jobId:number){
+
+    const company = await this.companyRepository.findOne({where:{id: companyId}});
+     if (!company) {
+       throw new NotFoundException(`Company with ID ${companyId} not found`);
+     }
+
+     const job = await this.jobRepository.findOne({where:{id: jobId}});
+
+     if (!job) {
+       throw new NotFoundException(`Job with ID ${jobId} not found`);
+     }
+
+     job.active = false;
+
+     await this.jobRepository.update(jobId,job)
+
+    return 'job has been unactivated'
+  }
+
+
+
+
+
+
+
+
+
   async sendAndSavePushNotificationCompany(company: any, title: string, body: string) {
     try {
       const notificationTokenCompany = await this.companyNotificationTokenRepository.findOne({
