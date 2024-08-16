@@ -289,7 +289,7 @@ export class CompanyService {
         where: { id: companyId },
       });
       if (!company) {
-        return { message: 'Company not found' };
+        throw new NotFoundException(`Company with ID ${companyId}  not found`);
       }
       updateCompanyDto.email = company.email;
 
