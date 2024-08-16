@@ -12,7 +12,7 @@ export class NotificationTokenCompany {
   @OneToOne(() => Company)
   company: Company;
 
-  @Column()
+  @Column( {default:'Android'})
   device_type: string;
 
   @Column()
