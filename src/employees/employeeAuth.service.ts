@@ -11,6 +11,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ActivateEmployeeDto } from './dto/activate-employee.dto';
 import { RequestActivationCodeDto } from './dto/request-activation-code.dto';
 import { EmailSender } from '../mail-sender';
+import { PostNewPasswordDto } from './dto/post-new-password.dto';
 
 
 @Injectable()
@@ -54,7 +55,7 @@ export class EmployeeAuthService {
     const employee = await this.employeeRepository.findOne({ where: { email: requestActivationCodeDto.email } });
 
     if (employee) {
-      if (!employee.active) {
+      // if (!employee.active) {
         const newCode = this.generateRandomCode();
         const newHash = this.hashData(newCode);
 
@@ -68,9 +69,9 @@ export class EmployeeAuthService {
 
 
 
-      } else {
-        return await this.getTokens(employee);
-      }
+      // } else {
+      //   return await this.getTokens(employee);
+      // }
     } else {
       throw new HttpException('Email does not exists', HttpStatus.BAD_REQUEST);
     }
@@ -146,6 +147,32 @@ export class EmployeeAuthService {
     await this.updateRefreshToken(employee.id, tokens.refresh_token);
     return tokens;
   }
+
+
+async post_new_password(postNewPasswordDto:PostNewPasswordDto){
+    const employee = await this.employeeRepository.findOne({where: {email: postNewPasswordDto.email}});
+
+    if (!employee)
+    {
+      throw new ForbiddenException('Email Does not exist');
+    }
+
+  const codeMatches = await bcrypt.compare(postNewPasswordDto.activationCode, employee.hashedCode);
+
+    if (codeMatches) {
+      const hashedPassword = await this.hashData(postNewPasswordDto.password);
+      employee.hashed_password=hashedPassword;
+      await this.employeeRepository.update(employee.id, employee);
+      return 'password updated successfully';
+    }
+
+    throw new ForbiddenException('Wrong Code');
+
+
+}
+
+
+
 
 
   // private methods
